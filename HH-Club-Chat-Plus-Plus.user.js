@@ -821,8 +821,13 @@
                     ClubChat.init();
                 }
 
-                //did it work? if no, we try it in a second again (up to 10 times)
-                if(!ClubChat.hasInit)
+                //did it work?
+                if(ClubChat.hasInit)
+                {
+                    //update club id to prevent wrong call to unPinMsg()
+                    ClubChat.club_id = ClubChat.chatVars.CLUB_INFO.id_club;
+                }
+                else //if no, we try it in a second again (up to 10 times)
                 {
                     if(attempts < 10)
                     {
