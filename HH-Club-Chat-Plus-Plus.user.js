@@ -392,6 +392,7 @@
 
                     //parse text word by word (links, images, ping, format)
                     let htmlSplits = html.split(' ');
+                    let pingReceived = false;
                     let styleBold = -1;
                     let styleItalic = -1;
                     let styleUnderline = -1;
@@ -450,8 +451,11 @@
                                 htmlNew.push({ isValid: true, value: '<span class="ping">' + word + '</span>' });
 
                                 //is the ping for this user?
-                                if(wordLC == '@club' || (playerNamePing != null && wordLC == playerNamePing))
+                                if(!pingReceived && (wordLC == '@club' || (playerNamePing != null && wordLC == playerNamePing)))
                                 {
+                                    //only one ping per message
+                                    pingReceived = true;
+
                                     //highlight the message
                                     node.setAttribute('style', 'background-color:#49443c');
 
