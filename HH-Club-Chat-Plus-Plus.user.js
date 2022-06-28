@@ -631,6 +631,7 @@
                     let htmlNewStr = '';
                     htmlNew.forEach(e => { htmlNewStr += e.isValid ? e.value : e.invalidValue });
                     node.lastElementChild.innerHTML = htmlNewStr;
+                    ClubChat.updateScrollPosition();
                 }
             }
         }
