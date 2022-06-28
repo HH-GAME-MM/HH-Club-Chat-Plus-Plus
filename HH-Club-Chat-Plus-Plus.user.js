@@ -3,7 +3,7 @@
 // @version      0.1
 // @description  Upgrade Club Chat with various features
 // @author       -MM-
-// @match        https://www.hentaiheroes.com/
+// @match        https://*.hentaiheroes.com/
 // @run-at       document-end
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 // @updateURL    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
@@ -28,7 +28,7 @@
     //club chat init fails sometimes. we fix it now
     fixClubChat();
 
-    //fix club chat scrolling. scroll only if the scrollbar is at the top or close to the bottom
+    //fix club chat scrolling. scroll only if the scrollbar is close to the bottom
     fixScrolling();
 
     //load last position and size of the chat window
@@ -41,8 +41,8 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-avatar img.icon {width:36px !important;height:36px !important;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt {margin-top:-16px !important;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-time {margin-top:-2px;}');
-    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.active_light {display:inline-block;width:.75rem;height:.75rem;margin:0px 6px 4px 6px;transform:rotate(45deg);border:1px solid #000;}');
-    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.HHCCPlusPlus {color:white;font-size:20px;line-height:1;padding-right:2px;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.active_light {display:inline-block;width:.75rem;height:.75rem;margin:0px 4px 4px 11px;transform:rotate(45deg);border:1px solid #000;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.HHCCPlusPlus {color:white;font-size:20px;line-height:1;margin:0px 2px 0px 5px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info {pointer-events: none;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info * {pointer-events: auto;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt a {color:white;}');
@@ -97,6 +97,8 @@
             playerName = iFrame.querySelector('.square-avatar-wrapper').getAttribute('title');
             playerNamePing = '@' + playerName.toLowerCase().replaceAll(' ', '_');
         }
+        //get playerId
+        let playerId = ClubChat.id_member;
 
         //get playerId of club leader
         clubLeaderPlayerId = ClubChat.chatVars.CLUB_INFO.leader_id;
@@ -167,17 +169,24 @@
                     saveLastMsgTimestampSeen();
                 }
 
-                //change the nickname color: club leader red, members green
+                //change the nickname color: club leader red, members blue
                 let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
-                nodeSpanMsgSender.setAttribute('style', 'color:' + (msgIdPlayerId == clubLeaderPlayerId ? '#f33c3d' : '#2e814c'));
+                nodeSpanMsgSender.setAttribute('style', 'color:' + (msgIdPlayerId == clubLeaderPlayerId ? '#f33c3d' : '#1e81b0'));
 
                 //add the online icon
-                nodeSpanMsgSender.innerHTML += ' <span class="active_light"></span>';
+                let nodeSpanMsgSender_active_light = document.createElement('span');
+                nodeSpanMsgSender_active_light.setAttribute('class', 'active_light');
+                nodeSpanMsgSender_active_light.setAttribute('title', 'Online Status');
+                nodeSpanMsgSender.appendChild(nodeSpanMsgSender_active_light);
 
                 //mark message as sent by HH Club Chat++
                 if(sentByHHCCPlusPlus)
                 {
-                    nodeSpanMsgSender.innerHTML += ' <span class="HHCCPlusPlus" title="HH Club Chat++">++</span>';
+                    let nodeSpanMsgSender_HHCCPlusPlus = document.createElement('span');
+                    nodeSpanMsgSender_HHCCPlusPlus.setAttribute('class', 'HHCCPlusPlus');
+                    nodeSpanMsgSender_HHCCPlusPlus.setAttribute('title', 'HH Club Chat++');
+                    nodeSpanMsgSender_HHCCPlusPlus.innerHTML = '++';
+                    nodeSpanMsgSender.appendChild(nodeSpanMsgSender_HHCCPlusPlus);
                 }
 
                 //new html
@@ -208,71 +217,80 @@
                         case '!thx': imgSrc = ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif'][msgIdTimestampMs % 2]; break;
                         case '!fail': imgSrc = ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif'][msgIdTimestampMs % 2]; break;
                         case '!help':
-                            htmlNew.push({ isValid: true, value: '!help = show this help<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">GIFS</span><br/>' +
-                                '!moar = post random moar gif<br/>' +
-                                '!both = post random both gif<br/>' +
-                                '!heyhey = post heyhey gif<br/>' +
-                                '!hehe = post hehe gif<br/>' +
-                                '!gm = post good morning gif<br/>' +
-                                '!gn = post random good night gif<br/>' +
-                                '!sad = post sad gif<br/>' +
-                                '!doit = post doit gif<br/>' +
-                                '!dejavu = post dejavu gif<br/>' +
-                                '!wtf = post wtf gif<br/>' +
-                                '!whale = post whale gif<br/>' +
-                                '!new = post "new" gif<br/>' +
-                                '!why = post a random why gif<br/>' +
-                                '!legit = posts a legit while nodding his head gif<br/>' +
-                                '!rng = post random rng gif<br/>' +
-                                '!gz = post random congratulations gif<br/>' +
-                                '!thx = post random thank you gif<br/>' +
-                                '!fail = post random fail gif<br/>' +
-                                //'!spaghetti = posts a humourous spaghetti code gif<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">SPOILER</span><br/>' +
-                                '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">PLAINTEXT</span><br/>' +
-                                '/plain <span style="font-style:italic;">&lt;text&gt;</span> = post text without text formatting<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">DICE</span><br/>' +
-                                '/dice = roll a dice<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">TEXT FORMATTING</span><br/>' +
-                                '*italic* = <span style="font-style:italic;">italic</span><br/>' +
-                                '**bold** = <span style="font-weight:bold;">bold</span><br/>' +
-                                '__underline__ = <span style="text-decoration:underline;">underlined</span><br/>' +
-                                '~~strikethrough~~ = <span style="text-decoration:line-through;">strikethrough</span><br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">PING</span><br/>' +
-                                '@club = ping all club members<br/>' +
-                                '@<span style="font-style:italic;">&lt;membername&gt;</span> = ping a club member<br/>' +
-                                'Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">LINKS / IMAGES / GIRL POSES</span><br/>' +
-                                'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">EMOJIS</span><br/>' +
-                                'The following emojis are available: :kek: :pikaponder:<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">COMMANDS</span><br/>' +
-                                '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (EN only)<br/>' +
-                                '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl (EN only)<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">MISCELLANEOUS</span><br/>' +
-                                '- The nickname color is changed. The Club Leader is red and all members are green<br/>' +
-                                '- Online/Offline status added behind the nickname (with auto refresh)<br/>' +
-                                '- ++ added behind the nickname (indicates who is using this script)<br/>' +
-                                '- Chat window remains in its position and size<br/>' +
-                                '- Auto Scrolling fixed. It scrolls only if the scrollbar is at the top or close to the bottom' +
-                                '- Bug Fix for "Idle/Disconnect" and "Disabled until click a menu" added<br/>' +
-                                '- Avatars are a bit bigger<br/>' +
-                                '<br/>' +
-                                '<span style="font-weight:bold;">CREDITS</span><br/>' +
-                                'Script coded by -MM- and tested in Mozilla Firefox (Desktop)' });
-                                break;
+                            //did this user invoke the command !help ?
+                            if(msgIdPlayerId == playerId)
+                            {
+                                htmlNew.push({ isValid: true, value: '!help = show this help (only for you)<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">GIFS</span><br/>' +
+                                              '!moar = post random moar gif<br/>' +
+                                              '!both = post random both gif<br/>' +
+                                              '!heyhey = post heyhey gif<br/>' +
+                                              '!hehe = post hehe gif<br/>' +
+                                              '!gm = post good morning gif<br/>' +
+                                              '!gn = post random good night gif<br/>' +
+                                              '!sad = post sad gif<br/>' +
+                                              '!doit = post doit gif<br/>' +
+                                              '!dejavu = post dejavu gif<br/>' +
+                                              '!wtf = post wtf gif<br/>' +
+                                              '!whale = post whale gif<br/>' +
+                                              '!new = post "new" gif<br/>' +
+                                              '!why = post a random why gif<br/>' +
+                                              '!legit = posts a legit while nodding his head gif<br/>' +
+                                              '!rng = post random rng gif<br/>' +
+                                              '!gz = post random congratulations gif<br/>' +
+                                              '!thx = post random thank you gif<br/>' +
+                                              '!fail = post random fail gif<br/>' +
+                                              //'!spaghetti = posts a humourous spaghetti code gif<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">SPOILER</span><br/>' +
+                                              '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">PLAINTEXT</span><br/>' +
+                                              '/plain <span style="font-style:italic;">&lt;text&gt;</span> = post text without text formatting<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">DICE</span><br/>' +
+                                              '/dice = roll a dice<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">TEXT FORMATTING</span><br/>' +
+                                              '*italic* = <span style="font-style:italic;">italic</span><br/>' +
+                                              '**bold** = <span style="font-weight:bold;">bold</span><br/>' +
+                                              '__underline__ = <span style="text-decoration:underline;">underlined</span><br/>' +
+                                              '~~strikethrough~~ = <span style="text-decoration:line-through;">strikethrough</span><br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">PING</span><br/>' +
+                                              '@club = ping all club members<br/>' +
+                                              '@<span style="font-style:italic;">&lt;membername&gt;</span> = ping a club member<br/>' +
+                                              'Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">LINKS / IMAGES / GIRL POSES</span><br/>' +
+                                              'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">EMOJIS</span><br/>' +
+                                              'The following emojis are available: :kek: :pikaponder:<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">COMMANDS</span><br/>' +
+                                              '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required, EN only)<br/>' +
+                                              '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl (HH++ required, EN only)<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">MISCELLANEOUS</span><br/>' +
+                                              '- The nickname color is changed. The Club Leader is red and all members are blue<br/>' +
+                                              '- Online/Offline status added behind the nickname (with auto refresh)<br/>' +
+                                              '- ++ added behind the nickname (indicates who is using this script)<br/>' +
+                                              '- Chat window remains in its position and size<br/>' +
+                                              '- Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom' +
+                                              '- Bug Fix for "Idle/Disconnect" and "Disabled until click a menu" added<br/>' +
+                                              '- Avatars are a bit bigger<br/>' +
+                                              '<br/>' +
+                                              '<span style="font-weight:bold;">CREDITS</span><br/>' +
+                                              'Script coded by -MM- and tested in Mozilla Firefox (Desktop)' });
+                            }
+                            else
+                            {
+                                //hide other players !help
+                                node.setAttribute('style', 'display:none;');
+                            }
+                            break;
                        default:
                             if(htmlLC.startsWith('!hh ') && htmlLC.length > 4)
                             {
@@ -402,9 +420,9 @@
                         else if(word.startsWith('@') && word.length != 1) //ping
                         {
                             //ignore one comma, one dot, one exclamation mark or one question mark at the end
-                            if(wordLC[wordLC.length - 1] == ',' || wordLC[wordLC.length - 1] == '.' || wordLC[wordLC.length - 1] == '!' || wordLC[wordLC.length - 1] == '?') wordLC = wordLC.substr(0, wordLC.length - 1);
+                            if([',', '.', '!', '?'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
 
-                            //shortform of nicknames for club HPF
+                            //shortform of nicknames for club "Hērōēs Prāvī Forī [EN]"
                             if(msgIdClubId == 1898)
                             {
                                 switch(wordLC)
@@ -417,9 +435,11 @@
                                     case '@yoyo': wordLC = '@yoyowhan'; break;
                                     case '@hvj': wordLC = '@hvjkzv'; break;
                                     case '@mugzy': wordLC = '@mugzylol'; break;
-                                    case '@chuck': wordLC = '@master_maximus'; break;
-                                    case '@maximus': wordLC = '@master_maximus'; break;
+                                    case '@chuck':
+                                    case '@maximus':
                                     case '@master': wordLC = '@master_maximus'; break;
+                                    case '@mars': wordLC = '@marsome'; break;
+                                    case '@ckiller': wordLC = '@cuntkiller'; break;
                                 }
                             }
 
@@ -746,14 +766,14 @@
         let container = document.querySelector('div.send-block-container');
         let input = document.createElement("input");
         input.setAttribute('class', 'club-chat-input-custom');
-        input.setAttribute('disabled', 'disabled');
+        if(document.querySelector('input.club-chat-input').getAttribute('disabled') != null) input.setAttribute('disabled', 'disabled');
         input.addEventListener("keyup", onInputKeyUp_HHCCPlusPLus);
         container.appendChild(input);
 
         let btnSend = document.createElement('button');
         btnSend.setAttribute('class', 'club-chat-send-custom');
-        btnSend.setAttribute('maxlength', '499'); //real maxlength is 500 (499 + special char = 500)
-        btnSend.setAttribute('disabled', 'disabled');
+        btnSend.setAttribute('maxlength', '499'); //real maxlength is 500 (499 + HHCLUBCHATPLUSPLUS_INDICATOR = 500)
+        if(document.querySelector('button.club-chat-send').getAttribute('disabled') != null) btnSend.setAttribute('disabled', 'disabled');
         btnSend.addEventListener("click", send_msg_HHCCPlusPLus);
         container.appendChild(btnSend);
 
@@ -779,7 +799,7 @@
 
         function onInputKeyUp_HHCCPlusPLus(evt)
         {
-            if (evt.key == "Enter") send_msg_HHCCPlusPLus();
+            if (evt.key == 'Enter') send_msg_HHCCPlusPLus();
         }
     }
 
@@ -798,13 +818,16 @@
                 //did it work? if no, we try it in a second again (up to 10 times)
                 if(!ClubChat.hasInit)
                 {
-                    setTimeout(fixClubChat, 1000, attempts);
+                    if(attempts < 10)
+                    {
+                        setTimeout(fixClubChat, 1000, attempts);
+                    }
+                    else
+                    {
+                        //fix didnt work 10 times. wait 60 seconds
+                        setTimeout(fixClubChat, 60000);
+                    }
                 }
-            }
-            else
-            {
-                //fix didnt work 10 times. wait 60 seconds
-                setTimeout(fixClubChat, 60000);
             }
         }
     }
@@ -813,15 +836,16 @@
     {
         //replace scroll function
         ClubChat.updateScrollPosition = function() {
-            //scroll only if the scrollbar is at the top or close to the bottom
-            if (ClubChat.$msgHolder[0].scrollTop == 0 || ClubChat.$msgHolder[0].scrollTop > ClubChat.$msgHolder[0].scrollTopMax - 300)
+
+            //scroll only if the scrollbar is close to the bottom
+            if (ClubChat.$msgHolder[0].scrollTop > getScrollTopMax() - 300)
             {
                 scrollDown();
 
                 //TODO change this temporary fix for larger messages: scroll after 250ms again when the content is ready (e.g. images)
                 setTimeout(function() {
-                    //do not scroll again if the scrollbar is still very close to the bottom
-                    if (ClubChat.$msgHolder[0].scrollTop < ClubChat.$msgHolder[0].scrollTopMax - 8) { //5px difference in firefox
+                    //do not scroll again if the scrollbar is very close to the bottom
+                    if (ClubChat.$msgHolder[0].scrollTop < getScrollTopMax() - 8) { //5px difference in firefox
                         scrollDown();
                     }
                 }, 250);
@@ -829,9 +853,14 @@
         }
     }
 
+    function getScrollTopMax()
+    {
+        return ClubChat.$msgHolder[0].scrollHeight - ClubChat.$msgHolder[0].clientHeight;
+    }
+
     function scrollDown()
     {
-        ClubChat.$msgHolder[0].scrollTop = ClubChat.$msgHolder[0].scrollTopMax;
+        ClubChat.$msgHolder[0].scrollTop = getScrollTopMax();
     }
 
     function getIFrame()
@@ -850,9 +879,9 @@
             //create ping message box
             let cssIFrame = iFrame.createElement('style');
             iFrame.head.appendChild(cssIFrame);
-            cssIFrame.sheet.insertRule('#chat_btn div.ping {display: none;position: absolute; top: 45px;left: 0px;width: 150px;border: 1px solid #ffb827;border-radius: 15px;background-color:rgba(32, 3, 7, 0.7);}');
-            cssIFrame.sheet.insertRule('#chat_btn div.visible {display: block !important;}');
-            cssIFrame.sheet.insertRule('#chat_btn div.ping div {padding: 5px 10px 5px 10px;text-align: center;font-size: 14px;}');
+            cssIFrame.sheet.insertRule('#chat_btn div.ping {display:none;position:absolute;top:' + (isMobile() ? 70 : 45) + 'px;left:0px;width:150px;border:1px solid #ffb827;border-radius:15px;background-color:rgba(32, 3, 7, 0.7);}');
+            cssIFrame.sheet.insertRule('#chat_btn div.visible {display:block !important;}');
+            cssIFrame.sheet.insertRule('#chat_btn div.ping div {padding:5px 10px 5px 10px;text-align:center;font-size:14px;}');
             cssIFrame.sheet.insertRule('header {z-index:21 !important;}'); //TODO doesnt work for pachinko
 
             let chat_btn = iFrame.getElementById('chat_btn');
