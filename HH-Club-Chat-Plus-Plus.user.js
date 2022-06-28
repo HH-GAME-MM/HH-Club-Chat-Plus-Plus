@@ -171,7 +171,7 @@
 
                 //change the nickname color: club leader red, members blue
                 let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
-                nodeSpanMsgSender.setAttribute('style', 'color:' + (msgIdPlayerId == clubLeaderPlayerId ? '#f33c3d' : '#1e81b0'));
+                nodeSpanMsgSender.setAttribute('style', 'color:' + (msgIdPlayerId == clubLeaderPlayerId ? '#f33c3d' : '#7c7ccf'));
 
                 //add the online icon
                 let nodeSpanMsgSender_active_light = document.createElement('span');
@@ -316,7 +316,7 @@
                                 if(girlId != -1)
                                 {
                                     let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
-                                    htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                                    htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.updateScrollPosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                                 }
                             }
                             else if(htmlLC.startsWith('!poses ') && htmlLC.length > 7)
@@ -358,7 +358,7 @@
                                     let htmlPoses = '';
                                     for(let k = 0; k <= girlGrade; k++)
                                     {
-                                        htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5"></a>';
+                                        htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" onload="ClubChat.updateScrollPosition()"></a>';
                                     }
 
                                     let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
@@ -368,7 +368,7 @@
                     }
                     if(imgSrc != null)
                     {
-                        htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '">' });
+                        htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '" onload="ClubChat.updateScrollPosition()">' });
                     }
                 }
                 else if(htmlLC.startsWith('/plain '))
@@ -410,7 +410,7 @@
                                (wordLC.length > 8 && wordLC.lastIndexOf('.webp?v=') == wordLC.length - 9)
                               )
                             {
-                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img src="' + word + '"></a>' });
+                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img src="' + word + '" onload="ClubChat.updateScrollPosition()"></a>' });
                             }
                             else //its a link
                             {
@@ -481,6 +481,7 @@
                             }
                             if(imgSrc != null)
                             {
+                                //Note: we dont need onload="ClubChat.updateScrollPosition()" bc emojis are small
                                 htmlNew.push({ isValid: true, value: '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + imgSrc + '.webp?size=24&quality=lossless" title="' + wordLC + '">' });
                             }
                             else
@@ -841,14 +842,6 @@
             if (ClubChat.$msgHolder[0].scrollTop > getScrollTopMax() - 300)
             {
                 scrollDown();
-
-                //TODO change this temporary fix for larger messages: scroll after 250ms again when the content is ready (e.g. images)
-                setTimeout(function() {
-                    //do not scroll again if the scrollbar is very close to the bottom
-                    if (ClubChat.$msgHolder[0].scrollTop < getScrollTopMax() - 8) { //5px difference in firefox
-                        scrollDown();
-                    }
-                }, 250);
             }
         }
     }
