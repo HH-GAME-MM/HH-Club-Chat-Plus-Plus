@@ -171,7 +171,7 @@
 
                 //change the nickname color: club leader red, members blue
                 let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
-                nodeSpanMsgSender.setAttribute('style', 'color:' + (msgIdPlayerId == clubLeaderPlayerId ? '#f33c3d' : '#7c7ccf'));
+                nodeSpanMsgSender.setAttribute('style', 'color:' + (msgIdPlayerId == clubLeaderPlayerId ? '#f33c3d' : '#8a8ae6'));
 
                 //add the online icon
                 let nodeSpanMsgSender_active_light = document.createElement('span');
