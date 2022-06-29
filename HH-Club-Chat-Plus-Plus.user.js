@@ -710,7 +710,7 @@
     //sync enabled/disabled with the original input and send button
     const observerSendMsg = new MutationObserver((mutations, observer) => {
 
-        let clubChatDisconnected = false;
+        let clubChatDisconnected = -1;
         for(let i = 0; i < mutations.length; i++)
         {
             if(mutations[i].attributeName == 'disabled')
@@ -727,18 +727,23 @@
                 if(mutations[i].target.getAttribute('disabled') == null)
                 {
                     custom.removeAttribute('disabled');
-                    clubChatDisconnected = false;
+                    clubChatDisconnected = 0;
                 }
                 else
                 {
                     custom.setAttribute('disabled', 'disabled');
-                    clubChatDisconnected = true;
+                    clubChatDisconnected = 1;
                 }
             }
         }
 
+        //scroll down in the chat after init (or disconnect), if the scrollbar is at the top
+        if(clubChatDisconnected == 0 && ClubChat.$msgHolder[0].scrollTop == 0)
+        {
+            scrollDown();
+        }
         //if the chat disconnects after init, we try to reconnect
-        if(clubChatDisconnected && ClubChat.hasInit && !ClubChat.isConnected)
+        else if(clubChatDisconnected == 1 && ClubChat.hasInit && !ClubChat.isConnected)
         {
             ClubChat.hasInit = false;
             fixClubChat();
