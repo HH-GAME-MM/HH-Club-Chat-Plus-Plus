@@ -128,8 +128,12 @@
                 let htmlLC = html.toLowerCase();
 
                 //DEBUG
-                /*
-                if(html == 'x')
+                /*if(html == 'the rest of the script is awesome')
+                {
+                    html = 'https://www.google.com';
+                    htmlLC = html.toLowerCase();
+                }
+                else if(html == 'x')
                 {
                     html = '/spoiler :kek: :pikaponder:';
                     htmlLC = html.toLowerCase();
@@ -293,6 +297,7 @@
                                 node.setAttribute('style', 'display:none;');
                             }
                             break;
+
                        default:
                             if(htmlLC.startsWith('!hh ') && htmlLC.length > 4)
                             {
@@ -417,7 +422,7 @@
                             }
                             else //its a link
                             {
-                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank">' + word + '</a>' });
+                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank" onclick="return confirm(\'Are you sure to open this link?\')">' + word + '</a>' });
                             }
                         }
                         else if(word.startsWith('@') && word.length != 1) //ping
