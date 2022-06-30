@@ -14,7 +14,7 @@
 
 (function() {
     //TODO
-    //empty
+    //add :energy: :kiss: :koban: :ymen: ...
 
     //definitions
     'use strict';
