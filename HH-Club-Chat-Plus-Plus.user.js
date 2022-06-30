@@ -191,6 +191,7 @@
 
                 //new html
                 let htmlNew = [];
+                let forceScrollDown = false;
 
                 //is it a command?
                 if(html.startsWith('!'))
@@ -220,6 +221,7 @@
                             //did this user invoke the command !help ?
                             if(msgIdPlayerId == playerId)
                             {
+                                forceScrollDown = true;
                                 htmlNew.push({ isValid: true, value: '!help = show this help (only for you)<br/>' +
                                               '<br/>' +
                                               '<span style="font-weight:bold;">GIFS</span><br/>' +
@@ -250,7 +252,7 @@
                                               '/plain <span style="font-style:italic;">&lt;text&gt;</span> = post text without text formatting<br/>' +
                                               '<br/>' +
                                               '<span style="font-weight:bold;">DICE</span><br/>' +
-                                              '/dice = roll a dice<br/>' +
+                                              '/dice = roll a dice (D6, 1-6)<br/>' +
                                               '<br/>' +
                                               '<span style="font-weight:bold;">TEXT FORMATTING</span><br/>' +
                                               '*italic* = <span style="font-style:italic;">italic</span><br/>' +
@@ -635,7 +637,16 @@
                     let htmlNewStr = '';
                     htmlNew.forEach(e => { htmlNewStr += e.isValid ? e.value : e.invalidValue });
                     node.lastElementChild.innerHTML = htmlNewStr;
-                    ClubChat.updateScrollPosition();
+
+                    //scrolling
+                    if(forceScrollDown)
+                    {
+                        scrollDown();
+                    }
+                    else
+                    {
+                        ClubChat.updateScrollPosition();
+                    }
                 }
             }
         }
