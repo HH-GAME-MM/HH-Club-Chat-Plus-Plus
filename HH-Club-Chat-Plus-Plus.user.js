@@ -14,7 +14,7 @@
 
 (function() {
     //TODO
-    //add :energy: :kiss: :koban: :ymen: ...
+    //empty
 
     //definitions
     'use strict';
@@ -81,6 +81,8 @@
     let pingMessageCount = 0;
     let lastMsgTimestamp = 0;
     let lastMsgTimestampSeen = loadLastMsgTimestampSeen(); //we cant use ClubChat.lastSeenMessage because its not available when we receive the first messages
+    let mapGIFs = getMapGIFs();
+    let mapEmojis = getMapEmojis();
 
     //observe chat messages
     const observerMessages = new MutationObserver((mutations, observer) => {
@@ -128,42 +130,40 @@
                 let htmlLC = html.toLowerCase();
 
                 //DEBUG
-                /*if(html == 'the rest of the script is awesome')
+                /*if(html == 'x')
+                {
+                    html = ':kek: :pikaponder: :am: :koban: :energy: :cordy: :cordys: :datingtoken: :blackgem: :black:';
+                }
+                else if(html == 'x')
                 {
                     html = 'https://www.google.com';
-                    htmlLC = html.toLowerCase();
                 }
                 else if(html == 'x')
                 {
                     html = '/spoiler :kek: :pikaponder:';
-                    htmlLC = html.toLowerCase();
                 }
                 else if(html == 'x')
                 {
                     html = '!hh 797015676';
-                    htmlLC = html.toLowerCase();
                 }
                 else if(html == 'x')
                 {
-                    html = '!moar';
-                    htmlLC = html.toLowerCase();
+                    html = '!gm @mm';
                 }
                 else if(html == 'x')
                 {
                     html = '@MMM @MM test ping 1';
-                    htmlLC = html.toLowerCase();
                 }
                 else if(html == 'x')
                 {
                     html = '*correct';
-                    htmlLC = html.toLowerCase();
                 }
                 else if(html == 'x')
                 {
                     html = '*it al ic* **b o l d** __under line__ ~~strike through~~';
                     //html = '*it al ic **b o l d*** __under line ~~strike through~~__';
-                    htmlLC = html.toLowerCase();
-                }*/
+                }
+                htmlLC = html.toLowerCase();*/
 
                 //update and save last (seen) message timestamp in localstore
                 lastMsgTimestamp = msgIdTimestampMs;
@@ -197,185 +197,144 @@
                 let htmlNew = [];
                 let forceScrollDown = false;
 
-                //is it a command?
-                if(html.startsWith('!'))
+                if(htmlLC == '!help')
                 {
-                    let imgSrc = null;
-                    switch(htmlLC)
+                    //did THIS user invoke the command !help ?
+                    if(msgIdPlayerId == playerId)
                     {
-                        case '!moar': imgSrc = ['dStuVKgo6kwAAAAC/crumch-game-grumps.gif', 'Ft71uoGyHLEAAAAC/cat-moar.gif', 'XnYJ-WoYGyMAAAAC/ln_strike-kylo-ren.gif'][msgIdTimestampMs % 3]; break;
-                        case '!both': imgSrc = ['odyVsZbC-OYAAAAC/why-not-both-why-not.gif', 'ZjqPAZpKWAUAAAAC/the-road-to-el-dorado-both.gif'][msgIdTimestampMs % 2]; break;
-                        case '!heyhey': imgSrc = 'iOG-xvGrcVQAAAAC/hayasaka-kaguya.gif'; break;
-                        case '!hehe': imgSrc = 's6axyeNl4HMAAAAC/fate-ubw.gif'; break;
-                        case '!gm': imgSrc = 'YnY4gUjy8JQAAAAC/fate-stay-night-rin-tohsaka.gif'; break;
-                        case '!gn': imgSrc = ['n6xhcPW4zDcAAAAC/saber-goodnight.gif', 'AeCpJ0xNKKcAAAAC/anime-foodwars.gif'][msgIdTimestampMs % 2]; break;
-                        case '!sad': imgSrc = 'Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif'; break;
-                        case '!doit': imgSrc = 'NZXtIRvja5cAAAAC/doit-shialabeouf.gif'; break;
-                        case '!dejavu': imgSrc = 'CqoEATCG-1wAAAAC/déjàvu-drift.gif'; break;
-                        case '!wtf': imgSrc = 'https://i.ytimg.com/vi/XjVKHZ_F4zo/maxresdefault.jpg'; break;
-                        case '!whale': imgSrc = 'https://cdn.discordapp.com/attachments/344734413600587776/463933711193473044/Whale.png'; break;
-                        case '!new': imgSrc = 'C52JpqHPWcYAAAAC/friends-phoebe.gif'; break;
-                        case '!why': imgSrc = ['o2CYGlMLADUAAAAC/barack-obama-why.gif', 'OPbFPRevcv4AAAAC/ajholmes-why.gif', 'R_N2FwCFBbcAAAAC/confused-white-persian-guardian.gif', '1Vh0XBrPM7MAAAAC/why-whats-the-reason.gif', 'y0Up9A_bTPwAAAAd/nph-why.gif', 'KjJTBQ9lftsAAAAC/why-huh.gif'][msgIdTimestampMs % 6]; break;
-                        case '!legit': imgSrc = 'JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif'; break;
-                        case '!rng': imgSrc = ['https://imgs.xkcd.com/comics/random_number.png', 'c6drTKdM9ZEAAAAS/rng-excalibur.gif', 'mACda5RzcAcAAAAd/destiny.gif'][msgIdTimestampMs % 3]; break;
-                        case '!gz': imgSrc = ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif'][msgIdTimestampMs % 2]; break;
-                        case '!thx': imgSrc = ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif'][msgIdTimestampMs % 2]; break;
-                        case '!fail': imgSrc = ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif'][msgIdTimestampMs % 2]; break;
-                        case '!help':
-                            //did this user invoke the command !help ?
-                            if(msgIdPlayerId == playerId)
-                            {
-                                forceScrollDown = true;
-                                htmlNew.push({ isValid: true, value: '!help = show this help (only for you)<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">GIFS</span><br/>' +
-                                              '!moar = post random moar gif<br/>' +
-                                              '!both = post random both gif<br/>' +
-                                              '!heyhey = post heyhey gif<br/>' +
-                                              '!hehe = post hehe gif<br/>' +
-                                              '!gm = post good morning gif<br/>' +
-                                              '!gn = post random good night gif<br/>' +
-                                              '!sad = post sad gif<br/>' +
-                                              '!doit = post doit gif<br/>' +
-                                              '!dejavu = post dejavu gif<br/>' +
-                                              '!wtf = post wtf gif<br/>' +
-                                              '!whale = post whale gif<br/>' +
-                                              '!new = post "new" gif<br/>' +
-                                              '!why = post a random why gif<br/>' +
-                                              '!legit = posts a legit while nodding his head gif<br/>' +
-                                              '!rng = post random rng gif<br/>' +
-                                              '!gz = post random congratulations gif<br/>' +
-                                              '!thx = post random thank you gif<br/>' +
-                                              '!fail = post random fail gif<br/>' +
-                                              //'!spaghetti = posts a humourous spaghetti code gif<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">SPOILER</span><br/>' +
-                                              '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">PLAINTEXT</span><br/>' +
-                                              '/plain <span style="font-style:italic;">&lt;text&gt;</span> = post text without text formatting<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">DICE</span><br/>' +
-                                              '/dice = roll a dice (D6, 1-6)<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">TEXT FORMATTING</span><br/>' +
-                                              '*italic* = <span style="font-style:italic;">italic</span><br/>' +
-                                              '**bold** = <span style="font-weight:bold;">bold</span><br/>' +
-                                              '__underline__ = <span style="text-decoration:underline;">underlined</span><br/>' +
-                                              '~~strikethrough~~ = <span style="text-decoration:line-through;">strikethrough</span><br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">PING</span><br/>' +
-                                              '@club = ping all club members<br/>' +
-                                              '@<span style="font-style:italic;">&lt;membername&gt;</span> = ping a club member<br/>' +
-                                              'Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">LINKS / IMAGES / GIRL POSES</span><br/>' +
-                                              'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">EMOJIS</span><br/>' +
-                                              'The following emojis are available: :kek: :pikaponder:<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">COMMANDS</span><br/>' +
-                                              '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required, EN only)<br/>' +
-                                              '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl (HH++ required, EN only)<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">MISCELLANEOUS</span><br/>' +
-                                              '- The nickname color is changed. The Club Leader is red and all members are blue<br/>' +
-                                              '- Online/Offline status added behind the nickname (with auto refresh)<br/>' +
-                                              '- ++ added behind the nickname (indicates who is using this script)<br/>' +
-                                              '- Chat window remains in its position and size<br/>' +
-                                              '- Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom' +
-                                              '- Bug Fix for "Idle/Disconnect" and "Disabled until click a menu" added<br/>' +
-                                              '- Avatars are a bit bigger<br/>' +
-                                              '<br/>' +
-                                              '<span style="font-weight:bold;">CREDITS</span><br/>' +
-                                              'Script coded by -MM- and tested in Mozilla Firefox (Desktop)' });
-                            }
-                            else
-                            {
-                                //hide other players !help
-                                node.setAttribute('style', 'display:none;');
-                            }
-                            break;
-
-                       default:
-                            if(htmlLC.startsWith('!hh ') && htmlLC.length > 4)
-                            {
-                                let param1 = html.substr(4).trim();
-                                let girlId = -1;
-                                let girlName = null;
-
-                                //is it a girl id or a girl name?
-                                let girlDictionary = getHHPlusPlusGirlDictionary();
-                                if(strIsInt(param1))
-                                {
-                                    girlId = parseInt(param1);
-                                    girlName = getGirlNameById(girlId, girlDictionary);
-                                    if(girlName == null) girlName = 'Unknown Girl';
-                                }
-                                else
-                                {
-                                    girlId = getGirlIdByName(param1, girlDictionary);
-                                    if(girlId != -1) girlName = getGirlNameById(girlId, girlDictionary); //get the name nicely written
-                                }
-
-                                //girl found?
-                                if(girlId != -1)
-                                {
-                                    let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
-                                    htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.updateScrollPosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
-                                }
-                            }
-                            else if(htmlLC.startsWith('!poses ') && htmlLC.length > 7)
-                            {
-                                let param1 = html.substr(7).trim();
-                                let girlId = -1;
-                                let girlName = null;
-                                let girlGrade = 6;
-
-                                //is it a girl id or a girl name?
-                                let girlDictionary = getHHPlusPlusGirlDictionary();
-                                if(strIsInt(param1))
-                                {
-                                    girlId = parseInt(param1);
-                                    girlName = getGirlNameById(girlId, girlDictionary);
-                                    if(girlName == null)
-                                    {
-                                        girlName = 'Unknown Girl';
-                                    }
-                                    else
-                                    {
-                                        girlGrade = getGirlGradeById(girlId, girlDictionary);
-                                    }
-                                }
-                                else
-                                {
-                                    girlId = getGirlIdByName(param1, girlDictionary);
-                                    if(girlId != -1)
-                                    {
-                                        girlName = getGirlNameById(girlId, girlDictionary); //get the name nicely written
-                                        girlGrade = getGirlGradeById(girlId, girlDictionary);
-                                    }
-                                }
-
-                                //girl found?
-                                if(girlId != -1)
-                                {
-                                    //build girl poses
-                                    let htmlPoses = '';
-                                    for(let k = 0; k <= girlGrade; k++)
-                                    {
-                                        htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.updateScrollPosition()"></a>';
-                                    }
-
-                                    let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
-                                    htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : '<span>Girl ID: ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
-                                }
-                            }
+                        forceScrollDown = true;
+                        let gifs = '';
+                        mapGIFs.forEach((value, key) => { if(value.length == 1) gifs += key + ' '; });
+                        let gifsRandom = '';
+                        mapGIFs.forEach((value, key) => { if(value.length != 1) gifsRandom += key + ' '; });
+                        let emojis = '';
+                        mapEmojis.forEach((value, key) => { emojis += key + ' '; });
+                        htmlNew.push({ isValid: true, value: '!help = show this help (hidden for other script users)<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">PING</span><br/>' +
+                                      '@club = ping all club members<br/>' +
+                                      '@<span style="font-style:italic;">&lt;membername&gt;</span> = ping a club member<br/>' +
+                                      'Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">SPOILER</span><br/>' +
+                                      '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">LINKS / IMAGES / GIRL POSES</span><br/>' +
+                                      'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">COMMANDS</span><br/>' +
+                                      '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required, EN only)<br/>' +
+                                      '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl (HH++ required, EN only)<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">DICE</span><br/>' +
+                                      '/dice = roll a dice (D6, 1-6)<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">TEXT FORMATTING</span><br/>' +
+                                      '*italic* = <span style="font-style:italic;">italic</span><br/>' +
+                                      '**bold** = <span style="font-weight:bold;">bold</span><br/>' +
+                                      '__underline__ = <span style="text-decoration:underline;">underlined</span><br/>' +
+                                      '~~strikethrough~~ = <span style="text-decoration:line-through;">strikethrough</span><br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">PLAINTEXT</span><br/>' +
+                                      '/plain <span style="font-style:italic;">&lt;text&gt;</span> = post text without text formatting<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">GIFS</span><br/>' +
+                                      'The following gifs are available: ' + gifs + '<br/>' +
+                                      'The following random gifs are available: ' + gifsRandom + '<br/>' +
+                                      'Note: Only one GIF allowed at the start of your post. It is possible to add more things (e.g. ping)<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">EMOJIS</span><br/>' +
+                                      'The following emojis are available: ' + emojis + '<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">MISCELLANEOUS</span><br/>' +
+                                      '- The nickname color is changed. The Club Leader is red and all members are blue<br/>' +
+                                      '- Online/Offline status added behind the nickname (with auto refresh)<br/>' +
+                                      '- ++ added behind the nickname (indicates who is using this script)<br/>' +
+                                      '- Chat window remains in its position and size<br/>' +
+                                      '- Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom<br/>' +
+                                      '- Bug Fix for "Idle/Disconnect" and "Disabled until click a menu" added<br/>' +
+                                      '- Avatars are a bit bigger<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">CREDITS</span><br/>' +
+                                      'Script coded by -MM- and tested in Mozilla Firefox (Desktop), Google Chrome (Desktop & Android)' });
                     }
-                    if(imgSrc != null)
+                    else
                     {
-                        htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '" onload="ClubChat.updateScrollPosition()">' });
+                        //hide other players !help
+                        node.setAttribute('style', 'display:none;');
+                    }
+                }
+                else if(htmlLC.startsWith('!hh ') && htmlLC.length > 4)
+                {
+                    let param1 = html.substr(4).trim();
+                    let girlId = -1;
+                    let girlName = null;
+
+                    //is it a girl id or a girl name?
+                    let girlDictionary = getHHPlusPlusGirlDictionary();
+                    if(strIsInt(param1))
+                    {
+                        girlId = parseInt(param1);
+                        girlName = getGirlNameById(girlId, girlDictionary);
+                        if(girlName == null) girlName = 'Unknown Girl';
+                    }
+                    else
+                    {
+                        girlId = getGirlIdByName(param1, girlDictionary);
+                        if(girlId != -1) girlName = getGirlNameById(girlId, girlDictionary); //get the name nicely written
+                    }
+
+                    //girl found?
+                    if(girlId != -1)
+                    {
+                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
+                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.updateScrollPosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                    }
+                }
+                else if(htmlLC.startsWith('!poses ') && htmlLC.length > 7)
+                {
+                    let param1 = html.substr(7).trim();
+                    let girlId = -1;
+                    let girlName = null;
+                    let girlGrade = 6;
+
+                    //is it a girl id or a girl name?
+                    let girlDictionary = getHHPlusPlusGirlDictionary();
+                    if(strIsInt(param1))
+                    {
+                        girlId = parseInt(param1);
+                        girlName = getGirlNameById(girlId, girlDictionary);
+                        if(girlName == null)
+                        {
+                            girlName = 'Unknown Girl';
+                        }
+                        else
+                        {
+                            girlGrade = getGirlGradeById(girlId, girlDictionary);
+                        }
+                    }
+                    else
+                    {
+                        girlId = getGirlIdByName(param1, girlDictionary);
+                        if(girlId != -1)
+                        {
+                            girlName = getGirlNameById(girlId, girlDictionary); //get the name nicely written
+                            girlGrade = getGirlGradeById(girlId, girlDictionary);
+                        }
+                    }
+
+                    //girl found?
+                    if(girlId != -1)
+                    {
+                        //build girl poses
+                        let htmlPoses = '';
+                        for(let k = 0; k <= girlGrade; k++)
+                        {
+                            htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.updateScrollPosition()"></a>';
+                        }
+
+                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
+                        htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : '<span>Girl ID: ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
                 else if(htmlLC.startsWith('/plain '))
@@ -410,8 +369,14 @@
                         let word = htmlSplits[k];
                         let wordLC = word.toLowerCase();
 
-                        //links / images
-                        if(wordLC.startsWith('https://'))
+                        //gifs (only allowed as first "word" to allow putting more things after it, e.g. ping)
+                        if(k == 0 && wordLC.startsWith('!') && mapGIFs.has(wordLC))
+                        {
+                            let imgSrcArray = mapGIFs.get(wordLC);
+                            let imgSrc = imgSrcArray[msgIdTimestampMs % imgSrcArray.length];
+                            htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '" onload="ClubChat.updateScrollPosition()">' });
+                        }
+                        else if(wordLC.startsWith('https://')) //links / images
                         {
                             //is it an image?
                             if( wordLC.endsWith('.gif') || wordLC.endsWith('.jpg') || wordLC.endsWith('.jpeg') || wordLC.endsWith('.png') || wordLC.endsWith('.webp') ||
@@ -422,7 +387,7 @@
                             }
                             else //its a link
                             {
-                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank" onclick="return confirm(\'Are you sure to open this link?\')">' + word + '</a>' });
+                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank" onclick="return confirm(\'Do you really want to open this link?\')">' + word + '</a>' });
                             }
                         }
                         else if(word.startsWith('@') && word.length != 1) //ping
@@ -482,23 +447,10 @@
                                 htmlNew.push({ isValid: true, value: '<span class="ping-invalid" title="Invalid Ping">' + word + '</span>' });
                             }
                         }
-                        else if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':')) //emojis
+                        else if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC)) //emojis
                         {
-                            let imgSrc = null;
-                            switch(wordLC)
-                            {
-                                case ':kek:': imgSrc = '588599124312457217'; break;
-                                case ':pikaponder:': imgSrc = '862672993720336394'; break;
-                            }
-                            if(imgSrc != null)
-                            {
-                                //Note: we dont need onload="ClubChat.updateScrollPosition()" bc emojis are small
-                                htmlNew.push({ isValid: true, value: '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + imgSrc + '.webp?size=24&quality=lossless" title="' + wordLC + '">' });
-                            }
-                            else
-                            {
-                                htmlNew.push({ isValid: true, value: word });
-                            }
+                            //Note: we dont need onload="ClubChat.updateScrollPosition()" bc emojis are small
+                            htmlNew.push({ isValid: true, value: '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=24&quality=lossless" title="' + wordLC + '">' });
                         }
                         else
                         {
@@ -1013,5 +965,96 @@
     {
         if (typeof s != 'string') return false
         return !isNaN(s) && !isNaN(parseInt(s));
+    }
+
+    function getMapGIFs()
+    {
+        return new Map([
+            ['!moar', ['dStuVKgo6kwAAAAC/crumch-game-grumps.gif', 'Ft71uoGyHLEAAAAC/cat-moar.gif', 'XnYJ-WoYGyMAAAAC/ln_strike-kylo-ren.gif']],
+            ['!both', ['odyVsZbC-OYAAAAC/why-not-both-why-not.gif', 'ZjqPAZpKWAUAAAAC/the-road-to-el-dorado-both.gif']],
+            ['!heyhey', ['iOG-xvGrcVQAAAAC/hayasaka-kaguya.gif']],
+            ['!hehe', ['s6axyeNl4HMAAAAC/fate-ubw.gif']],
+            ['!gm', ['YnY4gUjy8JQAAAAC/fate-stay-night-rin-tohsaka.gif']],
+            ['!gn', ['n6xhcPW4zDcAAAAC/saber-goodnight.gif', 'AeCpJ0xNKKcAAAAC/anime-foodwars.gif']],
+            ['!sad', ['Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif']],
+            ['!doit', ['NZXtIRvja5cAAAAC/doit-shialabeouf.gif']],
+            ['!dejavu', ['CqoEATCG-1wAAAAC/déjàvu-drift.gif']],
+            ['!wtf', ['https://i.ytimg.com/vi/XjVKHZ_F4zo/maxresdefault.jpg']],
+            ['!whale', ['https://cdn.discordapp.com/attachments/344734413600587776/463933711193473044/Whale.png']],
+            ['!new', ['C52JpqHPWcYAAAAC/friends-phoebe.gif']],
+            ['!why', ['o2CYGlMLADUAAAAC/barack-obama-why.gif', 'OPbFPRevcv4AAAAC/ajholmes-why.gif', '1Vh0XBrPM7MAAAAC/why-whats-the-reason.gif', 'y0Up9A_bTPwAAAAd/nph-why.gif', 'KjJTBQ9lftsAAAAC/why-huh.gif']],
+            ['!legit', ['JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif']],
+            ['!rng', ['https://imgs.xkcd.com/comics/random_number.png', 'c6drTKdM9ZEAAAAS/rng-excalibur.gif', 'mACda5RzcAcAAAAd/destiny.gif']],
+            ['!gz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
+            ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif']],
+            ['!fail', ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif']],
+        ]);
+    }
+
+    function getMapEmojis()
+    {
+        return new Map([
+            [':kek:', '588599124312457217'],
+            [':pikaponder:', '862672993720336394'],
+
+            [':energy:', '864645021561782332'],
+            [':combativity:', '848991758301265990'],
+            [':fisting:', '848991758301265990'],
+            [':kiss:', '860659467876302889'],
+            [':league:', '860659427950460930'],
+            [':worship:', '902508422988169226'],
+            [':ticket:', '596905784160419876'],
+
+            [':ymen:', '294927828972208128'],
+            [':money:', '294927828972208128'],
+            [':koban:', '294927828682801153'],
+
+            [':flowers:', '860867149009780757'],
+            [':spellbook:', '923655294381359104'],
+            [':book:', '923655294381359104'],
+
+            [':kk:', '915301903561265194'],
+            [':kinkoid:', '915301903561265194'],
+
+            [':sandalwood:', '917383948408086529'],
+            [':perfume:', '917383948408086529'],
+            [':memories:', '917383948554862632'],
+            [':atm:', '917383948554862632'],
+            [':ginseng:', '917383948387115018'],
+            [':cordy:', '917383948512919552'],
+            [':cordys:', '917383948512919552'],
+            [':cordyceps:', '917383948512919552'],
+            [':am:', '917383948496154675'],
+            [':allmastery:', '917383948496154675'],
+
+            [':ep:', '677981592706088982'],
+            [':ep10:', '904111725299765268'],
+            [':gp10:', '938587821755744316'],
+            [':magazine:', '923655467140542544'],
+
+            [':dating:', '849076003882926100'],
+            [':datingtoken:', '849076003882926100'],
+
+            [':blackgem:', '910701075361845288'],
+            [':redgem:', '910701075420557412'],
+            [':greengem:', '910701075550576720'],
+            [':orangegem:', '910701075181469737'],
+            [':yellowgem:', '910701075852591144'],
+            [':bluegem:', '910701075345068034'],
+            [':whitegem:', '910701075672232016'],
+            [':purplegem:', '910701077568040990'],
+            [':allgem:', '918072869043458048'],
+
+            [':rainbow:', '901254800690278491'],
+            [':balanced:', '901254800690278491'],
+            [':black:', '901255133004976149'],
+            [':red:', '901254872429637682'],
+            [':green:', '901254909276602418'],
+            [':orange:', '901254970542788628'],
+            [':yellow:', '901255043871830016'],
+            [':blue:', '901255091665895424'],
+            [':white:', '901255190433370192'],
+            [':purple:', '901255233773137991'],
+        ]);
     }
 })();
