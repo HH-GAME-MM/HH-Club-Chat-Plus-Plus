@@ -7,7 +7,8 @@ Upgrade Club Chat with various features
 **PING**
 - @club = ping all club members
 - @&lt;membername&gt; = ping a club member
-- Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
+- Note 1: Club members will receive a notification outside of the chat, when the chat is not open
+- Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
 
 **SPOILER**
 - /spoiler &lt;text / images&gt; = hide text and images
@@ -37,7 +38,7 @@ Upgrade Club Chat with various features
 - Note: Only one GIF allowed at the start of your post. It is possible to add more things (e.g. ping)
 
 **EMOJIS**
-- The following emojis are available: :kek: :pikaponder: :energy: :combativity: :fisting: :kiss: :league: :worship: :ticket: :ymen: :money: :koban: :flowers: :spellbook: :book: :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm: :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow: :balanced: :black: :red: :green: :orange: :yellow: :blue: :white: :purple:
+- The following emojis are available: :kek: :pikaponder: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
 
 **MISCELLANEOUS**
 - The nickname color is changed. The Club Leader is red and all members are blue
