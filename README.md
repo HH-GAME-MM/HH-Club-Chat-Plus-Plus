@@ -6,30 +6,30 @@ Upgrade Club Chat with various features
 
 **PING**
 - @club = ping all club members
-- @<membername> = ping a club member
-Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
+- @&lt;membername&gt; = ping a club member
+- Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
 
 **SPOILER**
-- /spoiler <text / images> = hide text and images
+- /spoiler &lt;text / images&gt; = hide text and images
 
 **LINKS / IMAGES / GIRL POSES**
 - Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.
 
 **COMMANDS**
-- !hh <girl name / girl id> = post a wiki link for a girl (HH++ required, EN only)
-- !poses <girl name / girl id> = post a wiki link and all poses of a girl (HH++ required, EN only)
+- !hh &lt;girl name / girl id&gt; = post a wiki link for a girl (HH++ required, EN only)
+- !poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl (HH++ required, EN only)
 
 **DICE**
 - /dice = roll a dice (D6, 1-6)
 
 **TEXT FORMATTING**
-- *italic* = italic
-- **bold** = bold
-- __underline__ = underlined
-- ~~strikethrough~~ = strikethrough
+- &#42;italic&#42; = italic
+- &#42;&#42;bold&#42;&#42; = bold
+- &#95;&#95;underline&#95;&#95; = underlined
+- &#126;&#126;strikethrough&#126;&#126; = strikethrough
 
 **PLAINTEXT**
-- /plain <text> = post text without text formatting
+- /plain &lt;text&gt; = post text without text formatting
 
 **GIFS**
 - The following gifs are available: !heyhey !hehe !gm !sad !doit !dejavu !wtf !whale !new !legit
