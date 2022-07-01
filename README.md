@@ -1,5 +1,5 @@
 # HH Club Chat++
-Upgrade Club Chat with various features and Bug Fixes
+Upgrade Club Chat with various features and bug fixes
 
 ## Installation instructions:
 1) Install TamperMonkey browser extension (or your userscript extension of choice e.g. Greasemonkey)
