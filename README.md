@@ -24,10 +24,10 @@ Upgrade Club Chat with various features
 - /dice = roll a dice (D6, 1-6)
 
 **TEXT FORMATTING**
-- &#42;italic&#42; = italic
-- &#42;&#42;bold&#42;&#42; = bold
-- &#95;&#95;underline&#95;&#95; = underlined
-- &#126;&#126;strikethrough&#126;&#126; = strikethrough
+- &#42;italic&#42; = *italic*
+- &#42;&#42;bold&#42;&#42; = **bold**
+- &#95;&#95;underline&#95;&#95; = __underlined__
+- &#126;&#126;strikethrough&#126;&#126; = ~~strikethrough~~
 
 **PLAINTEXT**
 - /plain &lt;text&gt; = post text without text formatting
