@@ -214,7 +214,8 @@
                                       '<span style="font-weight:bold;">PING</span><br/>' +
                                       '@club = ping all club members<br/>' +
                                       '@<span style="font-style:italic;">&lt;membername&gt;</span> = ping a club member<br/>' +
-                                      'Note: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
+                                      'Note 1: Club members will receive a notification outside of the chat, when the chat is not open<br/>' +
+                                      'Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">SPOILER</span><br/>' +
                                       '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images<br/>' +
@@ -252,7 +253,7 @@
                                       '- ++ added behind the nickname (indicates who is using this script)<br/>' +
                                       '- Chat window remains in its position and size<br/>' +
                                       '- Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom<br/>' +
-                                      '- Bug Fix for "Idle/Disconnect" and "Disabled until click a menu" added<br/>' +
+                                      '- Bug Fix for "Idle/Disconnect" and "Chat disabled until click a menu" added<br/>' +
                                       '- Avatars are a bit bigger<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">CREDITS</span><br/>' +
