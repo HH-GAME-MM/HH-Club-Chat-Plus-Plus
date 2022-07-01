@@ -1,7 +1,8 @@
 # HH Club Chat++
 Upgrade Club Chat with various features
 
-!help = show this help (hidden for other script users)
+**HELP**
+- !help = show this help (hidden for other script users)
 
 **PING**
 - @club = ping all club members
