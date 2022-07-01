@@ -45,7 +45,7 @@ Upgrade Club Chat with various features
 - ++ added behind the nickname (indicates who is using this script)
 - Chat window remains in its position and size
 - Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom
-- Bug Fix for "Idle/Disconnect" and "Disabled until click a menu" added
+- Bug Fix for "Idle/Disconnect" and "Chat disabled until click a menu" added
 - Avatars are a bit bigger
 
 **CREDITS**
