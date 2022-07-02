@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HH Club Chat++
 // @version      0.1
-// @description  Upgrade Club Chat with various features
+// @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
 // @run-at       document-end
@@ -9,7 +9,7 @@
 // @updateURL    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
 // @downloadURL  https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=hentaiheroes.com
-// @grant        none
+// @grant        GM_info
 // ==/UserScript==
 
 (function() {
@@ -18,9 +18,9 @@
 
     //definitions
     'use strict';
-    /*global ClubChat*/
+    /*global ClubChat,club_tabs*/
 
-    console.log('HH Club Chat++ Script Start');
+    console.log('HH Club Chat++ Script v' + GM_info.script.version);
 
     //create new input and send button
     createNewInputAndSendButton();
@@ -253,7 +253,7 @@
                                       '- ++ added behind the nickname (indicates who is using this script)<br/>' +
                                       '- Chat window remains in its position and size<br/>' +
                                       '- Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom<br/>' +
-                                      '- Bug Fix for "Idle/Disconnect" and "Chat disabled until click a menu" added<br/>' +
+                                      '- Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Firefox: Member list outside the window"<br/>' +
                                       '- Avatars are a bit bigger<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">CREDITS</span><br/>' +
@@ -289,7 +289,7 @@
                     if(girlId != -1)
                     {
                         let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
-                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.updateScrollPosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
                 else if(htmlLC.startsWith('!poses ') && htmlLC.length > 7)
@@ -332,7 +332,7 @@
                         if(girlGrade < 1) girlGrade = 6; //use 6 girl poses if we have the girl but no girl grade
                         for(let k = 0; k <= girlGrade; k++)
                         {
-                            htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.updateScrollPosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
+                            htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
                         }
 
                         let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
@@ -376,7 +376,7 @@
                         {
                             let imgSrcArray = mapGIFs.get(wordLC);
                             let imgSrc = imgSrcArray[msgIdTimestampMs % imgSrcArray.length];
-                            htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '" onload="ClubChat.updateScrollPosition()">' });
+                            htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' });
                         }
                         else if(wordLC.startsWith('https://')) //links / images
                         {
@@ -385,7 +385,7 @@
                                (wordLC.length > 8 && wordLC.lastIndexOf('.webp?v=') == wordLC.length - 9)
                               )
                             {
-                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img src="' + word + '" onload="ClubChat.updateScrollPosition()"></a>' });
+                                htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img src="' + word + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()"></a>' });
                             }
                             else //its a link
                             {
@@ -451,7 +451,7 @@
                         }
                         else if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC)) //emojis
                         {
-                            //Note: we dont need onload="ClubChat.updateScrollPosition()" bc emojis are small
+                            //Note: we dont need onload="ClubChat.resizeNiceScrollAndUpdatePosition()" bc emojis are small
                             htmlNew.push({ isValid: true, value: '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=24&quality=lossless" title="' + wordLC + '">' });
                         }
                         else
@@ -598,14 +598,8 @@
                     node.lastElementChild.innerHTML = htmlNewStr;
 
                     //scrolling
-                    if(forceScrollDown)
-                    {
-                        scrollDown();
-                    }
-                    else
-                    {
-                        ClubChat.updateScrollPosition();
-                    }
+                    ClubChat.resizeNiceScrollAndUpdatePosition();
+                    if(forceScrollDown) scrollDown();
                 }
             }
         }
@@ -801,6 +795,13 @@
                 {
                     //update club id to prevent wrong call to unPinMsg()
                     ClubChat.club_id = ClubChat.chatVars.CLUB_INFO.id_club;
+
+                    //bug fix for Mozilla Firefox: The member list is outside the window at the first click
+                    if(typeof ClubChat.hasFirstInit == 'undefined')
+                    {
+                        fixTabs_MozillaFirefox();
+                        ClubChat.hasFirstInit = true;
+                    }
                 }
                 else //if no, we try it in a second again (up to 10 times)
                 {
@@ -818,6 +819,13 @@
         }
     }
 
+    function fixTabs_MozillaFirefox()
+    {
+        //bug fix for Mozilla Firefox: The member list is outside the window at the first click
+        club_tabs.switchTab("chat_members_list", "chat-tabs", "chat-container");
+        club_tabs.switchTab("chat_block", "chat-tabs", "chat-container");
+    }
+
     function fixScrolling()
     {
         //replace scroll function
@@ -829,16 +837,23 @@
                 scrollDown();
             }
         }
-    }
 
-    function getScrollTopMax()
-    {
-        return ClubChat.$msgHolder[0].scrollHeight - ClubChat.$msgHolder[0].clientHeight;
+        //add new scroll function
+        ClubChat.resizeNiceScrollAndUpdatePosition = function() {
+
+            ClubChat.$msgHolder.getNiceScroll().resize();
+            ClubChat.updateScrollPosition();
+        }
     }
 
     function scrollDown()
     {
         ClubChat.$msgHolder[0].scrollTop = getScrollTopMax();
+    }
+
+    function getScrollTopMax()
+    {
+        return ClubChat.$msgHolder[0].scrollHeight - ClubChat.$msgHolder[0].clientHeight;
     }
 
     function getIFrame()
