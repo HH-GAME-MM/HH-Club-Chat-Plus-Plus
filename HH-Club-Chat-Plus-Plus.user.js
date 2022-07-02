@@ -778,6 +778,37 @@
         }
     }
 
+    function checkPushVersion()
+    {
+        //check push version
+        const img = new Image();
+        img.src = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/pushVersion.gif?' + Date.now();
+        img.onload = function() {
+
+            //bypass Cross-Origin Resource Sharing (CORS) policy: use a dummy image as version indicator
+            let versionPushMajor = img.height - 1;
+            let versionPushMinor = img.width - 1;
+            let version = GM_info.script.version.split('.');
+            if(parseInt(version[0]) < versionPushMajor || (parseInt(version[0]) == versionPushMajor && parseInt(version[1]) < versionPushMinor))
+            {
+                let container = document.querySelector('#resize-chat-box div.chat-tabs.ui-draggable-handle');
+                let a = document.createElement('a');
+                a.setAttribute('style', 'color:red');
+                a.setAttribute('href', getDownloadURL());
+                a.setAttribute('target', '_blank');
+                a.innerHTML = 'HH Club Chat++ is outdated. Update now!';
+                container.appendChild(a);
+            }
+
+            function getDownloadURL()
+            {
+                let downloadMatch = GM_info.scriptMetaStr.match(/\n\s*\/\/\s+@downloadURL\s+(.+?)\s*\n/i);
+                if (downloadMatch && downloadMatch.length > 0) return downloadMatch[1];
+                return null;
+            }
+        }
+    }
+
     function fixClubChat(attempts = 0)
     {
         if(!ClubChat.hasInit)
@@ -789,32 +820,41 @@
                 {
                     ClubChat.init();
                 }
+            }
+            else
+            {
+                return;
+            }
+        }
 
-                //did it work?
-                if(ClubChat.hasInit)
-                {
-                    //update club id to prevent wrong call to unPinMsg()
-                    ClubChat.club_id = ClubChat.chatVars.CLUB_INFO.id_club;
+        //did it work?
+        if(ClubChat.hasInit)
+        {
+            //update club id to prevent wrong call to unPinMsg()
+            ClubChat.club_id = ClubChat.chatVars.CLUB_INFO.id_club;
 
-                    //bug fix for Mozilla Firefox: The member list is outside the window at the first click
-                    if(typeof ClubChat.hasFirstInit == 'undefined')
-                    {
-                        fixTabs_MozillaFirefox();
-                        ClubChat.hasFirstInit = true;
-                    }
-                }
-                else //if no, we try it in a second again (up to 10 times)
-                {
-                    if(attempts < 10)
-                    {
-                        setTimeout(fixClubChat, 1000, attempts);
-                    }
-                    else
-                    {
-                        //fix didnt work 10 times. wait 60 seconds
-                        setTimeout(fixClubChat, 60000);
-                    }
-                }
+            //run this code once when the chat is ready
+            if(typeof ClubChat.hasFirstInit == 'undefined')
+            {
+                ClubChat.hasFirstInit = true;
+
+                //check push version
+                checkPushVersion();
+
+                //bug fix for Mozilla Firefox: The member list is outside the window at the first click
+                fixTabs_MozillaFirefox();
+            }
+        }
+        else //if no, we try it in a second again (up to 10 times)
+        {
+            if(attempts < 10)
+            {
+                setTimeout(fixClubChat, 1000, attempts);
+            }
+            else
+            {
+                //fix didnt work 10 times. wait 60 seconds
+                setTimeout(fixClubChat, 60000);
             }
         }
     }
