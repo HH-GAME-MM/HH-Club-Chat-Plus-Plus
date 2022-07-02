@@ -791,19 +791,19 @@
             let version = GM_info.script.version.split('.');
             if(parseInt(version[0]) < versionPushMajor || (parseInt(version[0]) == versionPushMajor && parseInt(version[1]) < versionPushMinor))
             {
-                let container = document.querySelector('#resize-chat-box div.chat-tabs.ui-draggable-handle');
+                let div = document.querySelector('#resize-chat-box div.chat-tabs.ui-draggable-handle');
                 let a = document.createElement('a');
                 a.setAttribute('style', 'color:red');
                 a.setAttribute('href', getDownloadURL());
                 a.setAttribute('target', '_blank');
                 a.innerHTML = 'HH Club Chat++ is outdated. Update now!';
-                container.appendChild(a);
+                div.appendChild(a);
             }
 
             function getDownloadURL()
             {
                 let downloadMatch = GM_info.scriptMetaStr.match(/\n\s*\/\/\s+@downloadURL\s+(.+?)\s*\n/i);
-                if (downloadMatch && downloadMatch.length > 0) return downloadMatch[1];
+                if (downloadMatch && downloadMatch.length > 1) return downloadMatch[1];
                 return null;
             }
         }
