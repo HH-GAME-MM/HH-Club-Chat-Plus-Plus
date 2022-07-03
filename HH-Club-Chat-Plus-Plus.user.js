@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.1
+// @version      0.2
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -297,7 +297,7 @@
                     let param1 = html.substr(7).trim();
                     let girlId = -1;
                     let girlName = null;
-                    let girlGrade = 0;
+                    let girlGrade = -1;
 
                     //is it a girl id or a girl name?
                     let girlDictionary = getHHPlusPlusGirlDictionary();
@@ -329,7 +329,7 @@
                     {
                         //build girl poses
                         let htmlPoses = '';
-                        if(girlGrade < 1) girlGrade = 6; //use 6 girl poses if we have the girl but no girl grade
+                        if(girlGrade == -1) girlGrade = 6; //use 6 girl poses if we have the girl but no girl grade
                         for(let k = 0; k <= girlGrade; k++)
                         {
                             htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
@@ -1003,7 +1003,12 @@
 
     function getGirlGradeById(id, girlDictionary)
     {
-        return girlDictionary != null && girlDictionary.has(id.toString()) ? girlDictionary.get(id.toString()).grade : -1;
+        if(girlDictionary != null && girlDictionary.has(id.toString()))
+        {
+            let grade = girlDictionary.get(id.toString()).grade;
+            return typeof grade == 'undefined' ? -1 : grade;
+        }
+        return -1;
     }
 
     function getHHPlusPlusGirlDictionary()
