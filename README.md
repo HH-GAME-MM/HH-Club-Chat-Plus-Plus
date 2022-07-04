@@ -17,14 +17,14 @@ Upgrade Club Chat with various features and bug fixes
 - Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
 
 **SPOILER**
-- /spoiler &lt;text / images&gt; = hide text and images
+- /spoiler &lt;text / images&gt; = hide text and images in a spoiler block
 
 **LINKS / IMAGES / GIRL POSES**
 - Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.
 
 **COMMANDS**
 - !hh &lt;girl name / girl id&gt; = post a wiki link for a girl (HH++ required, EN only)
-- !poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl (HH++ required, EN only)
+- !poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl in a spoiler block (HH++ required, EN only)
 
 **DICE**
 - /dice = roll a dice (D6, 1-6)
