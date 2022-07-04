@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.2
+// @version      0.3
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -56,14 +56,19 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.poses {display:inline-block;background-color:#2f3136;padding:7px;border-radius:7px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.poses a {padding:0px 10px 0px 10px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.poses span {padding:0px 10px 0px 10px;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.poses span.spoiler-visible {background:none;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.poses span.spoiler-visible * {background:none;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.poses span.spoiler {display:inline-block;height:100px;width:100%;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.ping {background-color:#4e4d73;padding:0px 3px 0px 3px;border-radius:3px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.ping-invalid {background-color:#4e4d73;padding:0px 3px 0px 3px;border-radius:3px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.ping-invalid:after {color:#4e4d73;background-image:url("https://hh2.hh-content.com/ic_new.png");background-size:8px auto;background-repeat:no-repeat;background-position:1px 1px;content:"_";}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler {background:#202225;padding:0px 3px 0px 3px;border-radius:3px;color:transparent;cursor:pointer;user-select:none;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler * {background:#202225;padding:0px;border-radius:0px;color:transparent;cursor:pointer;user-select:none;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler a {pointer-events:none;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler img {padding:0px 3px 0px 3px;border-radius:3px;max-width:1px;max-height:1px;filter:opacity(0%);}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler-visible {background:#4a4d53;padding:0px 3px 0px 3px;border-radius:3px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler-visible * {background:#4a4d53;padding:0px;border-radius:0px;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler-visible a {pointer-events: auto;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt span.spoiler-visible img {padding:0px 3px 0px 3px;border-radius:3px;}');
     css.sheet.insertRule('input.club-chat-input-custom {width:100%;height:38px;color:#fff;font-size:16px;padding-left:12px;border:1px solid #ffa23e;background-color:rgba(0,0,0,.3);box-shadow:0 2px 0 #c61f52,0 0 13px rgba(159,7,58,.6),0 0 13px rgba(159,7,58,.95);border-radius:4px;font-family:Tahoma,Helvetica,Arial,sans-serif;padding-right:40px;}');
     css.sheet.insertRule('button.club-chat-send-custom {position:absolute;top:7px;right:1px;border:none;background-color:transparent;outline:0;cursor:pointer;}');
@@ -144,6 +149,10 @@
                 }
                 else if(html == 'x')
                 {
+                    html = '!poses 797015676';
+                }
+                else if(html == 'x')
+                {
                     html = '!hh 797015676';
                 }
                 else if(html == 'x')
@@ -218,14 +227,14 @@
                                       'Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">SPOILER</span><br/>' +
-                                      '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images<br/>' +
+                                      '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images in a spoiler block<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">LINKS / IMAGES / GIRL POSES</span><br/>' +
                                       'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">COMMANDS</span><br/>' +
                                       '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required, EN only)<br/>' +
-                                      '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl (HH++ required, EN only)<br/>' +
+                                      '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block (HH++ required, EN only)<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">DICE</span><br/>' +
                                       '/dice = roll a dice (D6, 1-6)<br/>' +
@@ -328,15 +337,16 @@
                     if(girlId != -1)
                     {
                         //build girl poses
-                        let htmlPoses = '';
+                        let htmlPoses = '<span class="spoiler" title="click to reveal spoiler" onClick="this.setAttribute(\'class\',\'spoiler-visible\');this.setAttribute(\'title\',\'\');ClubChat.resizeNiceScroll()">';
                         if(girlGrade == -1) girlGrade = 6; //use 6 girl poses if we have the girl but no girl grade
                         for(let k = 0; k <= girlGrade; k++)
                         {
                             htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
                         }
+                        htmlPoses += '</span>';
 
                         let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
-                        htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : '<span>Girl ID: ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                        htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: Girl ID: ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
                 else if(htmlLC.startsWith('/plain '))
@@ -394,8 +404,8 @@
                         }
                         else if(word.startsWith('@') && word.length != 1) //ping
                         {
-                            //ignore one comma, one dot, one exclamation mark or one question mark at the end
-                            if([',', '.', '!', '?'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
+                            //ignore some characters at the end
+                            if([',', '.', '!', '?', ':'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
 
                             //shortform of nicknames for club "Hērōēs Prāvī Forī [EN]"
                             if(msgIdClubId == 1898)
@@ -585,7 +595,7 @@
 
                     if(isSpoiler)
                     {
-                        htmlNew.unshift({ isValid: true, value: '<span class="spoiler" title="click to reveal spoiler" onClick="this.setAttribute(\'class\',\'spoiler-visible\');this.setAttribute(\'title\',\'\')">' });
+                        htmlNew.unshift({ isValid: true, value: '<span class="spoiler" title="click to reveal spoiler" onClick="this.setAttribute(\'class\',\'spoiler-visible\');this.setAttribute(\'title\',\'\');ClubChat.resizeNiceScroll()">' });
                         htmlNew.push({ isValid: true, value: '</span>' });
                     }
                 }
@@ -706,11 +716,30 @@
         {
             scrollDown();
         }
-        //if the chat disconnects after init, we try to reconnect
+        //if the chat disconnects after init, we try to reconnect (do not reconnect if theres a new session => "chatserver" popup message)
         else if(clubChatDisconnected == 1 && ClubChat.hasInit && !ClubChat.isConnected)
         {
-            ClubChat.hasInit = false;
-            fixClubChat();
+            let iFrame = getIFrame();
+            let popup_message = iFrame.querySelector('#popup_message div');
+            let msgLC = popup_message == null ? null : popup_message.innerHTML.toLowerCase();
+            if(msgLC == null || (
+                !msgLC.includes('chat server') && //EN
+                !msgLC.includes('chatserver') && //DE
+                !msgLC.includes('chat serveur') && //FR
+                !msgLC.includes('server chat') && //IT
+                !msgLC.includes('servidor de chat') && //ES
+                !msgLC.includes('チャットサーバー') && //JP
+                !msgLC.includes('чат') //RU
+            ))
+            {
+                ClubChat.hasInit = false;
+                fixClubChat();
+            }
+            else
+            {
+                //KK BUG: if there are multiple popups, only one can be closed. FIX: add onclick handlers to all error popups
+                iFrame.querySelectorAll('#popup_message close').forEach(e => { e.setAttribute('onClick', 'this.parentNode.remove();'); });
+            }
         }
     });
     observerSendMsg.observe(document.querySelector('input.club-chat-input'), { attributes:true });
@@ -878,11 +907,15 @@
             }
         }
 
-        //add new scroll function
+        //add new scroll functions
         ClubChat.resizeNiceScrollAndUpdatePosition = function() {
 
             ClubChat.$msgHolder.getNiceScroll().resize();
             ClubChat.updateScrollPosition();
+        }
+        ClubChat.resizeNiceScroll = function() {
+
+            ClubChat.$msgHolder.getNiceScroll().resize();
         }
     }
 
@@ -1070,6 +1103,7 @@
             [':ymen:', '294927828972208128'],
             [':money:', '294927828972208128'],
             [':koban:', '294927828682801153'],
+            [':kobans:', '294927828682801153'],
 
             [':flowers:', '860867149009780757'],
             [':spellbook:', '923655294381359104'],
