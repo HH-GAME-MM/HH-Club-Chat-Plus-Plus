@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.3
+// @version      0.4
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -41,6 +41,9 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-avatar img.icon {width:36px !important;height:36px !important;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt {margin-top:-16px !important;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-time {margin-top:-2px;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.playername {cursor:pointer;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.member {color:#8a8ae6;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.leader {color:#f33c3d;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.active_light {display:inline-block;width:.75rem;height:.75rem;margin:0px 4px 4px 11px;transform:rotate(45deg);border:1px solid #000;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.HHCCPlusPlus {color:white;font-size:20px;line-height:1;margin:0px 2px 0px 5px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info {pointer-events: none;}');
@@ -182,9 +185,14 @@
                     saveLastMsgTimestampSeen();
                 }
 
-                //change the nickname color: club leader red, members blue
+                //change the playername color (club leader red, members blue) and add "click to ping"
                 let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
-                nodeSpanMsgSender.setAttribute('style', 'color:' + (msgIdPlayerId == clubLeaderPlayerId ? '#f33c3d' : '#8a8ae6'));
+                let nodeSpanMsgSender_nickname = document.createElement('span');
+                nodeSpanMsgSender_nickname.setAttribute('class', 'playername ' + (msgIdPlayerId == clubLeaderPlayerId ? 'leader' : 'member'));
+                nodeSpanMsgSender_nickname.setAttribute('onClick', 'ClubChat.insertPingToInput(this)');
+                nodeSpanMsgSender_nickname.innerHTML = nodeSpanMsgSender.innerHTML;
+                nodeSpanMsgSender.innerHTML = '';
+                nodeSpanMsgSender.appendChild(nodeSpanMsgSender_nickname);
 
                 //add the online icon
                 let nodeSpanMsgSender_active_light = document.createElement('span');
@@ -738,7 +746,7 @@
             else
             {
                 //KK BUG: if there are multiple popups, only one can be closed. FIX: add onclick handlers to all error popups
-                iFrame.querySelectorAll('#popup_message close').forEach(e => { e.setAttribute('onClick', 'this.parentNode.remove();'); });
+                iFrame.querySelectorAll('#popup_message close').forEach(e => { e.setAttribute('onClick', 'this.parentNode.remove()'); });
             }
         }
     });
@@ -751,9 +759,8 @@
         //get iFrame
         let iFrame = getIFrame();
 
-        let cssIFrame = iFrame.createElement('style');
-        iFrame.head.appendChild(cssIFrame);
-        cssIFrame.sheet.insertRule('#chat_btn .chat_mix_icn::after {content:"++";position:absolute;width:auto;bottom:-14px;right:-8px;text-shadow:0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000;-moz-transform:rotate(0.05deg);font-size:26px;}');
+        //css iFrame
+        addIFrameCss(iFrame);
 
         //do we still have new ping messages? if yes, display the ping notification box again
         if(pingMessageCount != 0)
@@ -763,6 +770,16 @@
             pingVisible(pingNotificationBox);
         }
     };
+
+    //window resize event
+    window.addEventListener('resize', function() {
+
+        //get iFrame
+        let iFrame = getIFrame();
+
+        //css iFrame
+        addIFrameCss(iFrame);
+    });
 
     function createNewInputAndSendButton()
     {
@@ -804,6 +821,28 @@
         function onInputKeyUp_HHCCPlusPLus(evt)
         {
             if (evt.key == 'Enter') send_msg_HHCCPlusPLus();
+        }
+
+        //add new function
+        ClubChat.insertPingToInput = function(e) {
+
+            let input = document.querySelector('.club-chat-input-custom');
+            if(input.selectionStart || input.selectionStart == '0')
+            {
+                let part1 = input.value.substr(0, input.selectionStart);
+                let part2 = input.value.substr(input.selectionEnd);
+                if(part1 != '' && !part1.endsWith(' ')) part1 += ' ';
+                if(!part2.startsWith(' ')) part2 = ' ' + part2;
+
+                input.value = part1 + '@' + e.innerHTML + part2;
+                input.selectionStart = part1.length + 2 + e.innerHTML.length;
+                input.selectionEnd = input.selectionStart;
+            }
+            else
+            {
+                input.value += '@' + e.innerHTML + ' ';
+            }
+            input.focus();
         }
     }
 
@@ -913,6 +952,7 @@
             ClubChat.$msgHolder.getNiceScroll().resize();
             ClubChat.updateScrollPosition();
         }
+
         ClubChat.resizeNiceScroll = function() {
 
             ClubChat.$msgHolder.getNiceScroll().resize();
@@ -937,19 +977,29 @@
         return iFrame;
     }
 
+    function addIFrameCss(iFrame)
+    {
+        let cssIFrame = iFrame.getElementById('cssIFrame');
+        if(cssIFrame == null) cssIFrame = iFrame.createElement('style');
+        iFrame.head.appendChild(cssIFrame);
+        cssIFrame.setAttribute('id', 'cssIFrame');
+
+        let is_Mobile = isMobile();
+        cssIFrame.sheet.insertRule('#chat_btn .chat_mix_icn::after {content:"++";position:absolute;width:auto;font-size:' + (is_Mobile ? 46 : 26) + 'px;bottom:-' + (is_Mobile ? 24 : 14) + 'px;right:-8px;text-shadow:0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000;-moz-transform:rotate(0.05deg);}');
+
+        //css ping message box
+        cssIFrame.sheet.insertRule('#chat_btn div.ping {display:none;position:absolute;top:' + (is_Mobile ? 70 : 45) + 'px;left:0px;width:150px;border:1px solid #ffb827;border-radius:15px;background-color:rgba(32, 3, 7, 0.7);}');
+        cssIFrame.sheet.insertRule('#chat_btn div.visible {display:block !important;}');
+        cssIFrame.sheet.insertRule('#chat_btn div.ping div {padding:5px 10px 5px 10px;text-align:center;font-size:14px;}');
+        cssIFrame.sheet.insertRule('header {z-index:21 !important;}'); //TODO doesnt work for pachinko
+    }
+
     function getPingNotificationBox(iFrame)
     {
         let pingNotificationBox = iFrame.getElementById('ping');
         if(pingNotificationBox == null)
         {
             //create ping message box
-            let cssIFrame = iFrame.createElement('style');
-            iFrame.head.appendChild(cssIFrame);
-            cssIFrame.sheet.insertRule('#chat_btn div.ping {display:none;position:absolute;top:' + (isMobile() ? 70 : 45) + 'px;left:0px;width:150px;border:1px solid #ffb827;border-radius:15px;background-color:rgba(32, 3, 7, 0.7);}');
-            cssIFrame.sheet.insertRule('#chat_btn div.visible {display:block !important;}');
-            cssIFrame.sheet.insertRule('#chat_btn div.ping div {padding:5px 10px 5px 10px;text-align:center;font-size:14px;}');
-            cssIFrame.sheet.insertRule('header {z-index:21 !important;}'); //TODO doesnt work for pachinko
-
             let chat_btn = iFrame.getElementById('chat_btn');
             pingNotificationBox = iFrame.createElement('div');
             pingNotificationBox.setAttribute('id', 'ping');
@@ -1011,6 +1061,10 @@
                 }
             }
         }
+        else
+        {
+            localStorage.removeItem('HHClubChatPlusPlus_PositionAndSize');
+        }
     }
 
     function saveLastChatWindowPositionAndSize(chatWnd)
@@ -1052,8 +1106,7 @@
 
     function isMobile()
     {
-        const {is_mobile, is_tablet} = window;
-        return is_mobile && is_mobile() || is_tablet && is_tablet();
+        return ClubChat.isMobileSize();
     }
 
     function strIsInt(s)
