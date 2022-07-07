@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.4
+// @version      0.5
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -305,7 +305,7 @@
                     //girl found?
                     if(girlId != -1)
                     {
-                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
+                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '') : null;
                         htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
@@ -353,7 +353,7 @@
                         }
                         htmlPoses += '</span>';
 
-                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ','-').replaceAll('.','') : null;
+                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '') : null;
                         htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: Girl ID: ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
@@ -469,8 +469,7 @@
                         }
                         else if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC)) //emojis
                         {
-                            //Note: we dont need onload="ClubChat.resizeNiceScrollAndUpdatePosition()" bc emojis are small
-                            htmlNew.push({ isValid: true, value: '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=24&quality=lossless" title="' + wordLC + '">' });
+                            htmlNew.push({ isValid: true, value: '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=24&quality=lossless" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' });
                         }
                         else
                         {
@@ -834,13 +833,13 @@
                 if(part1 != '' && !part1.endsWith(' ')) part1 += ' ';
                 if(!part2.startsWith(' ')) part2 = ' ' + part2;
 
-                input.value = part1 + '@' + e.innerHTML + part2;
+                input.value = part1 + '@' + e.innerHTML.replaceAll(' ', '_') + part2;
                 input.selectionStart = part1.length + 2 + e.innerHTML.length;
                 input.selectionEnd = input.selectionStart;
             }
             else
             {
-                input.value += '@' + e.innerHTML + ' ';
+                input.value += '@' + e.innerHTML.replaceAll(' ', '_') + ' ';
             }
             input.focus();
         }
