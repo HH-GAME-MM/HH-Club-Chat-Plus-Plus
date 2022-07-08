@@ -5,6 +5,7 @@ Upgrade Club Chat with various features and bug fixes
 1) Install TamperMonkey browser extension (or your userscript extension of choice e.g. Greasemonkey)
 2) Click the URL: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
 3) TamperMonkey should automatically prompt you to install/update the script. If it doesn't, open up the TamperMonkey Dashboard, go to the Utilities tab, scroll down to "Install from URL" and paste the URL in there
+4) Refresh the main page, restart the browser or log in to the game again for the script to take effect.
 
 ## Features
 **HELP**
@@ -15,6 +16,7 @@ Upgrade Club Chat with various features and bug fixes
 - @&lt;membername&gt; = ping a club member
 - Note 1: Club members will receive a notification outside of the chat, when the chat is not open
 - Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
+- Note 3: Click a nickname to ping
 
 **SPOILER**
 - /spoiler &lt;text / images&gt; = hide text and images in a spoiler block
