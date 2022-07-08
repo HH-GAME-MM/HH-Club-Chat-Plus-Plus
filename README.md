@@ -58,4 +58,5 @@ Upgrade Club Chat with various features and bug fixes
 - Avatars are a bit bigger
 
 **CREDITS**
-- Script coded by -MM- and tested in Mozilla Firefox (Desktop), Google Chrome (Desktop & Android)
+- Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"
+- Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)
