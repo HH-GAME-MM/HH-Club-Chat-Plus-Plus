@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.5
+// @version      0.6
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -13,9 +13,6 @@
 // ==/UserScript==
 
 (function() {
-    //TODO
-    //empty
-
     //definitions
     'use strict';
     /*global ClubChat,club_tabs*/
@@ -168,7 +165,7 @@
                 }
                 else if(html == 'x')
                 {
-                    html = '*correct';
+                    html = '!hh lil’ red in the city';
                 }
                 else if(html == 'x')
                 {
@@ -233,6 +230,7 @@
                                       '@<span style="font-style:italic;">&lt;membername&gt;</span> = ping a club member<br/>' +
                                       'Note 1: Club members will receive a notification outside of the chat, when the chat is not open<br/>' +
                                       'Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
+                                      'Note 3: Click on a nickname to ping<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">SPOILER</span><br/>' +
                                       '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images in a spoiler block<br/>' +
@@ -274,7 +272,8 @@
                                       '- Avatars are a bit bigger<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">CREDITS</span><br/>' +
-                                      'Script coded by -MM- and tested in Mozilla Firefox (Desktop), Google Chrome (Desktop & Android)' });
+                                      'Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"<br/>' +
+                                      'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)'});
                     }
                     else
                     {
@@ -305,7 +304,7 @@
                     //girl found?
                     if(girlId != -1)
                     {
-                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '') : null;
+                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
                         htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
@@ -353,7 +352,7 @@
                         }
                         htmlPoses += '</span>';
 
-                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '') : null;
+                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
                         htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: Girl ID: ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
@@ -739,6 +738,7 @@
                 !msgLC.includes('чат') //RU
             ))
             {
+                pingMessageCount = 0; //reset ping counter, as we will receive all chat messages again after successful reconnection
                 ClubChat.hasInit = false;
                 fixClubChat();
             }
