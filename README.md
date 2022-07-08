@@ -16,7 +16,7 @@ Upgrade Club Chat with various features and bug fixes
 - @&lt;membername&gt; = ping a club member
 - Note 1: Club members will receive a notification outside of the chat, when the chat is not open
 - Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
-- Note 3: Click a nickname to ping
+- Note 3: Click on a nickname to ping
 
 **SPOILER**
 - /spoiler &lt;text / images&gt; = hide text and images in a spoiler block
