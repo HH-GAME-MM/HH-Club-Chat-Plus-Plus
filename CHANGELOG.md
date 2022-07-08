@@ -2,6 +2,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.6] - 2022-07-08
+
+### Changed
+
+- !help text update
+- Minor changes to enhance the user experience
+
 ## [0.5] - 2022-07-07
 
 ### Added
