@@ -2,6 +2,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.7] - 2022-07-14
+
+### Changed
+
+- HHCLUBCHATPLUSPLUS_INDICATOR changed to make it easier for non-script users to copy content without it
+- Added temporary compatibility with HHCLUBCHATPLUSPLUS_INDICATOR v0.6 and lower
+
 ## [0.6] - 2022-07-08
 
 ### Changed
