@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.6
+// @version      0.7
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -12,6 +12,8 @@
 // @grant        GM_info
 // ==/UserScript==
 
+//CHANGELOG: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md
+
 (function() {
     //definitions
     'use strict';
@@ -20,6 +22,7 @@
     console.log('HH Club Chat++ Script v' + GM_info.script.version);
 
     //create new input and send button
+    const HHCLUBCHATPLUSPLUS_INDICATOR = ' \u200D';
     createNewInputAndSendButton();
 
     //club chat init fails sometimes. we fix it now
@@ -78,7 +81,6 @@
     document.head.appendChild(cssOnline);
 
     //chat variables
-    const HHCLUBCHATPLUSPLUS_INDICATOR = '\u200D';
     let playerName = null;
     let playerNamePing = null;
     let clubLeaderPlayerId = -1;
@@ -131,7 +133,12 @@
                 let msgIdTimestampMs = parseInt(msgIdSplits[2]);
                 let html = node.lastElementChild.innerHTML;
                 let sentByHHCCPlusPlus = html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR);
-                if(sentByHHCCPlusPlus) html = html.substr(0, html.length - 1);
+                if(sentByHHCCPlusPlus) html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR.length);
+                else if(html.endsWith('\u200D')) //TODO delete code block: temporary compatibility with v0.6 and below
+                {
+                    sentByHHCCPlusPlus = true;
+                    html = html.substr(0, html.length - 1);
+                }
                 let htmlLC = html.toLowerCase();
 
                 //DEBUG
@@ -786,13 +793,13 @@
         let container = document.querySelector('div.send-block-container');
         let input = document.createElement("input");
         input.setAttribute('class', 'club-chat-input-custom');
+        input.setAttribute('maxlength', 500 - HHCLUBCHATPLUSPLUS_INDICATOR.length); //real maxlength is 500
         if(document.querySelector('input.club-chat-input').getAttribute('disabled') != null) input.setAttribute('disabled', 'disabled');
         input.addEventListener("keyup", onInputKeyUp_HHCCPlusPLus);
         container.appendChild(input);
 
         let btnSend = document.createElement('button');
         btnSend.setAttribute('class', 'club-chat-send-custom');
-        btnSend.setAttribute('maxlength', '499'); //real maxlength is 500 (499 + HHCLUBCHATPLUSPLUS_INDICATOR = 500)
         if(document.querySelector('button.club-chat-send').getAttribute('disabled') != null) btnSend.setAttribute('disabled', 'disabled');
         btnSend.addEventListener("click", send_msg_HHCCPlusPLus);
         container.appendChild(btnSend);
