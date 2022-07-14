@@ -2,6 +2,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.8] - 2022-07-14
+
+### Added
+
+- ArrowUp / ArrowDown Feature for message history
+
 ## [0.7] - 2022-07-14
 
 ### Changed
