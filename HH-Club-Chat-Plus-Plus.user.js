@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.7
+// @version      0.8
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -134,7 +134,7 @@
                 let html = node.lastElementChild.innerHTML;
                 let sentByHHCCPlusPlus = html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR);
                 if(sentByHHCCPlusPlus) html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR.length);
-                else if(html.endsWith('\u200D')) //TODO delete code block: temporary compatibility with v0.6 and below
+                else if(html.endsWith('\u200D')) //TODO delete code block: temporary compatibility with v0.6 and lower
                 {
                     sentByHHCCPlusPlus = true;
                     html = html.substr(0, html.length - 1);
@@ -826,7 +826,18 @@
 
         function onInputKeyUp_HHCCPlusPLus(evt)
         {
-            if (evt.key == 'Enter') send_msg_HHCCPlusPLus();
+            if(evt.key == 'Enter')
+            {
+                send_msg_HHCCPlusPLus();
+            }
+            else if(evt.key == 'ArrowUp' || evt.key == 'ArrowDown')
+            {
+                let input = document.querySelector('input.club-chat-input');
+                let oldText = input.value;
+                ClubChat.onInputKeyUp(evt);
+                let newText = input.value;
+                if(oldText != newText) document.querySelector('input.club-chat-input-custom').value = newText.substr(0, newText.length - HHCLUBCHATPLUSPLUS_INDICATOR.length);
+            }
         }
 
         //add new function
