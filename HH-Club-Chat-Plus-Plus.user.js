@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.8
+// @version      0.9
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -161,6 +161,10 @@
                 else if(html == 'x')
                 {
                     html = '!hh 797015676';
+                }
+                else if(html == 'x')
+                {
+                    html = '!poses Golden Lupa´s Mom';
                 }
                 else if(html == 'x')
                 {
@@ -439,6 +443,8 @@
                                     case '@master': wordLC = '@master_maximus'; break;
                                     case '@mars': wordLC = '@marsome'; break;
                                     case '@ckiller': wordLC = '@cuntkiller'; break;
+                                    case '@pity': wordLC = '@pitythefool'; break;
+                                    case '@chico': wordLC = '@chico_bonbon'; break;
                                 }
                             }
 
@@ -1099,8 +1105,9 @@
     {
         if(girlDictionary != null)
         {
-            let nameLC = name.toLowerCase();
-            for (let [key, value] of girlDictionary) if(value.name.toLowerCase() == nameLC) return key;
+            //Case and ’´`' independent
+            let nameLC = name.toLowerCase().replace(/[’´`']/g,'?');
+            for (let [key, value] of girlDictionary) if(value.name.toLowerCase().replace(/[’´`']/g,'?') == nameLC) return key;
         }
         return -1;
     }
@@ -1169,6 +1176,9 @@
             [':league:', '860659427950460930'],
             [':worship:', '902508422988169226'],
             [':ticket:', '596905784160419876'],
+
+            [':shard:', '540690525238591518'],
+            [':shards:', '540690525238591518'],
 
             [':ymen:', '294927828972208128'],
             [':money:', '294927828972208128'],
