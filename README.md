@@ -46,7 +46,7 @@ Upgrade Club Chat with various features and bug fixes
 - Note: Only one GIF allowed at the start of your post. It is possible to add more things (e.g. ping)
 
 **EMOJIS**
-- The following emojis are available: :kek: :pikaponder: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
+- The following emojis are available: :kek: :pikaponder: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :shard: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
 
 **MISCELLANEOUS**
 - The nickname color is changed. The Club Leader is red and all members are blue
