@@ -2,6 +2,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.9] - 2022-07-20
+
+### Added
+
+- Added emoji :shard: / :shards:
+- Added more shortforms of nicknames for club "Hērōēs Prāvī Forī [EN]"
+
+### Changed
+
+- !hh and !poses are ’´`' independent now
+
 ## [0.8] - 2022-07-14
 
 ### Added
