@@ -25,8 +25,8 @@ Upgrade Club Chat with various features and bug fixes
 - Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.
 
 **COMMANDS**
-- !hh &lt;girl name / girl id&gt; = post a wiki link for a girl (HH++ required, EN only)
-- !poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl in a spoiler block (HH++ required, EN only)
+- !hh &lt;girl name / girl id&gt; = post a wiki link for a girl (HH++ required)
+- !poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl in a spoiler block (HH++ required)
 
 **DICE**
 - /dice = roll a dice (D6, 1-6)
@@ -41,12 +41,12 @@ Upgrade Club Chat with various features and bug fixes
 - /plain &lt;text&gt; = post text without text formatting
 
 **GIFS**
-- The following gifs are available: !heyhey !hehe !gm !sad !doit !dejavu !wtf !whale !new !legit
+- The following gifs are available: !heyhey !hehe !gm !sad !doit !dejavu !wtf !whale !new !legit !doubt !monster !clap
 - The following random gifs are available: !moar !both !gn !why !rng !gz !thx !fail
 - Note: Only one GIF allowed at the start of your post. It is possible to add more things (e.g. ping)
 
 **EMOJIS**
-- The following emojis are available: :kek: :pikaponder: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :shard: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
+- The following emojis are available: :kek: :pikaponder: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :potion_endurance: :potion_love: :potion_lust: :crystal: :shard: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
 
 **MISCELLANEOUS**
 - The nickname color is changed. The Club Leader is red and all members are blue
