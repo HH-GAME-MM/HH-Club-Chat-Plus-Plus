@@ -250,8 +250,8 @@
                                       'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">COMMANDS</span><br/>' +
-                                      '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required, EN only)<br/>' +
-                                      '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block (HH++ required, EN only)<br/>' +
+                                      '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required)<br/>' +
+                                      '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block (HH++ required)<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">DICE</span><br/>' +
                                       '/dice = roll a dice (D6, 1-6)<br/>' +
