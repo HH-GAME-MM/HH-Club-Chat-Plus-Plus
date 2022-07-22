@@ -41,8 +41,8 @@ Upgrade Club Chat with various features and bug fixes
 - /plain &lt;text&gt; = post text without text formatting
 
 **GIFS**
-- The following gifs are available: !heyhey !hehe !gm !sad !doit !dejavu !wtf !whale !new !legit !doubt !monster !clap
-- The following random gifs are available: !moar !both !gn !why !rng !gz !thx !fail
+- The following gifs are available: !heyhey !hehe !gm !sad !doit !dejavu !wtf !whale !new !legit
+- The following random gifs are available: !moar !both !gn !why !rng !gz !thx !fail !doubt !monster !clap
 - Note: Only one GIF allowed at the start of your post. It is possible to add more things (e.g. ping)
 
 **EMOJIS**
