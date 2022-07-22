@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.9
+// @version      0.10
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -442,6 +442,7 @@
                                     case '@maximus':
                                     case '@master': wordLC = '@master_maximus'; break;
                                     case '@mars': wordLC = '@marsome'; break;
+                                    case '@ck':
                                     case '@ckiller': wordLC = '@cuntkiller'; break;
                                     case '@pity': wordLC = '@pitythefool'; break;
                                     case '@chico': wordLC = '@chico_bonbon'; break;
@@ -823,8 +824,27 @@
             let inputCustom = document.querySelector('input.club-chat-input-custom');
             if(inputCustom.value.length != 0)
             {
+                let text = inputCustom.value;
+                let textLC = text.toLowerCase();
+
+                //change the commands !hh and !poses to make them language independent
+                let cmd = null;
+                if(textLC.startsWith('!hh ') && textLC.length > 4) cmd = '!hh ';
+                else if(textLC.startsWith('!poses ') && textLC.length > 7) cmd = '!poses ';
+                if(cmd != null)
+                {
+                    let param1 = text.substr(cmd.length).trim();
+
+                    //is it a girl name?
+                    if(!strIsInt(param1))
+                    {
+                        let girlId = getGirlIdByName(param1, getHHPlusPlusGirlDictionary());
+                        if(girlId != -1) text = cmd + girlId; //change the girl name to the girl id
+                    }
+                }
+
                 let input = document.querySelector('input.club-chat-input');
-                input.value = inputCustom.value + HHCLUBCHATPLUSPLUS_INDICATOR;
+                input.value = text + HHCLUBCHATPLUSPLUS_INDICATOR;
                 inputCustom.value = '';
                 ClubChat.send_msg();
             }
@@ -1160,6 +1180,9 @@
             ['!gz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
             ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif']],
             ['!fail', ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif']],
+            ['!doubt', ['ld5tk9ujuJsAAAAC/doubt-press-x.gif', '_0AGcJvL5QYAAAAC/jim-halpert-face.gif', 'xZt1qV8KMbkAAAAC/ehh-probably-not.gif']],
+            ['!monster', ['e1T7jSFlZ-EAAAAC/shrek-gingerbread.gif', 'A_JS3lx__egAAAAC/star-trek-tos.gif', 'fx-nkmNVA_MAAAAC/penguins-of-madagascar-kowalski.gif']],
+            ['!clap', ['BHEkb1EYsaMAAAAC/aplausos-clapped.gif', '3DslEXJ6bn8AAAAC/clap-slow-clap.gif', '50IjyLmv8mQAAAAC/will-smith-clap.gif', 'jrIAsC6362EAAAAC/clap-clapping.gif', '-DXhLQTX9hwAAAAd/im-proud-of-you-dan-levy.gif']],
         ]);
     }
 
@@ -1177,13 +1200,19 @@
             [':worship:', '902508422988169226'],
             [':ticket:', '596905784160419876'],
 
-            [':shard:', '540690525238591518'],
-            [':shards:', '540690525238591518'],
-
             [':ymen:', '294927828972208128'],
             [':money:', '294927828972208128'],
             [':koban:', '294927828682801153'],
             [':kobans:', '294927828682801153'],
+
+            [':potion_endurance:', '948310353735987240'],
+            [':potion_love:', '948310353828282408'],
+            [':potion_lust:', '948310353979252786'],
+            [':crystal:', '999279877834428416'],
+            [':crystal_token:', '999279877834428416'],
+
+            [':shard:', '540690525238591518'],
+            [':shards:', '540690525238591518'],
 
             [':flowers:', '860867149009780757'],
             [':spellbook:', '923655294381359104'],
@@ -1201,6 +1230,7 @@
             [':cordys:', '917383948512919552'],
             [':cordyceps:', '917383948512919552'],
             [':am:', '917383948496154675'],
+            [':ame:', '917383948496154675'],
             [':allmastery:', '917383948496154675'],
 
             [':ep:', '677981592706088982'],
