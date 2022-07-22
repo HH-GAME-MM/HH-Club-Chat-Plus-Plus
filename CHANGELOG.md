@@ -2,6 +2,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.11] - 2022-07-23
+
+### Changed
+
+- Your nickname is gold, the club leader is red and all members are blue
+
 ## [0.10] - 2022-07-22
 
 ### Added
