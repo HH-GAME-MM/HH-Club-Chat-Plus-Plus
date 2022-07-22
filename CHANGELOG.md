@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Added GIFs: !doubt, !monster and !clap added
+- Added GIFs: !doubt !monster !clap
 - Added Emojis: :potion_endurance: :potion_love: :potion_lust: :crystal:
 
 ### Changed
