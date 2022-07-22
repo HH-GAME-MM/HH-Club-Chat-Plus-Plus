@@ -49,7 +49,7 @@ Upgrade Club Chat with various features and bug fixes
 - The following emojis are available: :kek: :pikaponder: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :potion_endurance: :potion_love: :potion_lust: :crystal: :shard: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
 
 **MISCELLANEOUS**
-- The nickname color is changed. The Club Leader is red and all members are blue
+- The nickname color is changed. Your nickname is gold, the club leader is red and all members are blue
 - Online/Offline status added behind the nickname (with auto refresh)
 - ++ added behind the nickname (indicates who is using this script)
 - Chat window remains in its position and size
