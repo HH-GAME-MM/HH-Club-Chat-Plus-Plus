@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.10
+// @version      0.11
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -44,6 +44,7 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.playername {cursor:pointer;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.member {color:#8a8ae6;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.leader {color:#f33c3d;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.self {color:#ffd700;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.active_light {display:inline-block;width:.75rem;height:.75rem;margin:0px 4px 4px 11px;transform:rotate(45deg);border:1px solid #000;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.HHCCPlusPlus {color:white;font-size:20px;line-height:1;margin:0px 2px 0px 5px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info {pointer-events: none;}');
@@ -193,10 +194,10 @@
                     saveLastMsgTimestampSeen();
                 }
 
-                //change the playername color (club leader red, members blue) and add "click to ping"
+                //change the playername color (self gold, club leader red, members blue) and add "click to ping"
                 let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
                 let nodeSpanMsgSender_nickname = document.createElement('span');
-                nodeSpanMsgSender_nickname.setAttribute('class', 'playername ' + (msgIdPlayerId == clubLeaderPlayerId ? 'leader' : 'member'));
+                nodeSpanMsgSender_nickname.setAttribute('class', 'playername ' + (msgIdPlayerId == playerId ? 'self' : (msgIdPlayerId == clubLeaderPlayerId ? 'leader' : 'member')));
                 nodeSpanMsgSender_nickname.setAttribute('onClick', 'ClubChat.insertPingToInput(this)');
                 nodeSpanMsgSender_nickname.innerHTML = nodeSpanMsgSender.innerHTML;
                 nodeSpanMsgSender.innerHTML = '';
@@ -274,7 +275,7 @@
                                       'The following emojis are available: ' + emojis + '<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">MISCELLANEOUS</span><br/>' +
-                                      '- The nickname color is changed. The Club Leader is red and all members are blue<br/>' +
+                                      '- The nickname color is changed. Your nickname is gold, the club leader is red and all members are blue<br/>' +
                                       '- Online/Offline status added behind the nickname (with auto refresh)<br/>' +
                                       '- ++ added behind the nickname (indicates who is using this script)<br/>' +
                                       '- Chat window remains in its position and size<br/>' +
