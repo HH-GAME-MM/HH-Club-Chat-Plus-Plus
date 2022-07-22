@@ -2,6 +2,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.10] - 2022-07-22
+
+### Added
+
+- Added GIFs: !doubt, !monster and !clap added
+- Added Emojis: :potion_endurance: :potion_love: :potion_lust: :crystal:
+
+### Changed
+
+- Changed the commands !hh and !poses to make them language independent. Write the girl names in your language now
+
 ## [0.9] - 2022-07-20
 
 ### Added
