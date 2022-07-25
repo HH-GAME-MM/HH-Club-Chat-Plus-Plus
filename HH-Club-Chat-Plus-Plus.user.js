@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.11
+// @version      0.12
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -433,7 +433,8 @@
                                 {
                                     case '@mm': wordLC = '@-mm-'; break;
                                     case '@holy': wordLC = '@holymolly'; break;
-                                    case '@epic': wordLC = '@epicbacon'; break;
+                                    case '@epic':
+                                    case '@bacon': wordLC = '@epicbacon'; break;
                                     case '@finder': wordLC = '@finderkeeper'; break;
                                     case '@finds': wordLC = '@finderkeeper'; break;
                                     case '@yoyo': wordLC = '@yoyowhan'; break;
@@ -1179,11 +1180,12 @@
             ['!legit', ['JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif']],
             ['!rng', ['https://imgs.xkcd.com/comics/random_number.png', 'c6drTKdM9ZEAAAAS/rng-excalibur.gif', 'mACda5RzcAcAAAAd/destiny.gif']],
             ['!gz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
-            ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif']],
+            ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif', 'Qc9cm8By46YAAAAd/doggo-dog.gif']],
             ['!fail', ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif']],
             ['!doubt', ['ld5tk9ujuJsAAAAC/doubt-press-x.gif', '_0AGcJvL5QYAAAAC/jim-halpert-face.gif', 'xZt1qV8KMbkAAAAC/ehh-probably-not.gif']],
             ['!monster', ['e1T7jSFlZ-EAAAAC/shrek-gingerbread.gif', 'A_JS3lx__egAAAAC/star-trek-tos.gif', 'fx-nkmNVA_MAAAAC/penguins-of-madagascar-kowalski.gif']],
             ['!clap', ['BHEkb1EYsaMAAAAC/aplausos-clapped.gif', '3DslEXJ6bn8AAAAC/clap-slow-clap.gif', '50IjyLmv8mQAAAAC/will-smith-clap.gif', 'jrIAsC6362EAAAAC/clap-clapping.gif', '-DXhLQTX9hwAAAAd/im-proud-of-you-dan-levy.gif']],
+            ['!:p', ['OHfZzUQuB88AAAAC/rin-shrug.gif', 'FVr4Zhmsnm4AAAAd/kotomine-kirei.gif']],
         ]);
     }
 
@@ -1243,25 +1245,42 @@
             [':datingtoken:', '849076003882926100'],
 
             [':blackgem:', '910701075361845288'],
+            [':blackgems:', '910701075361845288'],
             [':redgem:', '910701075420557412'],
+            [':redgems:', '910701075420557412'],
             [':greengem:', '910701075550576720'],
+            [':greengems:', '910701075550576720'],
             [':orangegem:', '910701075181469737'],
+            [':orangegems:', '910701075181469737'],
             [':yellowgem:', '910701075852591144'],
+            [':yellowgems:', '910701075852591144'],
             [':bluegem:', '910701075345068034'],
+            [':bluegems:', '910701075345068034'],
             [':whitegem:', '910701075672232016'],
+            [':whitegems:', '910701075672232016'],
             [':purplegem:', '910701077568040990'],
+            [':purplegems:', '910701077568040990'],
             [':allgem:', '918072869043458048'],
+            [':allgems:', '918072869043458048'],
 
             [':rainbow:', '901254800690278491'],
             [':balanced:', '901254800690278491'],
             [':black:', '901255133004976149'],
+            [':dominatrix:', '901255133004976149'],
             [':red:', '901254872429637682'],
+            [':eccentric:', '901254872429637682'],
             [':green:', '901254909276602418'],
+            [':exhibitionist:', '901254909276602418'],
             [':orange:', '901254970542788628'],
+            [':physical:', '901254970542788628'],
             [':yellow:', '901255043871830016'],
+            [':playful:', '901255043871830016'],
             [':blue:', '901255091665895424'],
+            [':sensual:', '901255091665895424'],
             [':white:', '901255190433370192'],
+            [':submissive:', '901255190433370192'],
             [':purple:', '901255233773137991'],
+            [':voyeur:', '901255233773137991'],
         ]);
     }
 })();
