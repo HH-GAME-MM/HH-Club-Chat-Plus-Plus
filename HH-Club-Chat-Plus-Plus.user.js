@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.13
+// @version      0.14
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1207,6 +1207,17 @@
         return new Map([
             [':kek:', '588599124312457217'],
             [':pikaponder:', '862672993720336394'],
+            [':rip:', '657438005602025486'],
+            [':kanna_hi:', '953431707556667433'],
+            [':hi:', '953431707556667433'],
+            [':uwot:', '650195017692086328'],
+            [':wot:', '650195017692086328'],
+            [':kanna_nom:', '774778816870088724'],
+            [':kannanom:', '774778816870088724'],
+            [':kanna_headpat:', '667192299272273951'],
+            [':kannaheadpat:', '667192299272273951'],
+            [':thinky:', '878610897709436928'],
+            [':thonk:', '860651714293006387'],
 
             [':energy:', '864645021561782332'],
             [':combativity:', '848991758301265990'],
