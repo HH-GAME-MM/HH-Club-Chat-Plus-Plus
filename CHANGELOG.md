@@ -2,6 +2,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.13] - 2022-08-18
+
+### Changed
+
+- Emojis work with text formatting characters
+
 ## [0.12] - 2022-07-25
 
 ### Changed
