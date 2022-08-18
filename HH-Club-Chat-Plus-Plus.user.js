@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.12
+// @version      0.13
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -313,11 +313,20 @@
                         if(girlId != -1) girlName = getGirlNameById(girlId, girlDictionary); //get the name nicely written
                     }
 
+                    //TODO: Remove this little joke
+                    if(param1.toLowerCase() == 'mythic noacc')
+                    {
+                        girlName = 'Mythic Noacc';
+                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
+                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about him!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://snipboard.io/LCkogf.jpg" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                    }
+                    else
+
                     //girl found?
                     if(girlId != -1)
                     {
                         let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
-                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID: ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
                 else if(htmlLC.startsWith('!poses ') && htmlLC.length > 7)
@@ -365,7 +374,7 @@
                         htmlPoses += '</span>';
 
                         let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
-                        htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: Girl ID: ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                        htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: Girl ID ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
                 else if(htmlLC.startsWith('/plain '))
@@ -424,7 +433,7 @@
                         else if(word.startsWith('@') && word.length != 1) //ping
                         {
                             //ignore some characters at the end
-                            if([',', '.', '!', '?', ':'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
+                            if([',', '.', '!', '?', ':', ')'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
 
                             //shortform of nicknames for club "Hērōēs Prāvī Forī [EN]"
                             if(msgIdClubId == 1898)
@@ -448,6 +457,7 @@
                                     case '@ckiller': wordLC = '@cuntkiller'; break;
                                     case '@pity': wordLC = '@pitythefool'; break;
                                     case '@chico': wordLC = '@chico_bonbon'; break;
+                                    case '@nat': wordLC = '@natstar'; break;
                                 }
                             }
 
@@ -481,10 +491,6 @@
                                 //format the ping word as invalid
                                 htmlNew.push({ isValid: true, value: '<span class="ping-invalid" title="Invalid Ping">' + word + '</span>' });
                             }
-                        }
-                        else if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC)) //emojis
-                        {
-                            htmlNew.push({ isValid: true, value: '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=24&quality=lossless" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' });
                         }
                         else
                         {
@@ -597,13 +603,20 @@
                                 }
                             } while(styleAdded);
 
-                            //add the word
+                            //extract the word
                             if(cutterL != 0 || cutterR != 0)
                             {
-                                htmlNew[wordIndex].value = word.substr(cutterL, word.length - cutterL - cutterR);
+                                word = word.substr(cutterL, word.length - cutterL - cutterR);
+                            }
+
+                            //emojis
+                            if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC))
+                            {
+                                htmlNew[wordIndex].value = '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=24&quality=lossless" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
                             }
                             else
                             {
+                                //add the word
                                 htmlNew[wordIndex].value = word;
                             }
                         }
