@@ -2,7 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.13] - 2022-08-18
+## [0.13-0.14] - 2022-08-18
+
+### Added
+
+- Added Emojis: :rip: :kanna_hi: :hi: :uwot: :wot: :kanna_nom: :kannanom: :kanna_headpat: :kannaheadpat: :thinky: :thonk:
 
 ### Changed
 
