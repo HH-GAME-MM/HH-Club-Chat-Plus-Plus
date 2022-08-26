@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.14
+// @version      0.15
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -20,6 +20,9 @@
     /*global ClubChat,club_tabs*/
 
     console.log('HH Club Chat++ Script v' + GM_info.script.version);
+
+    //check push version
+    checkPushVersion();
 
     //create new input and send button
     const HHCLUBCHATPLUSPLUS_INDICATOR = ' \u200D';
@@ -51,7 +54,8 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-info * {pointer-events: auto;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt a {color:white;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt img {max-width:200px;max-height:100px;}');
-    css.sheet.insertRule('div.chat-msg div.chat-msg-txt img.emoji {max-width:24px;max-height:24px;}');
+    css.sheet.insertRule('div.club-chat-messages div.chat-msg div.chat-msg-txt img.emoji {max-width:24px;max-height:24px;}');
+    css.sheet.insertRule('div.pinned-block div.chat-msg div.chat-msg-txt img.emoji {max-width:16px;max-height:16px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.hh {width:300px;background-color:#2f3136;padding:7px;border-radius:7px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.hh div.left {float:left;width:70%;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.hh div.right {float:right;width:30%;text-align:right;}');
@@ -93,7 +97,7 @@
     let mapEmojis = getMapEmojis();
 
     //observe chat messages
-    const observerMessages = new MutationObserver((mutations, observer) => {
+    function observerMessagesFunction(mutations, observer) {
 
         //get iFrame
         let iFrame = getIFrame();
@@ -141,6 +145,7 @@
                     html = html.substr(0, html.length - 1);
                 }
                 let htmlLC = html.toLowerCase();
+                let isPinnedMsg = (mutations[i].pinnedBlock == true);
 
                 //DEBUG
                 /*if(html == 'x')
@@ -184,6 +189,10 @@
                     html = '*it al ic* **b o l d** __under line__ ~~strike through~~';
                     //html = '*it al ic **b o l d*** __under line ~~strike through~~__';
                 }
+                else if(html == 'holy running this chat like rosso does a player feedback event')
+                {
+                    html = 'holy running this chat like rosso does a player feedback event :kek:';
+                }
                 htmlLC = html.toLowerCase();*/
 
                 //update and save last (seen) message timestamp in localstore
@@ -204,10 +213,13 @@
                 nodeSpanMsgSender.appendChild(nodeSpanMsgSender_nickname);
 
                 //add the online icon
-                let nodeSpanMsgSender_active_light = document.createElement('span');
-                nodeSpanMsgSender_active_light.setAttribute('class', 'active_light');
-                nodeSpanMsgSender_active_light.setAttribute('title', 'Online Status');
-                nodeSpanMsgSender.appendChild(nodeSpanMsgSender_active_light);
+                if(!isPinnedMsg)
+                {
+                    let nodeSpanMsgSender_active_light = document.createElement('span');
+                    nodeSpanMsgSender_active_light.setAttribute('class', 'active_light');
+                    nodeSpanMsgSender_active_light.setAttribute('title', 'Online Status');
+                    nodeSpanMsgSender.appendChild(nodeSpanMsgSender_active_light);
+                }
 
                 //mark message as sent by HH Club Chat++
                 if(sentByHHCCPlusPlus)
@@ -223,7 +235,7 @@
                 let htmlNew = [];
                 let forceScrollDown = false;
 
-                if(htmlLC == '!help')
+                if(htmlLC == '!help' && !isPinnedMsg)
                 {
                     //did THIS user invoke the command !help ?
                     if(msgIdPlayerId == playerId)
@@ -293,7 +305,7 @@
                         node.setAttribute('style', 'display:none;');
                     }
                 }
-                else if(htmlLC.startsWith('!hh ') && htmlLC.length > 4)
+                else if(htmlLC.startsWith('!hh ') && htmlLC.length > 4 && !isPinnedMsg)
                 {
                     let param1 = html.substr(4).trim();
                     let girlId = -1;
@@ -314,10 +326,16 @@
                     }
 
                     //TODO: Remove this little joke
-                    if(param1.toLowerCase() == 'mythic noacc')
+                    if(param1.toLowerCase() == 'rin tohsaka')
+                    {
+                        girlName = 'Rin Tohsaka';
+                        let url = 'https://typemoon.fandom.com/wiki/Rin_Tohsaka';
+                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://avatars.githubusercontent.com/u/9114148?v=4" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                    }
+                    else if(param1.toLowerCase() == 'mythic noacc')
                     {
                         girlName = 'Mythic Noacc';
-                        let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
+                        let url = 'https://harem-battle.club/wiki/Harem-Heroes/HH:Mythic-Noacc';
                         htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about him!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://snipboard.io/LCkogf.jpg" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                     else
@@ -329,7 +347,7 @@
                         htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                     }
                 }
-                else if(htmlLC.startsWith('!poses ') && htmlLC.length > 7)
+                else if(htmlLC.startsWith('!poses ') && htmlLC.length > 7 && !isPinnedMsg)
                 {
                     let param1 = html.substr(7).trim();
                     let girlId = -1;
@@ -410,7 +428,7 @@
                         let wordLC = word.toLowerCase();
 
                         //gifs (only allowed as first "word" to allow putting more things after it, e.g. ping)
-                        if(k == 0 && wordLC.startsWith('!') && mapGIFs.has(wordLC))
+                        if(k == 0 && wordLC.startsWith('!') && mapGIFs.has(wordLC) && !isPinnedMsg)
                         {
                             let imgSrcArray = mapGIFs.get(wordLC);
                             let imgSrc = imgSrcArray[msgIdTimestampMs % imgSrcArray.length];
@@ -419,9 +437,9 @@
                         else if(wordLC.startsWith('https://')) //links / images
                         {
                             //is it an image?
-                            if( wordLC.endsWith('.gif') || wordLC.endsWith('.jpg') || wordLC.endsWith('.jpeg') || wordLC.endsWith('.png') || wordLC.endsWith('.webp') ||
+                            if((wordLC.endsWith('.gif') || wordLC.endsWith('.jpg') || wordLC.endsWith('.jpeg') || wordLC.endsWith('.png') || wordLC.endsWith('.webp') ||
                                (wordLC.length > 8 && wordLC.lastIndexOf('.webp?v=') == wordLC.length - 9)
-                              )
+                              ) && !isPinnedMsg)
                             {
                                 htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img src="' + word + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()"></a>' });
                             }
@@ -430,7 +448,7 @@
                                 htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank" onclick="return confirm(\'Do you really want to open this link?\')">' + word + '</a>' });
                             }
                         }
-                        else if(word.startsWith('@') && word.length != 1) //ping
+                        else if(word.startsWith('@') && word.length != 1 && !isPinnedMsg) //ping
                         {
                             //ignore some characters at the end
                             if([',', '.', '!', '?', ':', ')'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
@@ -648,7 +666,8 @@
                 }
             }
         }
-    });
+    }
+    const observerMessages = new MutationObserver(observerMessagesFunction);
     observerMessages.observe(document.querySelector('div.club-chat-messages.dark_subpanel_box'), { childList:true });
 
     //observe chat window users online/offline
@@ -741,7 +760,9 @@
                 else
                 {
                     custom.setAttribute('disabled', 'disabled');
-                    clubChatDisconnected = 1;
+
+                    //if we are muted, we do not try to reconnect. we don't know, if we are still connected because ClubChat.isConnected is set to false even when the chat (read only) is connected and working... (at least at this breakpoint)
+                    if(!ClubChat.isMuted) clubChatDisconnected = 1;
                 }
             }
         }
@@ -908,7 +929,7 @@
     {
         //check push version
         const img = new Image();
-        img.src = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/pushVersion.gif?' + Date.now();
+        img.src = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/pushVersion.gif?' + Date.now() + '#' + Date.now();
         img.onload = function() {
 
             //bypass Cross-Origin Resource Sharing (CORS) policy: use a dummy image as version indicator
@@ -928,11 +949,17 @@
 
             function getDownloadURL()
             {
+                //return the current download url from the script header (doesn't work in some script managers)
                 let downloadMatch = GM_info.scriptMetaStr.match(/\n\s*\/\/\s+@downloadURL\s+(.+?)\s*\n/i);
                 if (downloadMatch && downloadMatch.length > 1) return downloadMatch[1];
-                return null;
+
+                //static return
+                return 'https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js';
             }
         }
+
+        //check again in an hour
+        setTimeout(checkPushVersion, 3600000);
     }
 
     function fixClubChat(attempts = 0)
@@ -964,8 +991,11 @@
             {
                 ClubChat.hasFirstInit = true;
 
-                //check push version
-                checkPushVersion();
+                //parse pinned messages
+                ClubChat.socket.on("pin", function(data) {
+                    let mr = {addedNodes: [document.querySelector('div.pinned-block div.container div')], target: document.querySelector('div.pinned-block div.container'), pinnedBlock: true};
+                    observerMessagesFunction([mr], observerMessages);
+                });
 
                 //bug fix for Mozilla Firefox: The member list is outside the window at the first click
                 fixTabs_MozillaFirefox();
@@ -1183,11 +1213,11 @@
             ['!hehe', ['s6axyeNl4HMAAAAC/fate-ubw.gif']],
             ['!gm', ['YnY4gUjy8JQAAAAC/fate-stay-night-rin-tohsaka.gif']],
             ['!gn', ['n6xhcPW4zDcAAAAC/saber-goodnight.gif', 'AeCpJ0xNKKcAAAAC/anime-foodwars.gif']],
-            ['!sad', ['Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif']],
+            ['!sad', ['Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif', 'B9w6cHA-RrYAAAAd/marin-cry-marin-sad.gif']],
             ['!doit', ['NZXtIRvja5cAAAAC/doit-shialabeouf.gif']],
             ['!dejavu', ['CqoEATCG-1wAAAAC/déjàvu-drift.gif']],
             ['!wtf', ['https://i.ytimg.com/vi/XjVKHZ_F4zo/maxresdefault.jpg']],
-            ['!whale', ['https://cdn.discordapp.com/attachments/344734413600587776/463933711193473044/Whale.png']],
+            ['!whale', ['https://cdn.discordapp.com/attachments/344734413600587776/463933711193473044/Whale.png', 'Gb_N7yXyB-UAAAAC/marin-kitagawa-marin.gif', 'f_G-jdId4fkAAAAd/whale-gold.gif', 'id2Lsryg60cAAAAC/unusual-whales-unusual-whales-rain-money.gif']],
             ['!new', ['C52JpqHPWcYAAAAC/friends-phoebe.gif']],
             ['!why', ['o2CYGlMLADUAAAAC/barack-obama-why.gif', 'OPbFPRevcv4AAAAC/ajholmes-why.gif', '1Vh0XBrPM7MAAAAC/why-whats-the-reason.gif', 'y0Up9A_bTPwAAAAd/nph-why.gif', 'KjJTBQ9lftsAAAAC/why-huh.gif']],
             ['!legit', ['JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif']],
@@ -1199,6 +1229,12 @@
             ['!monster', ['e1T7jSFlZ-EAAAAC/shrek-gingerbread.gif', 'A_JS3lx__egAAAAC/star-trek-tos.gif', 'fx-nkmNVA_MAAAAC/penguins-of-madagascar-kowalski.gif']],
             ['!clap', ['BHEkb1EYsaMAAAAC/aplausos-clapped.gif', '3DslEXJ6bn8AAAAC/clap-slow-clap.gif', '50IjyLmv8mQAAAAC/will-smith-clap.gif', 'jrIAsC6362EAAAAC/clap-clapping.gif', '-DXhLQTX9hwAAAAd/im-proud-of-you-dan-levy.gif']],
             ['!:p', ['OHfZzUQuB88AAAAC/rin-shrug.gif', 'FVr4Zhmsnm4AAAAd/kotomine-kirei.gif']],
+            ['!liar', ['oZrRoDQDXZ4AAAAC/anakin-liar.gif', 'ZZi-EEsk_X8AAAAC/liar-mad.gif']],
+            ['!?', ['https://i.imgur.com/aovpJWc.gif']],
+            ['!rule', ['nPWzt3Rfql0AAAAC/fight-club-rules.gif', 'ijKrOkX2MEcAAAAC/fight-club-first-rule-of-fight-club.gif']],
+            ['!what', ['eAqD-5MDzFAAAAAC/mai-sakurajima-sakurajima-mai.gif', 'Q0yIxNX0L-kAAAAC/wait-what-what.gif']],
+            ['!sleepy', ['ajpTPte6fI8AAAAd/rin-tohsaka-pyjamas.gif']],
+            ['!proud', ['-DXhLQTX9hwAAAAC/im-proud-of-you-dan-levy.gif', 'X9jgpiApABcAAAAC/yes-nod.gif', 'iU_-BMVz9BIAAAAC/im-proud-of-you-dwayne-johnson.gif', '46dxApXEHh0AAAAd/smug-daniel-craig.gif']],
         ]);
     }
 
@@ -1209,6 +1245,7 @@
             [':pikaponder:', '862672993720336394'],
             [':rip:', '657438005602025486'],
             [':kanna_hi:', '953431707556667433'],
+            [':kannahi:', '953431707556667433'],
             [':hi:', '953431707556667433'],
             [':uwot:', '650195017692086328'],
             [':wot:', '650195017692086328'],
@@ -1218,6 +1255,7 @@
             [':kannaheadpat:', '667192299272273951'],
             [':thinky:', '878610897709436928'],
             [':thonk:', '860651714293006387'],
+            [':smug:', '1002518587833057320'],
 
             [':energy:', '864645021561782332'],
             [':combativity:', '848991758301265990'],
