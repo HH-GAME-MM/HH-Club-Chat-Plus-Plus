@@ -2,6 +2,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.15] - 2022-08-26
+
+### Added
+- Parsing pinned message with some restrictions
+- Added GIFs: !? !rule !what !sleepy !proud
+- Added Emojis: :smug:
+
+### Changed
+- Minor changes to enhance the user experience
+
+### Fixed
+- Fixed the incompatibility with the new mute code in chat.js v66132017 (Kinkoid)
+
 ## [0.13-0.14] - 2022-08-18
 
 ### Added
