@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [0.15] - 2022-08-26
 
 ### Added
-- Parsing pinned message with some restrictions
+- Parsing pinned message with some restrictions (e.g. images or commands are not allowed)
 - Added GIFs: !? !rule !what !sleepy !proud / added some gifs to existing commands
 - Added Emojis: :smug:
 
