@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Parsing pinned message with some restrictions
-- Added GIFs: !? !rule !what !sleepy !proud
+- Added GIFs: !? !rule !what !sleepy !proud / added some gifs to existing commands
 - Added Emojis: :smug:
 
 ### Changed
