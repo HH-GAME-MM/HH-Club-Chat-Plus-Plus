@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.15
+// @version      0.16
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -196,7 +196,7 @@
                 htmlLC = html.toLowerCase();*/
 
                 //update and save last (seen) message timestamp in localstore
-                lastMsgTimestamp = msgIdTimestampMs;
+                if(lastMsgTimestamp < msgIdTimestampMs) lastMsgTimestamp = msgIdTimestampMs;
                 if(chatWindowVisible && lastMsgTimestampSeen < lastMsgTimestamp)
                 {
                     lastMsgTimestampSeen = lastMsgTimestamp;
