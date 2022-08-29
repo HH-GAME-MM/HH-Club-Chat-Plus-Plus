@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.16] - 2022-08-29
+
+### Fixed
+- The ping notification did not disappear in some cases
+
 ## [0.15] - 2022-08-26
 
 ### Added
