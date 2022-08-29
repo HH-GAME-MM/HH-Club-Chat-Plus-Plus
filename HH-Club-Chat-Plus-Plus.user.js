@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.16
+// @version      0.17
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -938,7 +938,7 @@
             let version = GM_info.script.version.split('.');
             if(parseInt(version[0]) < versionPushMajor || (parseInt(version[0]) == versionPushMajor && parseInt(version[1]) < versionPushMinor))
             {
-                let div = document.querySelector('#resize-chat-box div.chat-tabs.ui-draggable-handle');
+                let div = document.querySelector('#resize-chat-box div.chat-tabs');
                 let a = document.createElement('a');
                 a.setAttribute('style', 'color:red');
                 a.setAttribute('href', getDownloadURL());
