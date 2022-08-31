@@ -297,8 +297,10 @@
                                       '<br/>' +
                                       '<span style="font-weight:bold;">CREDITS</span><br/>' +
                                       'Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"<br/>' +
-                                      'If you would like to support me, you can do so here: <a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a><br/>' +
-                                      'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)'});
+                                      'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)<br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">SPONSORS</span><br/>' +
+                                      'If you would like to support me, you can do so here: <a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a>'});
                     }
                     else
                     {
