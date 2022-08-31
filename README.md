@@ -62,3 +62,6 @@ Upgrade Club Chat with various features and bug fixes
 **CREDITS**
 - Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"
 - Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)
+
+**SPONSORS**
+- If you would like to support me, you can do so here: https://www.buymeacoffee.com/HHMM
