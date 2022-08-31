@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.18] - 2022-08-31
+
+### Fixed
+- The pinned message was not parsed in some cases (experimental fix)
+
 ## [0.16-0.17] - 2022-08-29
 
 ### Changed
