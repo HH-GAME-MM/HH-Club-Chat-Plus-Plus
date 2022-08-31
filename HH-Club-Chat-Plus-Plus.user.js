@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.17
+// @version      0.18
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -297,6 +297,7 @@
                                       '<br/>' +
                                       '<span style="font-weight:bold;">CREDITS</span><br/>' +
                                       'Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"<br/>' +
+                                      'If you would like to support me, you can do so here: <a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a><br/>' +
                                       'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)'});
                     }
                     else
@@ -476,6 +477,7 @@
                                     case '@pity': wordLC = '@pitythefool'; break;
                                     case '@chico': wordLC = '@chico_bonbon'; break;
                                     case '@nat': wordLC = '@natstar'; break;
+                                    case '@z': wordLC = '@zteev'; break;
                                 }
                             }
 
@@ -992,10 +994,9 @@
                 ClubChat.hasFirstInit = true;
 
                 //parse pinned messages
-                ClubChat.socket.on("pin", function(data) {
-                    let mr = {addedNodes: [document.querySelector('div.pinned-block div.container div')], target: document.querySelector('div.pinned-block div.container'), pinnedBlock: true};
-                    observerMessagesFunction([mr], observerMessages);
-                });
+                ClubChat.socket.on("pin", parsePinnedMessage);
+                //parse the pinned message if there already is one
+                if(document.querySelector('div.pinned-block div.container div') != null) parsePinnedMessage();
 
                 //bug fix for Mozilla Firefox: The member list is outside the window at the first click
                 fixTabs_MozillaFirefox();
@@ -1055,6 +1056,12 @@
     function getScrollTopMax()
     {
         return ClubChat.$msgHolder[0].scrollHeight - ClubChat.$msgHolder[0].clientHeight;
+    }
+
+    function parsePinnedMessage(data = null)
+    {
+        let mr = {addedNodes: [document.querySelector('div.pinned-block div.container div')], target: document.querySelector('div.pinned-block div.container'), pinnedBlock: true};
+        observerMessagesFunction([mr], observerMessages);
     }
 
     function getIFrame()
@@ -1223,6 +1230,9 @@
             ['!legit', ['JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif']],
             ['!rng', ['https://imgs.xkcd.com/comics/random_number.png', 'c6drTKdM9ZEAAAAS/rng-excalibur.gif', 'mACda5RzcAcAAAAd/destiny.gif']],
             ['!gz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
+            ['!gratz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
+            ['!congratz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
+            ['!congrats', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
             ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif', 'Qc9cm8By46YAAAAd/doggo-dog.gif']],
             ['!fail', ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif']],
             ['!doubt', ['ld5tk9ujuJsAAAAC/doubt-press-x.gif', '_0AGcJvL5QYAAAAC/jim-halpert-face.gif', 'xZt1qV8KMbkAAAAC/ehh-probably-not.gif']],
