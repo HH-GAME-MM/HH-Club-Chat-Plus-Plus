@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.18
+// @version      0.19
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -242,9 +242,9 @@
                     {
                         forceScrollDown = true;
                         let gifs = '';
-                        mapGIFs.forEach((value, key) => { if(value.length == 1) gifs += key + ' '; });
+                        mapGIFs.forEach((value, key) => { if((Array.isArray(value) && value.length == 1) || (!Array.isArray(value) && mapGIFs.get(value).length == 1)) gifs += key + ' '; });
                         let gifsRandom = '';
-                        mapGIFs.forEach((value, key) => { if(value.length != 1) gifsRandom += key + ' '; });
+                        mapGIFs.forEach((value, key) => { if((Array.isArray(value) && value.length != 1) || (!Array.isArray(value) && mapGIFs.get(value).length != 1)) gifsRandom += key + ' '; });
                         let emojis = '';
                         mapEmojis.forEach((value, key) => { emojis += key + ' '; });
                         htmlNew.push({ isValid: true, value: '!help = show this help (hidden for other script users)<br/>' +
@@ -434,6 +434,7 @@
                         if(k == 0 && wordLC.startsWith('!') && mapGIFs.has(wordLC) && !isPinnedMsg)
                         {
                             let imgSrcArray = mapGIFs.get(wordLC);
+                            if(!Array.isArray(imgSrcArray)) imgSrcArray = mapGIFs.get(imgSrcArray); //gif alias
                             let imgSrc = imgSrcArray[msgIdTimestampMs % imgSrcArray.length];
                             htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' });
                         }
@@ -931,6 +932,9 @@
 
     function checkPushVersion()
     {
+        //return if there is already an update message
+        if(document.getElementById('HHClubChatPlusPlus_UpdateMessage') != null) return;
+
         //check push version
         const img = new Image();
         img.src = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/pushVersion.gif?' + Date.now() + '#' + Date.now();
@@ -944,6 +948,7 @@
             {
                 let div = document.querySelector('#resize-chat-box div.chat-tabs');
                 let a = document.createElement('a');
+                a.setAttribute('id', 'HHClubChatPlusPlus_UpdateMessage');
                 a.setAttribute('style', 'color:red');
                 a.setAttribute('href', getDownloadURL());
                 a.setAttribute('target', '_blank');
@@ -1221,7 +1226,7 @@
             ['!heyhey', ['iOG-xvGrcVQAAAAC/hayasaka-kaguya.gif']],
             ['!hehe', ['s6axyeNl4HMAAAAC/fate-ubw.gif']],
             ['!gm', ['YnY4gUjy8JQAAAAC/fate-stay-night-rin-tohsaka.gif']],
-            ['!gn', ['n6xhcPW4zDcAAAAC/saber-goodnight.gif', 'AeCpJ0xNKKcAAAAC/anime-foodwars.gif']],
+            ['!gn', ['n6xhcPW4zDcAAAAC/saber-goodnight.gif', 'AeCpJ0xNKKcAAAAC/anime-foodwars.gif', 'E9cdA-c9vcwAAAAC/kumo-desu-ga-nani-ka-kumoko.gif']],
             ['!sad', ['Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif', 'B9w6cHA-RrYAAAAd/marin-cry-marin-sad.gif']],
             ['!doit', ['NZXtIRvja5cAAAAC/doit-shialabeouf.gif']],
             ['!dejavu', ['CqoEATCG-1wAAAAC/déjàvu-drift.gif']],
@@ -1232,10 +1237,12 @@
             ['!legit', ['JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif']],
             ['!rng', ['https://imgs.xkcd.com/comics/random_number.png', 'c6drTKdM9ZEAAAAS/rng-excalibur.gif', 'mACda5RzcAcAAAAd/destiny.gif']],
             ['!gz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
-            ['!gratz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
-            ['!congratz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
-            ['!congrats', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
+            ['!gratz', '!gz'],
+            ['!congratz', '!gz'],
+            ['!congrats', '!gz'],
             ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif', 'Qc9cm8By46YAAAAd/doggo-dog.gif']],
+            ['!ty', '!thx'],
+            ['!thanks', '!thx'],
             ['!fail', ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif']],
             ['!doubt', ['ld5tk9ujuJsAAAAC/doubt-press-x.gif', '_0AGcJvL5QYAAAAC/jim-halpert-face.gif', 'xZt1qV8KMbkAAAAC/ehh-probably-not.gif']],
             ['!monster', ['e1T7jSFlZ-EAAAAC/shrek-gingerbread.gif', 'A_JS3lx__egAAAAC/star-trek-tos.gif', 'fx-nkmNVA_MAAAAC/penguins-of-madagascar-kowalski.gif']],
@@ -1247,6 +1254,8 @@
             ['!what', ['eAqD-5MDzFAAAAAC/mai-sakurajima-sakurajima-mai.gif', 'Q0yIxNX0L-kAAAAC/wait-what-what.gif']],
             ['!sleepy', ['ajpTPte6fI8AAAAd/rin-tohsaka-pyjamas.gif']],
             ['!proud', ['-DXhLQTX9hwAAAAC/im-proud-of-you-dan-levy.gif', 'X9jgpiApABcAAAAC/yes-nod.gif', 'iU_-BMVz9BIAAAAC/im-proud-of-you-dwayne-johnson.gif', '46dxApXEHh0AAAAd/smug-daniel-craig.gif']],
+            ['!headpat', ['xE9m5-LkBeEAAAAi/anime-kanna.gif']],
+            ['!ohmy', ['svFFJHFmLccAAAAC/oh-my-george-takei.gif']],
         ]);
     }
 
@@ -1255,6 +1264,8 @@
         return new Map([
             [':kek:', '588599124312457217'],
             [':pikaponder:', '862672993720336394'],
+            [':surprisedpika:', '589875097058279437'],
+            [':surprised:', '589875097058279437'],
             [':rip:', '657438005602025486'],
             [':kanna_hi:', '953431707556667433'],
             [':kannahi:', '953431707556667433'],
@@ -1268,6 +1279,13 @@
             [':thinky:', '878610897709436928'],
             [':thonk:', '860651714293006387'],
             [':smug:', '1002518587833057320'],
+            [':bunny:', '527094255584542720'],
+            [':bunny_sad:', '855351276803457044'],
+            [':bunnys:', '855351276803457044'],
+            [':bunny_joy:', '861385389004947526'],
+            [':bunnyj:', '861385389004947526'],
+            [':bunny_realization:', '865514400759808020'],
+            [':bunnyr:', '865514400759808020'],
 
             [':energy:', '864645021561782332'],
             [':combativity:', '848991758301265990'],
