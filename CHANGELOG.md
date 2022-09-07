@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.19] - 2022-09-07
+
+### Added
+- Added GIFs: !headpat !ohmy
+- Added some GIF aliases to !gz and !thx
+- Added Emojis: :surprisedpika: :surprised: :bunny: :bunny_sad: :bunnys: :bunny_joy: :bunnyj: :bunny_realization: :bunnyr:
+
+### Changed
+- Minor changes to enhance the user experience
+
 ## [0.18] - 2022-08-31
 
 ### Fixed
