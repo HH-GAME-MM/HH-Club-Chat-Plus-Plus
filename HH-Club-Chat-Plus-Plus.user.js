@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.19
+// @version      0.20
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -55,6 +55,7 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt a {color:white;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt img {max-width:200px;max-height:100px;}');
     css.sheet.insertRule('div.club-chat-messages div.chat-msg div.chat-msg-txt img.emoji {max-width:24px;max-height:24px;}');
+    css.sheet.insertRule('div.club-chat-messages div.chat-msg div.chat-msg-txt img.emoji-only {max-width:36px;max-height:36px;}');
     css.sheet.insertRule('div.pinned-block div.chat-msg div.chat-msg-txt img.emoji {max-width:16px;max-height:16px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.hh {width:300px;background-color:#2f3136;padding:7px;border-radius:7px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt div.hh div.left {float:left;width:70%;}');
@@ -147,54 +148,6 @@
                 let htmlLC = html.toLowerCase();
                 let isPinnedMsg = (mutations[i].pinnedBlock == true);
 
-                //DEBUG
-                /*if(html == 'x')
-                {
-                    html = ':kek: :pikaponder: :am: :koban: :energy: :cordy: :cordys: :datingtoken: :blackgem: :black:';
-                }
-                else if(html == 'x')
-                {
-                    html = 'https://www.google.com';
-                }
-                else if(html == 'x')
-                {
-                    html = '/spoiler :kek: :pikaponder:';
-                }
-                else if(html == 'x')
-                {
-                    html = '!poses 797015676';
-                }
-                else if(html == 'x')
-                {
-                    html = '!hh 797015676';
-                }
-                else if(html == 'x')
-                {
-                    html = '!poses Golden Lupa´s Mom';
-                }
-                else if(html == 'x')
-                {
-                    html = '!gm @mm';
-                }
-                else if(html == 'x')
-                {
-                    html = '@MMM @MM test ping 1';
-                }
-                else if(html == 'x')
-                {
-                    html = '!hh lil’ red in the city';
-                }
-                else if(html == 'x')
-                {
-                    html = '*it al ic* **b o l d** __under line__ ~~strike through~~';
-                    //html = '*it al ic **b o l d*** __under line ~~strike through~~__';
-                }
-                else if(html == 'holy running this chat like rosso does a player feedback event')
-                {
-                    html = 'holy running this chat like rosso does a player feedback event :kek:';
-                }
-                htmlLC = html.toLowerCase();*/
-
                 //update and save last (seen) message timestamp in localstore
                 if(lastMsgTimestamp < msgIdTimestampMs) lastMsgTimestamp = msgIdTimestampMs;
                 if(chatWindowVisible && lastMsgTimestampSeen < lastMsgTimestamp)
@@ -234,6 +187,7 @@
                 //new html
                 let htmlNew = [];
                 let forceScrollDown = false;
+                let emojiOnly = false; //emojis can be larger if the message contains nothing else
 
                 if(htmlLC == '!help' && !isPinnedMsg)
                 {
@@ -408,6 +362,9 @@
                 }
                 else
                 {
+                    //no bigger emoijs in the pinned message
+                    emojiOnly = !isPinnedMsg;
+
                     //is it a spoiler?
                     let isSpoiler = false;
                     if(htmlLC.startsWith('/spoiler '))
@@ -424,22 +381,18 @@
                     let styleItalic = -1;
                     let styleUnderline = -1;
                     let styleLineThrough = -1;
+                    let hasGif = false;
                     //TODO add || as spoiler
                     for(let k = 0; k < htmlSplits.length; k++)
                     {
                         let word = htmlSplits[k];
                         let wordLC = word.toLowerCase();
 
-                        //gifs (only allowed as first "word" to allow putting more things after it, e.g. ping)
-                        if(k == 0 && wordLC.startsWith('!') && mapGIFs.has(wordLC) && !isPinnedMsg)
+                        //links / images
+                        if(wordLC.startsWith('https://')) 
                         {
-                            let imgSrcArray = mapGIFs.get(wordLC);
-                            if(!Array.isArray(imgSrcArray)) imgSrcArray = mapGIFs.get(imgSrcArray); //gif alias
-                            let imgSrc = imgSrcArray[msgIdTimestampMs % imgSrcArray.length];
-                            htmlNew.push({ isValid: true, value: '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + htmlLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' });
-                        }
-                        else if(wordLC.startsWith('https://')) //links / images
-                        {
+                            emojiOnly = false;
+
                             //is it an image?
                             if((wordLC.endsWith('.gif') || wordLC.endsWith('.jpg') || wordLC.endsWith('.jpeg') || wordLC.endsWith('.png') || wordLC.endsWith('.webp') ||
                                (wordLC.length > 8 && wordLC.lastIndexOf('.webp?v=') == wordLC.length - 9)
@@ -635,10 +588,35 @@
                             //emojis
                             if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC))
                             {
-                                htmlNew[wordIndex].value = '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=24&quality=lossless" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
+                                htmlNew[wordIndex].value = '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + mapEmojis.get(wordLC) + '.webp?size=48&quality=lossless" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
+                                htmlNew[wordIndex].isEmoji = true;
+                            }
+                            else if(!hasGif && wordLC.startsWith('!') && mapGIFs.has(wordLC) && !isPinnedMsg) //gifs (only one gif per message allowed)
+                            {
+                                emojiOnly = false;
+                                hasGif = true;
+
+                                let imgSrcArray = mapGIFs.get(wordLC);
+                                if(!Array.isArray(imgSrcArray)) imgSrcArray = mapGIFs.get(imgSrcArray); //gif alias
+                                let imgSrc = imgSrcArray[msgIdTimestampMs % imgSrcArray.length];
+                                let htmlGif = '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
+
+                                //are we at the beginning of the message?
+                                if(k == 0)
+                                {
+                                    htmlNew[wordIndex].value = htmlGif;
+                                }
+                                else
+                                {
+                                    //insert the gif at the beginning of the message and the gif code in the text
+                                    htmlNew[wordIndex].value = wordLC;
+                                    htmlNew.unshift({ isValid: true, value: htmlGif + ' ' });
+                                }
                             }
                             else
                             {
+                                emojiOnly = false;
+
                                 //add the word
                                 htmlNew[wordIndex].value = word;
                             }
@@ -662,7 +640,7 @@
                 {
                     //add new html
                     let htmlNewStr = '';
-                    htmlNew.forEach(e => { htmlNewStr += e.isValid ? e.value : e.invalidValue });
+                    htmlNew.forEach(e => { htmlNewStr += e.isValid ? (emojiOnly && e.isEmoji ? e.value.replace('class="emoji"', 'class="emoji-only"') : e.value) : e.invalidValue });
                     node.lastElementChild.innerHTML = htmlNewStr;
 
                     //scrolling
@@ -1036,7 +1014,7 @@
         ClubChat.updateScrollPosition = function() {
 
             //scroll only if the scrollbar is close to the bottom
-            if (ClubChat.$msgHolder[0].scrollTop > getScrollTopMax() - 300)
+            if (ClubChat.$msgHolder[0].scrollTop > getScrollTopMax() - 250)
             {
                 scrollDown();
             }
@@ -1256,6 +1234,7 @@
             ['!proud', ['-DXhLQTX9hwAAAAC/im-proud-of-you-dan-levy.gif', 'X9jgpiApABcAAAAC/yes-nod.gif', 'iU_-BMVz9BIAAAAC/im-proud-of-you-dwayne-johnson.gif', '46dxApXEHh0AAAAd/smug-daniel-craig.gif']],
             ['!headpat', ['xE9m5-LkBeEAAAAi/anime-kanna.gif']],
             ['!ohmy', ['svFFJHFmLccAAAAC/oh-my-george-takei.gif']],
+            ['!25', ['ww8XZ4PLWgEAAAAC/25-years.gif', '1eUwz8-OAwgAAAAC/25-pusheen.gif']],
         ]);
     }
 
@@ -1286,6 +1265,9 @@
             [':bunnyj:', '861385389004947526'],
             [':bunny_realization:', '865514400759808020'],
             [':bunnyr:', '865514400759808020'],
+            [':thx:', '294932319020515348'],
+            [':ty:', '294932319020515348'],
+            [':thanks:', '294932319020515348'],
 
             [':energy:', '864645021561782332'],
             [':combativity:', '848991758301265990'],
