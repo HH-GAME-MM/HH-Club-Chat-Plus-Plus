@@ -2,6 +2,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.20] - 2022-09-09
+
+### Added
+- Added GIFs: !25
+- Added Emojis: :thx: :ty: :thanks:
+
+### Changed
+- Emojis are larger if the message contains nothing else
+- Gif code can now be used anywhere in the text (Gif will still be displayed at the beginning of the message)
+- Auto-Scroll is disabled when you scroll up 250 pixels instead of 300 pixels
+
 ## [0.19] - 2022-09-07
 
 ### Added
