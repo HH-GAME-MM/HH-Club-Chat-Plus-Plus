@@ -2,7 +2,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.20] - 2022-09-09
+## [0.20-0.21] - 2022-09-09
 
 ### Added
 - Added GIFs: !25
