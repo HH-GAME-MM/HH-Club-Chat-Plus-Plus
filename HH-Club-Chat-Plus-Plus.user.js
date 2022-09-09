@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.20
+// @version      0.21
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -386,10 +386,11 @@
                     for(let k = 0; k < htmlSplits.length; k++)
                     {
                         let word = htmlSplits[k];
+                        if(word == '') continue;
                         let wordLC = word.toLowerCase();
 
                         //links / images
-                        if(wordLC.startsWith('https://')) 
+                        if(wordLC.startsWith('https://'))
                         {
                             emojiOnly = false;
 
