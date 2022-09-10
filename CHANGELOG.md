@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [0.22] - 2022-09-10
 
 ### Added
-- Emojis / GIFs Picker "EmojiKeyboard"
+- Added Emojis / GIFs Picker "EmojiKeyboard"
 - "Random GIFs" can now be selected (in the picker or by adding _0, _1, _2, etc.)
 
 ## [0.20-0.21] - 2022-09-09
