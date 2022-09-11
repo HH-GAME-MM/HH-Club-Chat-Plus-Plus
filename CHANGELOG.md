@@ -2,12 +2,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.24] - 2022-09-11
+## [0.23-0.24] - 2022-09-11
 
 ### Changed
 - Changed the sorting of custom emojis
-
-## [0.23] - 2022-09-11
 
 ### Fixed
 - Emoji :shard: :shards: was missing due to copy-paste error
