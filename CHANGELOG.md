@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.23] - 2022-09-11
+
+### Fixed
+- Emoji :shard: :shards: was missing due to copy-paste error
+
 ## [0.22] - 2022-09-10
 
 ### Added
