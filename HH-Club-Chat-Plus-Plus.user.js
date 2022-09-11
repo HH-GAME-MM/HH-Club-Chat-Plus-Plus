@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.23
+// @version      0.24
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1281,11 +1281,12 @@
         emojiKeyboardCss.sheet.insertRule('img.emojikb-emoji[data-category="GIFs"] { width: auto; height: auto; max-width: 200px; max-height: 100px; }');
 
         //add emojis to emojiKeyboard
+        let emojiKeyboardEmojis = emojiKeyboard.emojis.get('Emojis');
         mapEmojis.forEach((value, key) => {
-            //is it no alias?
+            //is it not an alias?
             if(!value.startsWith(':'))
             {
-                emojiKeyboard.emojis.get('Emojis').push({
+                emojiKeyboardEmojis.push({
                     url: 'https://cdn.discordapp.com/emojis/' + value + '.webp?size=48&quality=lossless',
                     name: key,
                     emoji: key,
@@ -1295,8 +1296,9 @@
         });
 
         //add gifs to emojiKeyboard
+        let emojiKeyboardGIFs = emojiKeyboard.emojis.get('GIFs');
         mapGIFs.forEach((value, key) => {
-            //is it no alias?
+            //is it not an alias?
             if(Array.isArray(value))
             {
                 for(let i = 0; i < value.length; i++)
@@ -1305,7 +1307,7 @@
                     let url = imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc;
                     let directKey = key + (value.length != 1 ? '_' + i : '');
 
-                    emojiKeyboard.emojis.get('GIFs').push({
+                    emojiKeyboardGIFs.push({
                         url: url,
                         name: directKey,
                         emoji: directKey,
@@ -1612,6 +1614,9 @@
             [':thinky:', '878610897709436928'],
             [':thonk:', '860651714293006387'],
             [':smug:', '1002518587833057320'],
+            [':thx:', '294932319020515348'],
+            [':ty:', ':thx:'],
+            [':thanks:', ':thx:'],
             [':bunny:', '527094255584542720'],
             [':bunny_sad:', '855351276803457044'],
             [':bunnys:', ':bunny_sad:'],
@@ -1619,9 +1624,6 @@
             [':bunnyj:', ':bunny_joy:'],
             [':bunny_realization:', '865514400759808020'],
             [':bunnyr:', ':bunny_realization:'],
-            [':thx:', '294932319020515348'],
-            [':ty:', ':thx:'],
-            [':thanks:', ':thx:'],
 
             [':energy:', '864645021561782332'],
             [':combativity:', '848991758301265990'],
@@ -1648,9 +1650,6 @@
             [':flowers:', '860867149009780757'],
             [':book:', '923655294381359104'],
             [':spellbook:', ':book:'],
-
-            [':kk:', '915301903561265194'],
-            [':kinkoid:', ':kk:'],
 
             [':perfume:', '917383948408086529'],
             [':sandalwood:', ':perfume:'],
@@ -1709,6 +1708,9 @@
             [':submissive:', ':white:'],
             [':purple:', '901255233773137991'],
             [':voyeur:', ':purple:'],
+
+            [':kk:', '915301903561265194'],
+            [':kinkoid:', ':kk:'],
         ]);
     }
 })();
@@ -2030,7 +2032,8 @@ class EmojiKeyboard {
             categ_name.appendChild(parse_svg(v[0]));
             categ_name.appendChild(categ_span);
             categ_div.appendChild(categ_name);
-            for (const emoji of this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode))) {
+            let emojis_sorted = v[1] != 'Emojis' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1]); //do not sort custom emojis
+            for (const emoji of emojis_sorted) {
                 let img = document.createElement("img");
                 img.dataset.name = emoji.name;
                 img.dataset.unicode = emoji.unicode;
