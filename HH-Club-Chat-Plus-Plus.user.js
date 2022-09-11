@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.22
+// @version      0.23
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1641,6 +1641,9 @@
             [':potion_lust:', '948310353979252786'],
             [':crystal:', '999279877834428416'],
             [':crystal_token:', ':crystal:'],
+
+            [':shard:', '540690525238591518'],
+            [':shards:', ':shard:'],
 
             [':flowers:', '860867149009780757'],
             [':book:', '923655294381359104'],
