@@ -2,7 +2,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.26] - 2022-09-27
+## [0.26-0.27] - 2022-09-27
 
 ### Added
 - The sponsors were added
