@@ -43,17 +43,18 @@ Upgrade Club Chat with various features and bug fixes
 **GIFS**
 - The following gifs are available: !heyhey !hehe !gm !sad !doit !dejavu !wtf !new !legit !? !sleepy
 - The following random gifs are available: !moar !both !gn !why !rng !gz !thx !fail !doubt !monster !clap !whale !liar !rule !what !proud
-- Note: Only one GIF allowed at the start of your post. It is possible to add more things (e.g. ping)
-- Note: This list may not be up to date. Use the !help command in the chat for the current list
+- Note: Only one GIF per message allowed. GIF code can be used anywhere in the text
+- Note: This list may not be up to date. Use the !help command in the chat for the current list or check out the Emojis / GIFs Picker "EmojiKeyboard"
 
 **EMOJIS**
 - The following emojis are available: :kek: :pikaponder: :rip: :kanna_hi: :hi: :uwot: :wot: :kanna_nom: :kannanom: :kanna_headpat: :kannaheadpat: :thinky: :thonk: :smug: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :potion_endurance: :potion_love: :potion_lust: :crystal: :shard: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
-- Note: This list may not be up to date. Use the !help command in the chat for the current list
+- Note: This list may not be up to date. Use the !help command in the chat for the current list or check out the Emojis / GIFs Picker "EmojiKeyboard"
 
 **MISCELLANEOUS**
 - The nickname color is changed. Your nickname is gold, the club leader is red and all members are blue
 - Online/Offline status added behind the nickname (with auto refresh)
 - ++ added behind the nickname (indicates who is using this script)
+- Added Emojis / GIFs Picker "EmojiKeyboard"
 - Chat window remains in its position and size
 - Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom
 - Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Firefox: Member list outside the window"
@@ -64,4 +65,5 @@ Upgrade Club Chat with various features and bug fixes
 - Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)
 
 **SPONSORS**
+- Uxio and lep - Thanks for sponsoring!
 - If you would like to support me, you can do so here: https://www.buymeacoffee.com/HHMM
