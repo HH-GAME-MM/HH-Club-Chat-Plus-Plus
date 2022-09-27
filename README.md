@@ -1,11 +1,18 @@
 # HH Club Chat++
 Upgrade Club Chat with various features and bug fixes
 
-## Installation instructions:
+## Windows / Mac OS - Installation instructions:
 1) Install TamperMonkey browser extension (or your userscript extension of choice e.g. Greasemonkey)
 2) Click the URL: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
 3) TamperMonkey should automatically prompt you to install/update the script. If it doesn't, open up the TamperMonkey Dashboard, go to the Utilities tab, scroll down to "Install from URL" and paste the URL in there
 4) Refresh the main page or log in to the game again for the script to take effect
+
+## Android - Installation instructions:
+1) Install Firefox Nightly from the Google Play Store https://play.google.com/store/apps/details?id=org.mozilla.fenix
+2) Follow this tutorial to install TamperMonkey: https://enux.pl/article/en/2021-03-14/how-use-tampermonkey-firefox-mobile
+3) Click the URL: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
+4) TamperMonkey should automatically prompt you to install/update the script. If it doesn't, copy the whole text of the script, open up the TamperMonkey Dashboard, create a new script (+ sign), paste the text and save it
+5) Refresh the main page or log in to the game again for the script to take effect
 
 ## Features
 **HELP**
