@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.26
+// @version      0.27
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -254,11 +254,14 @@
                                       '<br/>' +
                                       '<span style="font-weight:bold;">CREDITS</span><br/>' +
                                       'Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"<br/>' +
-                                      'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)<br/>' +
+                                      'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Firefox Nightly (Android)<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">SPONSORS</span><br/>' +
                                       'Uxio and lep - Thanks for sponsoring!<br/>' +
-                                      'If you would like to support me, you can do so here: <a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a>'});
+                                      'If you would like to support me, you can do so here: <a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a><br/>' +
+                                      '<br/>' +
+                                      '<span style="font-weight:bold;">CHANGELOG</span><br/>' +
+                                      '<a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md</a>'});
                     }
                     else
                     {
