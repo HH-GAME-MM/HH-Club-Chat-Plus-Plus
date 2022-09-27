@@ -69,7 +69,7 @@ Upgrade Club Chat with various features and bug fixes
 
 **CREDITS**
 - Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"
-- Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android)
+- Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Firefox Nightly (Android)
 
 **SPONSORS**
 - Uxio and lep - Thanks for sponsoring!
