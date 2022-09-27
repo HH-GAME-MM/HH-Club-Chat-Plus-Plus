@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.25
+// @version      0.26
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -21,11 +21,14 @@
 
     console.log('HH Club Chat++ Script v' + GM_info.script.version);
 
+    const HHCLUBCHATPLUSPLUS_URL_DOWNLOAD = 'https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js';
+    const HHCLUBCHATPLUSPLUS_URL_RES = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/res/';
+    const HHCLUBCHATPLUSPLUS_INDICATOR = ' \u200D';
+
     //check push version
     checkPushVersion();
 
     //create new input and send button
-    const HHCLUBCHATPLUSPLUS_INDICATOR = ' \u200D';
     createNewInputAndSendButton();
 
     //club chat init fails sometimes. we fix it now
@@ -144,11 +147,6 @@
                 let html = node.lastElementChild.innerHTML;
                 let sentByHHCCPlusPlus = html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR);
                 if(sentByHHCCPlusPlus) html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR.length);
-                else if(html.endsWith('\u200D')) //TODO delete code block: temporary compatibility with v0.6 and lower
-                {
-                    sentByHHCCPlusPlus = true;
-                    html = html.substr(0, html.length - 1);
-                }
                 let htmlLC = html.toLowerCase();
                 let isPinnedMsg = (mutations[i].pinnedBlock == true);
 
@@ -239,7 +237,7 @@
                                       '<span style="font-weight:bold;">GIFS</span><br/>' +
                                       'The following gifs are available: ' + gifs + '<br/>' +
                                       'The following random gifs are available: ' + gifsRandom + '<br/>' +
-                                      'Note: Only one GIF allowed at the start of your post. It is possible to add more things (e.g. ping)<br/>' +
+                                      'Note: Only one GIF per message allowed. GIF code can be used anywhere in the text<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">EMOJIS</span><br/>' +
                                       'The following emojis are available: ' + emojis + '<br/>' +
@@ -248,6 +246,7 @@
                                       '- The nickname color is changed. Your nickname is gold, the club leader is red and all members are blue<br/>' +
                                       '- Online/Offline status added behind the nickname (with auto refresh)<br/>' +
                                       '- ++ added behind the nickname (indicates who is using this script)<br/>' +
+                                      '- Added Emojis / GIFs Picker "EmojiKeyboard"<br/>' +
                                       '- Chat window remains in its position and size<br/>' +
                                       '- Auto Scrolling fixed. It scrolls only if the scrollbar is close to the bottom<br/>' +
                                       '- Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Firefox: Member list outside the window"<br/>' +
@@ -258,6 +257,7 @@
                                       'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop)<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">SPONSORS</span><br/>' +
+                                      'Uxio and lep - Thanks for sponsoring!<br/>' +
                                       'If you would like to support me, you can do so here: <a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a>'});
                     }
                     else
@@ -285,21 +285,6 @@
                         girlId = getGirlIdByName(param1, girlDictionary);
                         if(girlId != -1) girlName = getGirlNameById(girlId, girlDictionary); //get the name nicely written
                     }
-
-                    //TODO: Remove this little joke
-                    if(param1.toLowerCase() == 'rin tohsaka')
-                    {
-                        girlName = 'Rin Tohsaka';
-                        let url = 'https://typemoon.fandom.com/wiki/Rin_Tohsaka';
-                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://avatars.githubusercontent.com/u/9114148?v=4" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
-                    }
-                    else if(param1.toLowerCase() == 'mythic noacc')
-                    {
-                        girlName = 'Mythic Noacc';
-                        let url = 'https://harem-battle.club/wiki/Harem-Heroes/HH:Mythic-Noacc';
-                        htmlNew.push({ isValid: true, value: '<div class="hh"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about him!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://snipboard.io/LCkogf.jpg" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
-                    }
-                    else
 
                     //girl found?
                     if(girlId != -1)
@@ -399,9 +384,10 @@
                             emojiOnly = false;
 
                             //is it an image?
-                            if((wordLC.endsWith('.gif') || wordLC.endsWith('.jpg') || wordLC.endsWith('.jpeg') || wordLC.endsWith('.png') || wordLC.endsWith('.webp') ||
-                               (wordLC.length > 8 && wordLC.lastIndexOf('.webp?v=') == wordLC.length - 9)
-                              ) && !isPinnedMsg)
+                            let pos = wordLC.indexOf('?');
+                            if(pos == -1) pos = wordLC.length;
+                            let fileExtension = wordLC.substr(pos - 5, 5);
+                            if((fileExtension.endsWith('.gif') || fileExtension.endsWith('.jpg') || fileExtension == '.jpeg' || fileExtension.endsWith('.png') || fileExtension == '.webp') && !isPinnedMsg)
                             {
                                 htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img src="' + word + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()"></a>' });
                             }
@@ -424,11 +410,10 @@
                                     case '@holy': wordLC = '@holymolly'; break;
                                     case '@epic':
                                     case '@bacon': wordLC = '@epicbacon'; break;
-                                    case '@finder': wordLC = '@finderkeeper'; break;
+                                    case '@finder':
                                     case '@finds': wordLC = '@finderkeeper'; break;
                                     case '@yoyo': wordLC = '@yoyowhan'; break;
                                     case '@hvj': wordLC = '@hvjkzv'; break;
-                                    case '@mugzy': wordLC = '@mugzylol'; break;
                                     case '@chuck':
                                     case '@maximus':
                                     case '@master': wordLC = '@master_maximus'; break;
@@ -439,8 +424,6 @@
                                     case '@chico': wordLC = '@chico_bonbon'; break;
                                     case '@nat': wordLC = '@natstar'; break;
                                     case '@z': wordLC = '@zteev'; break;
-                                    case '@umbra':
-                                    case '@bello': wordLC = '@umbra_bello'; break;
                                 }
                             }
 
@@ -597,7 +580,8 @@
                             {
                                 let emojiId = mapEmojis.get(wordLC);
                                 if(emojiId.startsWith(':')) emojiId = mapEmojis.get(emojiId); //emoji alias
-                                htmlNew[wordIndex].value = '<img class="emoji" src="https://cdn.discordapp.com/emojis/' + emojiId + '.webp?size=48&quality=lossless" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
+                                let url = emojiId.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + emojiId.substr(4) : 'https://cdn.discordapp.com/emojis/' + emojiId + '.webp?size=48&quality=lossless';
+                                htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
                                 htmlNew[wordIndex].isEmoji = true;
                             }
                             else if(!hasGif && wordLC.startsWith('!') && (mapGIFs.has(wordLC) || (wordLC.includes('_') && mapGIFs.has(wordLC.substr(0, wordLC.indexOf('_'))))) && !isPinnedMsg) //gifs (only one gif per message allowed)
@@ -964,20 +948,10 @@
                 let a = document.createElement('a');
                 a.setAttribute('id', 'HHClubChatPlusPlus_UpdateMessage');
                 a.setAttribute('style', 'color:red');
-                a.setAttribute('href', getDownloadURL());
+                a.setAttribute('href', HHCLUBCHATPLUSPLUS_URL_DOWNLOAD);
                 a.setAttribute('target', '_blank');
                 a.innerHTML = 'HH Club Chat++ is outdated. Update now!';
                 div.appendChild(a);
-            }
-
-            function getDownloadURL()
-            {
-                //return the current download url from the script header (doesn't work in some script managers)
-                let downloadMatch = GM_info.scriptMetaStr.match(/\n\s*\/\/\s+@downloadURL\s+(.+?)\s*\n/i);
-                if (downloadMatch && downloadMatch.length > 1) return downloadMatch[1];
-
-                //static return
-                return 'https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js';
             }
         }
 
@@ -1289,7 +1263,7 @@
             if(!value.startsWith(':'))
             {
                 emojiKeyboardEmojis.push({
-                    url: 'https://cdn.discordapp.com/emojis/' + value + '.webp?size=48&quality=lossless',
+                    url: value.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + value.substr(4) : 'https://cdn.discordapp.com/emojis/' + value + '.webp?size=48&quality=lossless',
                     name: key,
                     emoji: key,
                     unicode: key
@@ -1585,7 +1559,7 @@
             ['!clap', ['BHEkb1EYsaMAAAAC/aplausos-clapped.gif', '3DslEXJ6bn8AAAAC/clap-slow-clap.gif', '50IjyLmv8mQAAAAC/will-smith-clap.gif', 'jrIAsC6362EAAAAC/clap-clapping.gif', '-DXhLQTX9hwAAAAd/im-proud-of-you-dan-levy.gif']],
             ['!:p', ['OHfZzUQuB88AAAAC/rin-shrug.gif', 'FVr4Zhmsnm4AAAAd/kotomine-kirei.gif']],
             ['!liar', ['oZrRoDQDXZ4AAAAC/anakin-liar.gif', 'ZZi-EEsk_X8AAAAC/liar-mad.gif']],
-            ['!?', ['https://i.imgur.com/aovpJWc.gif']],
+            ['!?', ['https://i.imgur.com/aovpJWc.gif', '47_TR9UGqh4AAAAM/fate-rin-tohsaka.gif']],
             ['!rule', ['nPWzt3Rfql0AAAAC/fight-club-rules.gif', 'ijKrOkX2MEcAAAAC/fight-club-first-rule-of-fight-club.gif']],
             ['!what', ['eAqD-5MDzFAAAAAC/mai-sakurajima-sakurajima-mai.gif', 'Q0yIxNX0L-kAAAAC/wait-what-what.gif']],
             ['!sleepy', ['ajpTPte6fI8AAAAd/rin-tohsaka-pyjamas.gif']],
@@ -1613,9 +1587,12 @@
             [':kannanom:', ':kanna_nom:'],
             [':kanna_headpat:', '667192299272273951'],
             [':kannaheadpat:', ':kanna_headpat:'],
+            [':tuturu:', '562217717222866944'],
+            [':louise_please:', '950890624943546368'],
             [':thinky:', '878610897709436928'],
             [':thonk:', '860651714293006387'],
             [':smug:', '1002518587833057320'],
+            [':happy_rin:', '953395143510224957'],
             [':thx:', '294932319020515348'],
             [':ty:', ':thx:'],
             [':thanks:', ':thx:'],
@@ -1626,6 +1603,9 @@
             [':bunnyj:', ':bunny_joy:'],
             [':bunny_realization:', '865514400759808020'],
             [':bunnyr:', ':bunny_realization:'],
+            [':tada:', 'res:tada.png'],
+            [':sadtada:', '733120928137085019'],
+            [':notlikethis:', '866732254357356624'],
 
             [':energy:', '864645021561782332'],
             [':combativity:', '848991758301265990'],
@@ -1673,6 +1653,11 @@
             [':datingtoken:', '849076003882926100'],
             [':dating:', ':datingtoken:'],
 
+            [':kk:', '915301903561265194'],
+            [':kinkoid:', ':kk:'],
+
+            [':allgem:', '918072869043458048'],
+            [':allgems:', ':allgem:'],
             [':blackgem:', '910701075361845288'],
             [':blackgems:', ':blackgem:'],
             [':redgem:', '910701075420557412'],
@@ -1689,8 +1674,6 @@
             [':whitegems:', ':whitegem:'],
             [':purplegem:', '910701077568040990'],
             [':purplegems:', ':purplegem:'],
-            [':allgem:', '918072869043458048'],
-            [':allgems:', ':allgem:'],
 
             [':rainbow:', '901254800690278491'],
             [':balanced:', ':rainbow:'],
@@ -1710,9 +1693,6 @@
             [':submissive:', ':white:'],
             [':purple:', '901255233773137991'],
             [':voyeur:', ':purple:'],
-
-            [':kk:', '915301903561265194'],
-            [':kinkoid:', ':kk:'],
         ]);
     }
 })();
