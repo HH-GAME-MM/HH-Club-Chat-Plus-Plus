@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 - The sponsors were added
 - Image URLs not ending with .gif/.jpg/.png/.webp (e.g. https://www.domain.tld/image.jpg?width=200&height=150) will work now
 - Added GIFs: !?
-- Added Emojis: :tuturu: :louise_please: :happy_rin: :tada: :sadtada: :notlikethis:
+- Added Emojis: :tuturu: :louise_please: :happy_rin: :tada : :sadtada: :notlikethis:
 
 ### Changed
 - Minor changes to enhance the user experience
