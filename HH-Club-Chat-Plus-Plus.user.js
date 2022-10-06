@@ -4,7 +4,6 @@
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
-// @match        https://*.comixharem.com/
 // @match        https://*.pornstarharem.com/
 // @run-at       document-end
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
