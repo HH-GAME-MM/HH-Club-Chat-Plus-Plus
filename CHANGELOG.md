@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.28-0.29] - 2022-10-06
+
+### Added
+- The script was unlocked for PsH
+
 ## [0.26-0.27] - 2022-09-27
 
 ### Added
