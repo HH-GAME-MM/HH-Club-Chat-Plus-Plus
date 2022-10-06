@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.28
+// @version      0.29
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -406,7 +406,7 @@
                             if([',', '.', '!', '?', ':', ')'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
 
                             //shortform of nicknames for club "Hērōēs Prāvī Forī [EN]"
-                            if(msgIdClubId == 1898)
+                            if(msgIdClubId == 1898 && window.location.hostname.includes('.hentaiheroes.com'))
                             {
                                 switch(wordLC)
                                 {
