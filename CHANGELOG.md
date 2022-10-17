@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.30] - 2022-10-17
+
+### Added
+- Added the new command !script
+- Added @match to include ? and # at the end of the url
+
+### Changed
+- Minor changes to enhance the user experience
+
 ## [0.28-0.29] - 2022-10-06
 
 ### Added
