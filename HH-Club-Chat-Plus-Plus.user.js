@@ -1,10 +1,14 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.29
+// @version      0.30
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
+// @match        https://*.hentaiheroes.com/?*
+// @match        https://*.hentaiheroes.com/#*
 // @match        https://*.pornstarharem.com/
+// @match        https://*.pornstarharem.com/?*
+// @match        https://*.pornstarharem.com/#*
 // @run-at       document-end
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 // @updateURL    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
@@ -222,6 +226,7 @@
                                       '<span style="font-weight:bold;">COMMANDS</span><br/>' +
                                       '!hh <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required)<br/>' +
                                       '!poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block (HH++ required)<br/>' +
+                                      '!script <span style="font-style:italic;">&lt;optional text&gt;</span> = post the script links with an optional text (user friendly for non-script users)<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">DICE</span><br/>' +
                                       '/dice = roll a dice (D6, 1-6)<br/>' +
@@ -261,8 +266,9 @@
                                       'Uxio and lep - Thanks for sponsoring!<br/>' +
                                       'If you would like to support me, you can do so here: <a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a><br/>' +
                                       '<br/>' +
-                                      '<span style="font-weight:bold;">CHANGELOG</span><br/>' +
-                                      '<a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md</a>'});
+                                      '<span style="font-weight:bold;">SCRIPT INFORMATION</span><br/>' +
+                                      'HH Club Chat++ Script v' + GM_info.script.version + '<br/>' +
+                                      '<a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md</a>' });
                     }
                     else
                     {
@@ -428,6 +434,7 @@
                                     case '@chico': wordLC = '@chico_bonbon'; break;
                                     case '@nat': wordLC = '@natstar'; break;
                                     case '@z': wordLC = '@zteev'; break;
+                                    case '@zami': wordLC = '@zam'; break;
                                 }
                             }
 
@@ -869,6 +876,8 @@
             {
                 let text = inputCustom.value;
                 let textLC = text.toLowerCase();
+                let input = document.querySelector('input.club-chat-input');
+                inputCustom.value = '';
 
                 //change the commands !hh and !poses to make them language independent
                 let cmd = null;
@@ -885,10 +894,18 @@
                         if(girlId != -1) text = cmd + girlId; //change the girl name to the girl id
                     }
                 }
+                else if(textLC.startsWith('!script'))
+                {
+                    //send the !script text without HHCLUBCHATPLUSPLUS_INDICATOR
+                    let param1 = text.substr(7);
+                    input.value = param1 + ' Club Chat++ description and installation instructions: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus';
+                    ClubChat.send_msg();
+                    input.value = param1 + ' Club Chat++ direct link: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js';
+                    ClubChat.send_msg();
+                    return;
+                }
 
-                let input = document.querySelector('input.club-chat-input');
                 input.value = text + HHCLUBCHATPLUSPLUS_INDICATOR;
-                inputCustom.value = '';
                 ClubChat.send_msg();
             }
         }
