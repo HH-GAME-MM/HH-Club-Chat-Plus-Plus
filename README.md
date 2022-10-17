@@ -34,6 +34,7 @@ Upgrade Club Chat with various features and bug fixes
 **COMMANDS**
 - !hh &lt;girl name / girl id&gt; = post a wiki link for a girl (HH++ required)
 - !poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl in a spoiler block (HH++ required)
+- !script <optional text> = post the script links with an optional text (user friendly for non-script users)
 
 **DICE**
 - /dice = roll a dice (D6, 1-6)
