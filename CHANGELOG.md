@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.31] - 2022-10-23
+
+### Added
+- The Dice Master was added to the /dice command to prevent deletion
+
 ## [0.30] - 2022-10-17
 
 ### Added
