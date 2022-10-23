@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.30
+// @version      0.31
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -355,9 +355,16 @@
                 {
                     htmlNew.push({ isValid: true, value: html.substr(7) });
                 }
-                else if(htmlLC == '/dice')
+                else if(htmlLC == '/dice' && !isPinnedMsg)
                 {
-                    htmlNew.push({ isValid: true, value: '/dice<br/>Result: You rolled a ' + (msgIdTimestampMs % 6 + 1) });
+                    htmlNew.push({ isValid: true, value: htmlLC });
+
+                    //add a new node with the dice result (prevents deletion)
+                    let div = document.createElement('div');
+                    div.setAttribute('class', 'chat-system-msg');
+                    div.setAttribute('style', 'font-size:16px');
+                    div.innerHTML = ' <b style="font-weight:bold">Dice Master:</b> <span style="font-size:16px">' + nodeSpanMsgSender_nickname.innerHTML + ' rolled a ' + (msgIdTimestampMs % 6 + 1) + ' !</span> <span style="color:rgb(170,170,170);font-size:12px">' + node.querySelector('div.chat-msg-info span.chat-msg-time').innerHTML + '</span> ';
+                    node.after(div);
                 }
                 else
                 {
