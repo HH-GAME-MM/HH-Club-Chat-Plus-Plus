@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.32] - 2022-10-30
+
+### Added
+- Co-Leaders
+
 ## [0.31] - 2022-10-23
 
 ### Added
