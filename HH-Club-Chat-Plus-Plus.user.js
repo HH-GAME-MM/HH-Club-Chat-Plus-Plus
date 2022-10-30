@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.31
+// @version      0.32
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -54,6 +54,7 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-time {margin-top:-2px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.playername {cursor:pointer;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.member {color:#8a8ae6;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.coleader {color:#f3a03c;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.leader {color:#f33c3d;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.self {color:#ffd700;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.active_light {display:inline-block;width:.75rem;height:.75rem;margin:0px 4px 4px 11px;transform:rotate(45deg);border:1px solid #000;}');
@@ -98,7 +99,6 @@
     //chat variables
     let playerName = null;
     let playerNamePing = null;
-    let clubLeaderPlayerId = -1;
     let pingValidList = [];
     let pingMessageCount = 0;
     let lastMsgTimestamp = 0;
@@ -124,11 +124,16 @@
             playerName = iFrame.querySelector('.square-avatar-wrapper').getAttribute('title');
             playerNamePing = '@' + playerName.toLowerCase().replaceAll(' ', '_');
         }
+
         //get playerId
         let playerId = ClubChat.id_member;
 
         //get playerId of club leader
-        clubLeaderPlayerId = ClubChat.chatVars.CLUB_INFO.leader_id;
+        let clubLeaderPlayerId = parseInt(ClubChat.chatVars.CLUB_INFO.leader_id);
+
+        //get playerId of club co-leaders
+        let clubCoLeadersPlayerId = [];
+        ClubChat.chatVars.CLUB_INFO.co_leaders.forEach(e => { clubCoLeadersPlayerId.push(parseInt(e)) });
 
         //get pingValidList
         if(pingValidList.length == 0 && document.querySelectorAll('div.chat-members-list div.member p.name-member').length != 0)
@@ -166,7 +171,7 @@
                 //change the playername color (self gold, club leader red, members blue) and add "click to ping"
                 let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
                 let nodeSpanMsgSender_nickname = document.createElement('span');
-                nodeSpanMsgSender_nickname.setAttribute('class', 'playername ' + (msgIdPlayerId == playerId ? 'self' : (msgIdPlayerId == clubLeaderPlayerId ? 'leader' : 'member')));
+                nodeSpanMsgSender_nickname.setAttribute('class', 'playername ' + (msgIdPlayerId == playerId ? 'self' : (msgIdPlayerId == clubLeaderPlayerId ? 'leader' : (clubCoLeadersPlayerId.includes(msgIdPlayerId) ? 'coleader' : 'member'))));
                 nodeSpanMsgSender_nickname.setAttribute('onClick', 'ClubChat.insertPingToInput(this)');
                 nodeSpanMsgSender_nickname.innerHTML = nodeSpanMsgSender.innerHTML;
                 nodeSpanMsgSender.innerHTML = '';
@@ -442,6 +447,8 @@
                                     case '@nat': wordLC = '@natstar'; break;
                                     case '@z': wordLC = '@zteev'; break;
                                     case '@zami': wordLC = '@zam'; break;
+                                    case '@fakemm':
+                                    case '@hpfcc': wordLC = '@hērōēs_prāvī_forī_cc'; break;
                                 }
                             }
 
