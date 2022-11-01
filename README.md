@@ -78,4 +78,4 @@ Upgrade Club Chat with various features and bug fixes
 
 ## Screenshots
 ![ClubChat++ Preview2](https://user-images.githubusercontent.com/107755486/199144676-46b46995-faaf-4f34-8611-92c7b4de6441.png)
-![ClubChat++ Preview1](https://user-images.githubusercontent.com/107755486/199145830-fc7b45ef-e577-47d5-99f9-1c5cc7431710.png)
+![ClubChat++ Preview1](https://user-images.githubusercontent.com/107755486/199146038-49adff18-53c9-4b08-9c85-f80b2f6b7a0d.png)
