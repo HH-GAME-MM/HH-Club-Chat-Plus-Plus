@@ -59,7 +59,7 @@ Upgrade Club Chat with various features and bug fixes
 - Note: This list may not be up to date. Use the !help command in the chat for the current list or check out the Emojis / GIFs Picker "EmojiKeyboard"
 
 **MISCELLANEOUS**
-- The nickname color is changed. Your nickname is gold, the club leader is red and all members are blue
+- The nickname color is changed. Your nickname is gold, the club leader is red, the club co leader is orange and all members are blue
 - Online/Offline status added behind the nickname (with auto refresh)
 - ++ added behind the nickname (indicates who is using this script)
 - Added Emojis / GIFs Picker "EmojiKeyboard"
