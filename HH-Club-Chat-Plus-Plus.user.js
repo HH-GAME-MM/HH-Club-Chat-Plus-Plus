@@ -1,11 +1,14 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.32
+// @version      0.33
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
 // @match        https://*.hentaiheroes.com/?*
 // @match        https://*.hentaiheroes.com/#*
+// @match        https://*.comixharem.com/
+// @match        https://*.comixharem.com/?*
+// @match        https://*.comixharem.com/#*
 // @match        https://*.pornstarharem.com/
 // @match        https://*.pornstarharem.com/?*
 // @match        https://*.pornstarharem.com/#*
@@ -168,7 +171,7 @@
                     saveLastMsgTimestampSeen();
                 }
 
-                //change the playername color (self gold, club leader red, members blue) and add "click to ping"
+                //change the playername color (self gold, club leader red, club co leaders orange, members blue) and add "click to ping"
                 let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
                 let nodeSpanMsgSender_nickname = document.createElement('span');
                 nodeSpanMsgSender_nickname.setAttribute('class', 'playername ' + (msgIdPlayerId == playerId ? 'self' : (msgIdPlayerId == clubLeaderPlayerId ? 'leader' : (clubCoLeadersPlayerId.includes(msgIdPlayerId) ? 'coleader' : 'member'))));
@@ -254,7 +257,7 @@
                                       'The following emojis are available: ' + emojis + '<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">MISCELLANEOUS</span><br/>' +
-                                      '- The nickname color is changed. Your nickname is gold, the club leader is red and all members are blue<br/>' +
+                                      '- The nickname color is changed. Your nickname is gold, the club leader is red, the club co leaders are orange and all members are blue<br/>' +
                                       '- Online/Offline status added behind the nickname (with auto refresh)<br/>' +
                                       '- ++ added behind the nickname (indicates who is using this script)<br/>' +
                                       '- Added Emojis / GIFs Picker "EmojiKeyboard"<br/>' +
