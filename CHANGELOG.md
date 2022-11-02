@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.33] - 2022-11-02
+
+### Added
+- The script was unlocked for CxH
+
 ## [0.32] - 2022-10-30
 
 ### Added
