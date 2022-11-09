@@ -2,6 +2,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.34] - 2022-11-09
+
+### Added
+- You can now add custom emojis/gifs
+
+### Changed
+- Minification to optimize performance
+
 ## [0.33] - 2022-11-02
 
 ### Added
