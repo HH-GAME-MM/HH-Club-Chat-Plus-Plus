@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.34
+// @version      0.35
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1628,6 +1628,7 @@
     font-weight: 600;
     line-height: 20px;
     color: white;
+    max-width: 355px;
 }`;
         document.head.appendChild(emojiKeyboardCssFile);
     }
