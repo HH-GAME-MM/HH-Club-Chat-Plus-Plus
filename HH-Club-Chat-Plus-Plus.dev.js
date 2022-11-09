@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.33
+// @version      0.34
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -106,10 +106,13 @@
     let pingMessageCount = 0;
     let lastMsgTimestamp = 0;
     let lastMsgTimestampSeen = loadLastMsgTimestampSeen(); //we cant use ClubChat.lastSeenMessage because its not available when we receive the first messages
-    let mapGIFs = getMapGIFs();
-    let mapEmojis = getMapEmojis();
+    const mapGIFs = getMapGIFs();
+    const mapEmojis = getMapEmojis();
+    const mapCustomEmojiGifHosts = getMapCustomEmojiGifHosts();
+    const mapCustomEmojiGifFileExtensions = getMapCustomEmojiGifFileExtensions();
 
     //EmojiKeyboard
+    let emojiKeyboard;
     initEmojiKeyboard();
 
     //observe chat messages
@@ -164,7 +167,10 @@
                 let isPinnedMsg = (mutations[i].pinnedBlock == true);
 
                 //update and save last (seen) message timestamp in localstore
-                if(lastMsgTimestamp < msgIdTimestampMs) lastMsgTimestamp = msgIdTimestampMs;
+                if(lastMsgTimestamp < msgIdTimestampMs)
+                {
+                    lastMsgTimestamp = msgIdTimestampMs;
+                }
                 if(chatWindowVisible && lastMsgTimestampSeen < lastMsgTimestamp)
                 {
                     lastMsgTimestampSeen = lastMsgTimestamp;
@@ -612,28 +618,45 @@
                                 htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
                                 htmlNew[wordIndex].isEmoji = true;
                             }
-                            else if(!hasGif && wordLC.startsWith('!') && (mapGIFs.has(wordLC) || (wordLC.includes('_') && mapGIFs.has(wordLC.substr(0, wordLC.indexOf('_'))))) && !isPinnedMsg) //gifs (only one gif per message allowed)
+                            //custom emojis
+                            else if(isCustomEmojiCode(word))
+                            {
+                                let url = convertCustomEmojiCodeToUrl(word);
+                                htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title=":CustomEmoji:" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
+                                htmlNew[wordIndex].isEmoji = true;
+                            }
+                            else if(!hasGif && wordLC.startsWith('!') && (mapGIFs.has(wordLC) || isCustomGifCode(word) || (wordLC.includes('_') && mapGIFs.has(wordLC.substr(0, wordLC.indexOf('_'))))) && !isPinnedMsg) //gifs (only one gif per message allowed)
                             {
                                 emojiOnly = false;
                                 hasGif = true;
 
-                                let gifNr, gifCode;
-                                if(wordLC.includes('_'))
+                                let imgSrc;
+                                if(isCustomGifCode(word))
                                 {
-                                    gifNr = parseInt(wordLC.substr(wordLC.indexOf('_') + 1));
-                                    if(isNaN(gifNr)) gifNr = msgIdTimestampMs;
-                                    gifCode = wordLC.substr(0, wordLC.indexOf('_'));
+                                    wordLC = '!CustomGif';
+                                    imgSrc = convertCustomGifCodeToUrl(word);
                                 }
                                 else
                                 {
-                                    gifNr = msgIdTimestampMs;
-                                    gifCode = wordLC;
+                                    let gifNr, gifCode;
+                                    if(wordLC.includes('_'))
+                                    {
+                                        gifNr = parseInt(wordLC.substr(wordLC.indexOf('_') + 1));
+                                        if(isNaN(gifNr)) gifNr = msgIdTimestampMs;
+                                        gifCode = wordLC.substr(0, wordLC.indexOf('_'));
+                                    }
+                                    else
+                                    {
+                                        gifNr = msgIdTimestampMs;
+                                        gifCode = wordLC;
+                                    }
+
+                                    let imgSrcArray = mapGIFs.get(gifCode);
+                                    if(!Array.isArray(imgSrcArray)) imgSrcArray = mapGIFs.get(imgSrcArray); //gif alias
+                                    imgSrc = imgSrcArray[gifNr % imgSrcArray.length];
                                 }
 
-                                let imgSrcArray = mapGIFs.get(gifCode);
-                                if(!Array.isArray(imgSrcArray)) imgSrcArray = mapGIFs.get(imgSrcArray); //gif alias
-                                let imgSrc = imgSrcArray[gifNr % imgSrcArray.length];
-                                let htmlGif = '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc) + '" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
+                                let htmlGif = '<img src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
 
                                 //are we at the beginning of the message?
                                 if(k == 0)
@@ -1264,29 +1287,50 @@
     function initEmojiKeyboard_OnLoad()
     {
         //emojiKeyboard
-        let emojiKeyboard = new EmojiKeyboard;
+        emojiKeyboard = new EmojiKeyboard;
         emojiKeyboard.resizable = false;
         emojiKeyboard.auto_reconstruction = true;
         emojiKeyboard.default_placeholder = "Search GIF / Emoji ...";
+        emojiKeyboard.customEmojiGifDeleteMode = 0;
         emojiKeyboard.callback = (emoji, closed) => {
 
-            let input = document.querySelector('.club-chat-input-custom');
-            if(input.selectionStart || input.selectionStart == '0')
+            //DeleteMode for custom Emojis/Gifs enabled?
+            if(emojiKeyboard.customEmojiGifDeleteMode > 0)
             {
-                let part1 = input.value.substr(0, input.selectionStart);
-                let part2 = input.value.substr(input.selectionEnd);
-                if(part1 != '' && !part1.endsWith(' ')) part1 += ' ';
-                if(!part2.startsWith(' ')) part2 = ' ' + part2;
-
-                input.value = part1 + emoji.emoji + part2;
-                input.selectionStart = part1.length + 1 + emoji.emoji.length;
-                input.selectionEnd = input.selectionStart;
+                let isEmoji = isCustomEmojiCode(emoji.emoji);
+                let isGif = false;
+                let ret = false;
+                if(isEmoji)
+                {
+                    ret = removeCustomEmojiFromLocalStore(emoji.emoji);
+                }
+                else
+                {
+                    isGif = isCustomGifCode(emoji.emoji);
+                    if(isGif) ret = removeCustomGifFromLocalStore(emoji.emoji);
+                }
+                if(ret) emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emoji.emoji + '"]').remove();
             }
             else
             {
-                input.value += emoji.emoji + ' ';
+                let input = document.querySelector('.club-chat-input-custom');
+                if(input.selectionStart || input.selectionStart == '0')
+                {
+                    let part1 = input.value.substr(0, input.selectionStart);
+                    let part2 = input.value.substr(input.selectionEnd);
+                    if(part1 != '' && !part1.endsWith(' ')) part1 += ' ';
+                    if(!part2.startsWith(' ')) part2 = ' ' + part2;
+
+                    input.value = part1 + emoji.emoji + part2;
+                    input.selectionStart = part1.length + 1 + emoji.emoji.length;
+                    input.selectionEnd = input.selectionStart;
+                }
+                else
+                {
+                    input.value += emoji.emoji + ' ';
+                }
+                input.focus();
             }
-            input.focus();
         };
 
         //emojiKeyboard css
@@ -1309,6 +1353,17 @@
             }
         });
 
+        //add custom emojis to emojiKeyboard
+        let customEmojis = loadCustomEmojisFromLocalStorage();
+        customEmojis.forEach(e => {
+            emojiKeyboardEmojis.push({
+                url: convertCustomEmojiCodeToUrl(e),
+                name: e,
+                emoji: e,
+                unicode: e
+            });
+        });
+
         //add gifs to emojiKeyboard
         let emojiKeyboardGIFs = emojiKeyboard.emojis.get('GIFs');
         mapGIFs.forEach((value, key) => {
@@ -1318,7 +1373,7 @@
                 for(let i = 0; i < value.length; i++)
                 {
                     let imgSrc = value[i];
-                    let url = imgSrc.startsWith('https://') ? imgSrc : 'https://c.tenor.com/' + imgSrc;
+                    let url = imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc;
                     let directKey = key + (value.length != 1 ? '_' + i : '');
 
                     emojiKeyboardGIFs.push({
@@ -1329,6 +1384,17 @@
                     });
                 }
             }
+        });
+
+        //add custom gifs to emojiKeyboard
+        let customGifs = loadCustomGifsFromLocalStorage();
+        customGifs.forEach(e => {
+            emojiKeyboardGIFs.push({
+                url: convertCustomGifCodeToUrl(e),
+                name: e,
+                emoji: e,
+                unicode: e
+            });
         });
 
         //emojiKeyboard init
@@ -1566,45 +1632,244 @@
         document.head.appendChild(emojiKeyboardCssFile);
     }
 
+    function promptAddCustomEmojiGif(isEmoji)
+    {
+        let hostsText = '';
+        mapCustomEmojiGifHosts.forEach((value, key) => {
+            hostsText += value.name + ', ';
+        });
+        let fileExtText = '';
+        mapCustomEmojiGifFileExtensions.forEach((value, key) => {
+            fileExtText += value + ', ';
+        });
+
+        let url = prompt('Add a custom ' + (isEmoji ? 'Emoji' : 'GIF') + ' by pasting a valid direct URL from your image (' + (isEmoji ? fileExtText.substr(0, fileExtText.length - 2) : '.gif') + '). Valid Hosts: ' + hostsText.substr(0, hostsText.length - 2));
+        if(url != null)
+        {
+            let urlWithGif = url.endsWith('.gif');
+            let customEmojiGifCode = convertUrlToCustomEmojiGifCode(url, urlWithGif);
+            if(customEmojiGifCode != null && isEmoji != urlWithGif)
+            {
+                let ret = (isEmoji ? addCustomEmojiToLocalStore(customEmojiGifCode) : addCustomGifToLocalStore(customEmojiGifCode));
+                if(ret)
+                {
+                    //add custom emoji/gif to emojiKeyboard
+                    emojiKeyboard.addCustomEmojiGifCode(customEmojiGifCode, url, isEmoji);
+                }
+                else
+                {
+                    alert('The emoji / gif already exists!');
+                }
+            }
+            else
+            {
+                alert('Invalid URL or file type!');
+            }
+        }
+    }
+
+    function confirmDeleteModeCustomEmojiGif(span)
+    {
+        if(span.innerText == '[-]')
+        {
+            if(confirm('Do you want to delete custom emojis / gifs?'))
+            {
+                span.innerText = '[DELETE MODE]';
+                span.setAttribute('style', 'cursor:pointer;color:red');
+                emojiKeyboard.customEmojiGifDeleteMode++;
+            }
+        }
+        else
+        {
+            span.innerText = '[-]';
+            span.setAttribute('style', 'cursor:pointer');
+            emojiKeyboard.customEmojiGifDeleteMode--;
+        }
+    }
+
+    function addCustomEmojiToLocalStore(newCustomEmoji)
+    {
+        let customEmojis = loadCustomEmojisFromLocalStorage();
+        if(!customEmojis.includes(newCustomEmoji))
+        {
+            customEmojis.push(newCustomEmoji);
+            saveCustomEmojisToLocalStorage(customEmojis);
+            return true;
+        }
+        return false;
+    }
+
+    function removeCustomEmojiFromLocalStore(customEmoji)
+    {
+        let customEmojis = loadCustomEmojisFromLocalStorage();
+        let index = customEmojis.indexOf(customEmoji);
+        if (index > -1)
+        {
+            customEmojis.splice(index, 1);
+            saveCustomEmojisToLocalStorage(customEmojis);
+            return true;
+        }
+        return false;
+    }
+
+    function loadCustomEmojisFromLocalStorage()
+    {
+        let json = localStorage.getItem('HHClubChatPlusPlus_CustomEmojis');
+        if(json == null) json = '[]';
+        return JSON.parse(json);
+    }
+
+    function saveCustomEmojisToLocalStorage(customEmojis)
+    {
+        localStorage.setItem('HHClubChatPlusPlus_CustomEmojis', JSON.stringify(customEmojis));
+    }
+
+    function addCustomGifToLocalStore(newCustomGif)
+    {
+        let customGifs = loadCustomGifsFromLocalStorage();
+        if(!customGifs.includes(newCustomGif))
+        {
+            customGifs.push(newCustomGif);
+            saveCustomGifsToLocalStorage(customGifs);
+            return true;
+        }
+        return false;
+    }
+
+    function removeCustomGifFromLocalStore(customGif)
+    {
+        let customGifs = loadCustomGifsFromLocalStorage();
+        let index = customGifs.indexOf(customGif);
+        if (index > -1)
+        {
+            customGifs.splice(index, 1);
+            saveCustomGifsToLocalStorage(customGifs);
+            return true;
+        }
+        return false;
+    }
+
+    function loadCustomGifsFromLocalStorage()
+    {
+        let json = localStorage.getItem('HHClubChatPlusPlus_CustomGifs');
+        if(json == null) json = '[]';
+        return JSON.parse(json);
+    }
+
+    function saveCustomGifsToLocalStorage(customGifs)
+    {
+        localStorage.setItem('HHClubChatPlusPlus_CustomGifs', JSON.stringify(customGifs));
+    }
+
+    function convertUrlToCustomEmojiGifCode(url, urlWithGif)
+    {
+        let hostCode = null;
+        let fileExtCode = null;
+        let urlCodeStart, urlCodeEnd;
+        for(let [key, value] of mapCustomEmojiGifHosts) {
+            if(url.startsWith(value.url))
+            {
+                hostCode = key;
+                urlCodeStart = value.url.length;
+                break;
+            }
+        }
+        if(!urlWithGif)
+        {
+            for(let [key, value] of mapCustomEmojiGifFileExtensions) {
+                if(url.endsWith(value))
+                {
+                    fileExtCode = key + ':';
+                    urlCodeEnd = value.length;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            fileExtCode = '';
+            urlCodeEnd = 4;
+        }
+        return (hostCode != null && fileExtCode != null ? (urlWithGif ? '!' : ':') + hostCode + url.substr(urlCodeStart, url.length - urlCodeStart - urlCodeEnd) + fileExtCode : null);
+    }
+
+    function isCustomEmojiCode(code)
+    {
+        return (code.startsWith(':') && code.endsWith(':') && code.length > 4 && mapCustomEmojiGifHosts.has(code.substr(1, 1)) && mapCustomEmojiGifFileExtensions.has(code.substr(code.length - 2, 1)));
+    }
+
+    function isCustomGifCode(code)
+    {
+        return (code.startsWith('!') && code.length > 2 && mapCustomEmojiGifHosts.has(code.substr(1, 1)));
+    }
+
+    function convertCustomEmojiCodeToUrl(code)
+    {
+        return mapCustomEmojiGifHosts.get(code.substr(1, 1)).url + code.substr(2, code.length - 4) + mapCustomEmojiGifFileExtensions.get(code.substr(code.length - 2, 1));
+    }
+
+    function convertCustomGifCodeToUrl(code)
+    {
+        return mapCustomEmojiGifHosts.get(code.substr(1, 1)).url + code.substr(2) + '.gif';
+    }
+
+    function getMapCustomEmojiGifHosts()
+    {
+        return new Map([
+            ['ÿ', { name: 'snipboard.io', url: 'https://snipboard.io/' }],
+            ['þ', { name: 'imgur.com', url: 'https://i.imgur.com/' }],
+            ['ý', { name: 'tenor.com', url: 'https://media.tenor.com/' }],
+            ['ü', { name: 'giphy.com', url: 'https://media.giphy.com/media/' }],
+        ]);
+    }
+
+    function getMapCustomEmojiGifFileExtensions()
+    {
+        return new Map([
+            ['ÿ', '.png'],
+            ['þ', '.jpg']
+        ]);
+    }
+
     function getMapGIFs()
     {
         return new Map([
-            ['!moar', ['dStuVKgo6kwAAAAC/crumch-game-grumps.gif', 'Ft71uoGyHLEAAAAC/cat-moar.gif', 'XnYJ-WoYGyMAAAAC/ln_strike-kylo-ren.gif']],
+            ['!:p', ['OHfZzUQuB88AAAAC/rin-shrug.gif', 'FVr4Zhmsnm4AAAAd/kotomine-kirei.gif']],
+            ['!?', ['https://i.imgur.com/aovpJWc.gif', '47_TR9UGqh4AAAAM/fate-rin-tohsaka.gif']],
+            ['!25', ['ww8XZ4PLWgEAAAAC/25-years.gif', '1eUwz8-OAwgAAAAC/25-pusheen.gif']],
             ['!both', ['odyVsZbC-OYAAAAC/why-not-both-why-not.gif', 'ZjqPAZpKWAUAAAAC/the-road-to-el-dorado-both.gif']],
-            ['!heyhey', ['iOG-xvGrcVQAAAAC/hayasaka-kaguya.gif']],
-            ['!hehe', ['s6axyeNl4HMAAAAC/fate-ubw.gif']],
+            ['!clap', ['BHEkb1EYsaMAAAAC/aplausos-clapped.gif', '3DslEXJ6bn8AAAAC/clap-slow-clap.gif', '50IjyLmv8mQAAAAC/will-smith-clap.gif', 'jrIAsC6362EAAAAC/clap-clapping.gif', '-DXhLQTX9hwAAAAd/im-proud-of-you-dan-levy.gif']],
+            ['!dejavu', ['CqoEATCG-1wAAAAC/déjàvu-drift.gif']],
+            ['!doit', ['NZXtIRvja5cAAAAC/doit-shialabeouf.gif']],
+            ['!doubt', ['ld5tk9ujuJsAAAAC/doubt-press-x.gif', '_0AGcJvL5QYAAAAC/jim-halpert-face.gif', 'xZt1qV8KMbkAAAAC/ehh-probably-not.gif']],
+            ['!fail', ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif']],
             ['!gm', ['YnY4gUjy8JQAAAAC/fate-stay-night-rin-tohsaka.gif']],
             ['!gn', ['n6xhcPW4zDcAAAAC/saber-goodnight.gif', 'AeCpJ0xNKKcAAAAC/anime-foodwars.gif', 'E9cdA-c9vcwAAAAC/kumo-desu-ga-nani-ka-kumoko.gif']],
-            ['!sad', ['Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif', 'B9w6cHA-RrYAAAAd/marin-cry-marin-sad.gif']],
-            ['!doit', ['NZXtIRvja5cAAAAC/doit-shialabeouf.gif']],
-            ['!dejavu', ['CqoEATCG-1wAAAAC/déjàvu-drift.gif']],
-            ['!wtf', ['https://i.ytimg.com/vi/XjVKHZ_F4zo/maxresdefault.jpg']],
-            ['!whale', ['https://cdn.discordapp.com/attachments/344734413600587776/463933711193473044/Whale.png', 'Gb_N7yXyB-UAAAAC/marin-kitagawa-marin.gif', 'f_G-jdId4fkAAAAd/whale-gold.gif', 'id2Lsryg60cAAAAC/unusual-whales-unusual-whales-rain-money.gif']],
-            ['!new', ['C52JpqHPWcYAAAAC/friends-phoebe.gif']],
-            ['!why', ['o2CYGlMLADUAAAAC/barack-obama-why.gif', 'OPbFPRevcv4AAAAC/ajholmes-why.gif', '1Vh0XBrPM7MAAAAC/why-whats-the-reason.gif', 'y0Up9A_bTPwAAAAd/nph-why.gif', 'KjJTBQ9lftsAAAAC/why-huh.gif']],
-            ['!legit', ['JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif']],
-            ['!rng', ['https://imgs.xkcd.com/comics/random_number.png', 'c6drTKdM9ZEAAAAS/rng-excalibur.gif', 'mACda5RzcAcAAAAd/destiny.gif']],
             ['!gz', ['xDHCe07zrocAAAAC/congrats-minions.gif', '2Di8n4U2wJUAAAAC/yay-congrats.gif']],
             ['!gratz', '!gz'],
             ['!congratz', '!gz'],
             ['!congrats', '!gz'],
+            ['!headpat', ['xE9m5-LkBeEAAAAi/anime-kanna.gif']],
+            ['!hehe', ['s6axyeNl4HMAAAAC/fate-ubw.gif']],
+            ['!heyhey', ['iOG-xvGrcVQAAAAC/hayasaka-kaguya.gif']],
+            ['!legit', ['JwI2BNOevBoAAAAC/sherlock-martin-freeman.gif']],
+            ['!liar', ['oZrRoDQDXZ4AAAAC/anakin-liar.gif', 'ZZi-EEsk_X8AAAAC/liar-mad.gif']],
+            ['!moar', ['dStuVKgo6kwAAAAC/crumch-game-grumps.gif', 'Ft71uoGyHLEAAAAC/cat-moar.gif', 'XnYJ-WoYGyMAAAAC/ln_strike-kylo-ren.gif']],
+            ['!monster', ['e1T7jSFlZ-EAAAAC/shrek-gingerbread.gif', 'A_JS3lx__egAAAAC/star-trek-tos.gif', 'fx-nkmNVA_MAAAAC/penguins-of-madagascar-kowalski.gif']],
+            ['!new', ['C52JpqHPWcYAAAAC/friends-phoebe.gif']],
+            ['!ohmy', ['svFFJHFmLccAAAAC/oh-my-george-takei.gif']],
+            ['!proud', ['-DXhLQTX9hwAAAAC/im-proud-of-you-dan-levy.gif', 'X9jgpiApABcAAAAC/yes-nod.gif', 'iU_-BMVz9BIAAAAC/im-proud-of-you-dwayne-johnson.gif', '46dxApXEHh0AAAAd/smug-daniel-craig.gif']],
+            ['!rng', ['https://imgs.xkcd.com/comics/random_number.png', 'c6drTKdM9ZEAAAAS/rng-excalibur.gif', 'mACda5RzcAcAAAAd/destiny.gif']],
+            ['!rule', ['nPWzt3Rfql0AAAAC/fight-club-rules.gif', 'ijKrOkX2MEcAAAAC/fight-club-first-rule-of-fight-club.gif']],
+            ['!sad', ['Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif', 'B9w6cHA-RrYAAAAd/marin-cry-marin-sad.gif']],
+            ['!sleepy', ['ajpTPte6fI8AAAAd/rin-tohsaka-pyjamas.gif']],
             ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif', 'Qc9cm8By46YAAAAd/doggo-dog.gif']],
             ['!ty', '!thx'],
             ['!thanks', '!thx'],
-            ['!fail', ['sAdlyyKDxogAAAAC/bart-simpson-the-simpsons.gif', 'FOzbM2mVKG0AAAAC/error-windows-xp.gif']],
-            ['!doubt', ['ld5tk9ujuJsAAAAC/doubt-press-x.gif', '_0AGcJvL5QYAAAAC/jim-halpert-face.gif', 'xZt1qV8KMbkAAAAC/ehh-probably-not.gif']],
-            ['!monster', ['e1T7jSFlZ-EAAAAC/shrek-gingerbread.gif', 'A_JS3lx__egAAAAC/star-trek-tos.gif', 'fx-nkmNVA_MAAAAC/penguins-of-madagascar-kowalski.gif']],
-            ['!clap', ['BHEkb1EYsaMAAAAC/aplausos-clapped.gif', '3DslEXJ6bn8AAAAC/clap-slow-clap.gif', '50IjyLmv8mQAAAAC/will-smith-clap.gif', 'jrIAsC6362EAAAAC/clap-clapping.gif', '-DXhLQTX9hwAAAAd/im-proud-of-you-dan-levy.gif']],
-            ['!:p', ['OHfZzUQuB88AAAAC/rin-shrug.gif', 'FVr4Zhmsnm4AAAAd/kotomine-kirei.gif']],
-            ['!liar', ['oZrRoDQDXZ4AAAAC/anakin-liar.gif', 'ZZi-EEsk_X8AAAAC/liar-mad.gif']],
-            ['!?', ['https://i.imgur.com/aovpJWc.gif', '47_TR9UGqh4AAAAM/fate-rin-tohsaka.gif']],
-            ['!rule', ['nPWzt3Rfql0AAAAC/fight-club-rules.gif', 'ijKrOkX2MEcAAAAC/fight-club-first-rule-of-fight-club.gif']],
+            ['!whale', ['https://cdn.discordapp.com/attachments/344734413600587776/463933711193473044/Whale.png', 'Gb_N7yXyB-UAAAAC/marin-kitagawa-marin.gif', 'f_G-jdId4fkAAAAd/whale-gold.gif', 'id2Lsryg60cAAAAC/unusual-whales-unusual-whales-rain-money.gif']],
             ['!what', ['eAqD-5MDzFAAAAAC/mai-sakurajima-sakurajima-mai.gif', 'Q0yIxNX0L-kAAAAC/wait-what-what.gif']],
-            ['!sleepy', ['ajpTPte6fI8AAAAd/rin-tohsaka-pyjamas.gif']],
-            ['!proud', ['-DXhLQTX9hwAAAAC/im-proud-of-you-dan-levy.gif', 'X9jgpiApABcAAAAC/yes-nod.gif', 'iU_-BMVz9BIAAAAC/im-proud-of-you-dwayne-johnson.gif', '46dxApXEHh0AAAAd/smug-daniel-craig.gif']],
-            ['!headpat', ['xE9m5-LkBeEAAAAi/anime-kanna.gif']],
-            ['!ohmy', ['svFFJHFmLccAAAAC/oh-my-george-takei.gif']],
-            ['!25', ['ww8XZ4PLWgEAAAAC/25-years.gif', '1eUwz8-OAwgAAAAC/25-pusheen.gif']],
+            ['!why', ['o2CYGlMLADUAAAAC/barack-obama-why.gif', 'OPbFPRevcv4AAAAC/ajholmes-why.gif', '1Vh0XBrPM7MAAAAC/why-whats-the-reason.gif', 'y0Up9A_bTPwAAAAd/nph-why.gif', 'KjJTBQ9lftsAAAAC/why-huh.gif']],
+            ['!wtf', ['https://i.ytimg.com/vi/XjVKHZ_F4zo/maxresdefault.jpg']],
         ]);
     }
 
@@ -1733,8 +1998,6 @@
             [':voyeur:', ':purple:'],
         ]);
     }
-})();
-
 
 // ===================================================================================================
 // emoji_keyboard.js =================================================================================
@@ -1854,9 +2117,10 @@ class EmojiKeyboard {
     }
 
     click_on_emoji(kb, event) {
-        if (!event.shiftKey) kb.toggle_window();
+        let closed = (!event.shiftKey && emojiKeyboard.customEmojiGifDeleteMode == 0);
+        if(closed) kb.toggle_window();
         const data = Object.assign({}, event.target.dataset)
-        kb.callback(data, !event.shiftKey);
+        kb.callback(data, closed);
     }
 
     hover_on_emoji(kb, event) {
@@ -2051,8 +2315,22 @@ class EmojiKeyboard {
             categ_span.innerText = v[1];
             categ_name.appendChild(parse_svg(v[0]));
             categ_name.appendChild(categ_span);
+            if(v[0] == SVG_HTML.custom)
+            {
+                let categ_span_custom_plus = document.createElement("span");
+                categ_span_custom_plus.setAttribute('style', 'cursor:pointer');
+                categ_span_custom_plus.innerText = '[+]';
+                categ_span_custom_plus.addEventListener("click", function() { promptAddCustomEmojiGif(v[1] == 'Emojis'); });
+                categ_name.appendChild(categ_span_custom_plus);
+
+                let categ_span_custom_minus = document.createElement("span");
+                categ_span_custom_minus.setAttribute('style', 'cursor:pointer');
+                categ_span_custom_minus.innerText = '[-]';
+                categ_span_custom_minus.addEventListener("click", function() { confirmDeleteModeCustomEmojiGif(this); });
+                categ_name.appendChild(categ_span_custom_minus);
+            }
             categ_div.appendChild(categ_name);
-            let emojis_sorted = v[1] != 'Emojis' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1]); //do not sort custom emojis
+            let emojis_sorted = (v[1] != 'Emojis' && v[1] != 'GIFs' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1])); //do not sort custom emojis / gifs
             for (const emoji of emojis_sorted) {
                 let img = document.createElement("img");
                 img.dataset.name = emoji.name;
@@ -2068,14 +2346,17 @@ class EmojiKeyboard {
                 } else {
                     img.src = emoji.url;
                 }
-                img.addEventListener('error', err => {
-                    // console.info(err.target.dataset);
-                    const data = err.target.dataset;
-                    const index = this.emojis.get(data.category).findIndex(e => e.name == data.name);
-                    if (index) this.emojis.get(data.category).splice(index, 1);
-                    err.target.remove();
-                    this.init_fuse(); // refresh search index
-                });
+                if(v[1] != 'Emojis' && v[1] != 'GIFs') //no error handler for custom emojis / gifs
+                {
+                    img.addEventListener('error', err => {
+                        // console.info(err.target.dataset);
+                        const data = err.target.dataset;
+                        const index = this.emojis.get(data.category).findIndex(e => e.name == data.name);
+                        if (index) this.emojis.get(data.category).splice(index, 1);
+                        err.target.remove();
+                        this.init_fuse(); // refresh search index
+                    });
+                }
                 img.addEventListener('click', e => this.click_on_emoji(this, e));
                 img.addEventListener('mouseenter', e => this.hover_on_emoji(this, e));
                 img.addEventListener('mouseleave', e => this.hover_out_emoji(this, e));
@@ -2104,6 +2385,26 @@ class EmojiKeyboard {
         document.documentElement.appendChild(main_div);
     }
 
+    addCustomEmojiGifCode(code, url, isEmoji) {
+        let img = document.createElement("img");
+        img.dataset.name = code;
+        img.dataset.unicode = code;
+        img.dataset.emoji = code;
+        img.dataset.category = isEmoji ? 'Emojis' : 'GIFs';
+        img.className = "emojikb-emoji";
+        if (this.lazyImageObserver) {
+            this.lazyImageObserver.observe(img);
+            img.dataset.src = url;
+            img.classList.add('lazy');
+        } else {
+            img.src = url;
+        }
+        img.addEventListener('click', e => this.click_on_emoji(this, e));
+        img.addEventListener('mouseenter', e => this.hover_on_emoji(this, e));
+        img.addEventListener('mouseleave', e => this.hover_out_emoji(this, e));
+        this.get_keyboard(document).querySelector('div.emojikb-categname[data-emojikb_categ="' + (isEmoji ? 'Emojis' : 'GIFs') + '"]').parentNode.appendChild(img);
+    }
+
     // ----- resizes part ----- //
 
     resize(e, panel) {
@@ -2125,3 +2426,4 @@ const SVG_HTML = {
     flag: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.002H14V3.002C14 2.45 13.553 2.002 13 2.002H4C3.447 2.002 3 2.45 3 3.002V22.002H5V14.002H10.586L8.293 16.295C8.007 16.581 7.922 17.011 8.076 17.385C8.23 17.759 8.596 18.002 9 18.002H20C20.553 18.002 21 17.554 21 17.002V7.002C21 6.45 20.553 6.002 20 6.002Z"></path></svg>',
     custom: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>'
 }
+})();
