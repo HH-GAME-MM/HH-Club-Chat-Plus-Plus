@@ -51,12 +51,14 @@ Upgrade Club Chat with various features and bug fixes
 **GIFS**
 - The following gifs are available: !heyhey !hehe !gm !sad !doit !dejavu !wtf !new !legit !? !sleepy
 - The following random gifs are available: !moar !both !gn !why !rng !gz !thx !fail !doubt !monster !clap !whale !liar !rule !what !proud
-- Note: Only one GIF per message allowed. GIF code can be used anywhere in the text
-- Note: This list may not be up to date. Use the !help command in the chat for the current list or check out the Emojis / GIFs Picker "EmojiKeyboard"
+- Note 1: Only one GIF per message allowed. GIF code can be used anywhere in the text
+- Note 2: You can add custom GIFs by clicking on the + sign
+- Note 3: This list may not be up to date. Use the !help command in the chat for the current list or check out the Emojis / GIFs Picker "EmojiKeyboard"
 
 **EMOJIS**
 - The following emojis are available: :kek: :pikaponder: :rip: :kanna_hi: :hi: :uwot: :wot: :kanna_nom: :kannanom: :kanna_headpat: :kannaheadpat: :thinky: :thonk: :smug: :energy: :combativity: :fisting: :kiss : :league: :worship: :ticket : :ymen: :money: :koban: :potion_endurance: :potion_love: :potion_lust: :crystal: :shard: :flowers: :spellbook: :book : :kk: :kinkoid: :sandalwood: :perfume: :memories: :atm : :ginseng: :cordy: :cordys: :cordyceps: :am: :allmastery: :ep: :ep10: :gp10: :magazine: :dating: :datingtoken: :blackgem: :redgem: :greengem: :orangegem: :yellowgem: :bluegem: :whitegem: :purplegem: :allgem: :rainbow : :balanced: :black: :red: :green: :orange : :yellow: :blue: :white: :purple:
-- Note: This list may not be up to date. Use the !help command in the chat for the current list or check out the Emojis / GIFs Picker "EmojiKeyboard"
+- Note 1: You can add custom emojis by clicking on the + sign
+- Note 2: This list may not be up to date. Use the !help command in the chat for the current list or check out the Emojis / GIFs Picker "EmojiKeyboard"
 
 **MISCELLANEOUS**
 - The nickname color is changed. Your nickname is gold, the club leader is red, the club co leaders are orange and all members are blue
@@ -79,3 +81,4 @@ Upgrade Club Chat with various features and bug fixes
 ## Screenshots
 ![ClubChat++ Preview2](https://user-images.githubusercontent.com/107755486/199144676-46b46995-faaf-4f34-8611-92c7b4de6441.png)
 ![ClubChat++ Preview1](https://user-images.githubusercontent.com/107755486/199146038-49adff18-53c9-4b08-9c85-f80b2f6b7a0d.png)
+Note: The screenshots are outdated but similar
