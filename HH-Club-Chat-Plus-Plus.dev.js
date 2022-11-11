@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.37
+// @version      0.38
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -258,10 +258,12 @@
                                       '<span style="font-weight:bold;">GIFS</span><br/>' +
                                       'The following gifs are available: ' + gifs + '<br/>' +
                                       'The following random gifs are available: ' + gifsRandom + '<br/>' +
-                                      'Note: Only one GIF per message allowed. GIF code can be used anywhere in the text<br/>' +
+                                      'Note 1: Only one GIF per message allowed. GIF code can be used anywhere in the text<br/>' +
+                                      'Note 2: You can add custom GIFs by clicking on the + sign<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">EMOJIS</span><br/>' +
                                       'The following emojis are available: ' + emojis + '<br/>' +
+                                      'Note: You can add custom emojis by clicking on the + sign<br/>' +
                                       '<br/>' +
                                       '<span style="font-weight:bold;">MISCELLANEOUS</span><br/>' +
                                       '- The nickname color is changed. Your nickname is gold, the club leader is red, the club co leaders are orange and all members are blue<br/>' +
@@ -1650,6 +1652,12 @@
         let url = prompt('Add a custom ' + (isEmoji ? 'Emoji' : 'GIF') + ' by pasting a valid direct URL from your image (' + (isEmoji ? fileExtText.substr(0, fileExtText.length - 2) : '.gif') + '). Valid Hosts: ' + hostsText.substr(0, hostsText.length - 2));
         if(url != null)
         {
+            //prepare url
+            let urlEnd = url.indexOf('?');
+            if(urlEnd != -1) url = url.substr(0, urlEnd); //remove all url parameters
+            if(url.length > 30 && url.startsWith('https://media') && url.substr(14, 17) == '.giphy.com/media/') url = 'https://media' + url.substr(14); //change giphy.com subdomains media0, media1, etc. to media
+
+            //check url for validity
             let urlWithGif = url.endsWith('.gif');
             let customEmojiGifCode = convertUrlToCustomEmojiGifCode(url, urlWithGif);
             if(customEmojiGifCode != null && isEmoji != urlWithGif)
