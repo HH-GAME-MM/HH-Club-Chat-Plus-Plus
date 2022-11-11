@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.37] - 2022-11-11
+
+### Added
+- Kinkoid's nickname change bug "fixed". Details: After a nickname change, the old nickname is displayed in the chat member list from time to time. This bug comes from the chat code of Kinkoid. We have added a fix so that the affected player at least receives the ping notifications. The green ! (Invalid Ping) is still displayed in the chat if the name in the member list is incorrect
+
 ## [0.34-0.36] - 2022-11-09
 
 ### Added
