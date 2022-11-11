@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.36
+// @version      0.37
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -146,6 +146,7 @@
         {
             pingValidList.push('@club');
             document.querySelectorAll('div.chat-members-list div.member p.name-member').forEach(e => pingValidList.push('@' + e.innerHTML.toLowerCase().replaceAll(' ', '_')));
+            if(playerNamePing != null && !pingValidList.includes(playerNamePing)) pingValidList.push(playerNamePing); //KK bug fix after name change
         }
 
         //parse new messages
