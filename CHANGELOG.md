@@ -2,6 +2,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.39] - 2022-11-14
+
+### Added
+- Added Ping Notification Feature to pinned message
+
+### Fixed
+- The pinned message was not parsed in some cases (final fix)
+
+## [0.38] - 2022-11-11
+
+### Changed
+- Added subdomains of giphy.com for custom emojis/gifs
+
 ## [0.37] - 2022-11-11
 
 ### Added
