@@ -42,7 +42,7 @@ Upgrade Club Chat with various features and bug fixes
 **TEXT FORMATTING**
 - &#42;italic&#42; = *italic*
 - &#42;&#42;bold&#42;&#42; = **bold**
-- &#95;&#95;underline&#95;&#95; = __underlined__
+- &#95;&#95;underline&#95;&#95; = <ins>underlined</ins>
 - &#126;&#126;strikethrough&#126;&#126; = ~~strikethrough~~
 
 **PLAINTEXT**
