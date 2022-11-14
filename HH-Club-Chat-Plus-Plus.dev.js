@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.38
+// @version      0.39
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -430,7 +430,7 @@
                                 htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank" onclick="return confirm(\'Do you really want to open this link?\')">' + word + '</a>' });
                             }
                         }
-                        else if(word.startsWith('@') && word.length != 1 && !isPinnedMsg) //ping
+                        else if(word.startsWith('@') && word.length != 1) //ping
                         {
                             //ignore some characters at the end
                             if([',', '.', '!', '?', ':', ')'].includes(wordLC[wordLC.length - 1])) wordLC = wordLC.substr(0, wordLC.length - 1);
@@ -484,7 +484,7 @@
                                     //if the chat window is not visible and if its a new unread ping message, we notify the user about it
                                     if(!chatWindowVisible && lastMsgTimestampSeen < msgIdTimestampMs)
                                     {
-                                        pingMessageCount++;
+                                        if(!isPinnedMsg || pingMessageCount == 0) pingMessageCount++;
                                         let pingNotificationBox = getPingNotificationBox(iFrame);
                                         pingUpdateText(pingNotificationBox);
                                         pingVisible(pingNotificationBox);
@@ -772,6 +772,9 @@
 
                     //scroll down in the chat when chat turns visible
                     scrollDown();
+
+                    //parse the pinned message if there is one
+                    parsePinnedMessage();
                 }
                 else if(document.getElementById('emojikb-maindiv') != null)
                 {
@@ -1057,7 +1060,7 @@
                 //parse pinned messages
                 ClubChat.socket.on("pin", parsePinnedMessage);
                 //parse the pinned message if there already is one
-                if(document.querySelector('div.pinned-block div.container div') != null) parsePinnedMessage();
+                parsePinnedMessage();
 
                 //bug fix for Mozilla Firefox: The member list is outside the window at the first click
                 fixTabs_MozillaFirefox();
@@ -1119,10 +1122,15 @@
         return ClubChat.$msgHolder[0].scrollHeight - ClubChat.$msgHolder[0].clientHeight;
     }
 
-    function parsePinnedMessage(data = null)
+    function parsePinnedMessage()
     {
-        let mr = {addedNodes: [document.querySelector('div.pinned-block div.container div')], target: document.querySelector('div.pinned-block div.container'), pinnedBlock: true};
-        observerMessagesFunction([mr], observerMessages);
+        let pinnedMsgNode = document.querySelector('div.pinned-block div.container div');
+        if(pinnedMsgNode != null && pinnedMsgNode.getAttribute('ParsedByHHClubChatPlusPlus') == null)
+        {
+            pinnedMsgNode.setAttribute('ParsedByHHClubChatPlusPlus', '1');
+            let mr = {addedNodes: [pinnedMsgNode], target: pinnedMsgNode.parentNode, pinnedBlock: true};
+            observerMessagesFunction([mr], observerMessages);
+        }
     }
 
     function getIFrame()
