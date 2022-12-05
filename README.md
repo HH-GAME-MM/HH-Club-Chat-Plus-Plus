@@ -75,7 +75,7 @@ Upgrade Club Chat with various features and bug fixes
 - Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Firefox Nightly (Android)
 
 **SPONSORS**
-- Uxio and lep - Thanks for sponsoring!
+- Master Maximus, Uxio and lep - Thanks for sponsoring!
 - If you would like to support me, you can do so here: https://www.buymeacoffee.com/HHMM
 
 ## Screenshots
