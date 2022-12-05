@@ -76,7 +76,7 @@ Upgrade Club Chat with various features and bug fixes
 
 **SPONSORS**
 - Master Maximus, Uxio and lep - Thanks for sponsoring!
-- If you would like to support me, you can do so here: https://www.buymeacoffee.com/HHMM
+- If you would like to support me, you can do so here: https://www.patreon.com/HHMM or here: https://www.buymeacoffee.com/HHMM
 
 ## Screenshots
 ![ClubChat++ Preview2](https://user-images.githubusercontent.com/107755486/199144676-46b46995-faaf-4f34-8611-92c7b4de6441.png)
