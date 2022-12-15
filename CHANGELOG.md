@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 - Chat log added to console to allow for longer chat history
 - Open the hero page by clicking on the avatar in the chat
 - Ping now also works with the members list
-- Added new Emojis
+- Added new emojis
 
 ### Changed
 - !hh and !poses commands changed to /girl and /poses
