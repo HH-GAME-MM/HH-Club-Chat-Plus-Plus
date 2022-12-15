@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - Added nickname color change for sponsors
 - Chat log added to console to allow for longer chat history
 - Open the hero page by clicking on the avatar in the chat
-- Ping now also works with the member list
+- Ping now also works with the members list
 
 ### Changed
 - !hh and !poses commands changed to /girl and /poses
