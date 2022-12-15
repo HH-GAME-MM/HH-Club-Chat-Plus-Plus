@@ -2,6 +2,22 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.40] - 2022-12-15
+
+### Added
+- The "Settings", "Help" and "Info" tabs have been added
+- Nine different settings have been added
+- Script information, sponsors and other script links added to the "Info" tab
+- Added sound on new message / sound on new ping
+- Added nickname color change for sponsors
+- Chat log added to console to allow for longer chat history
+- Open the hero page by clicking on the avatar in the chat
+- Ping now also works with the member list
+
+### Changed
+- !hh and !poses commands changed to /girl and /poses
+- !help command removed and moved to the "Help" tab
+
 ## [0.39] - 2022-11-14
 
 ### Added
