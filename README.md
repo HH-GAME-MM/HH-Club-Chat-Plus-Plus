@@ -1,6 +1,8 @@
 # HH Club Chat++
 Upgrade Club Chat with various features and bug fixes
 
+Supported games: HH.com, CxH, PSH
+
 ## Windows / Mac OS - Installation instructions:
 1) Install [TamperMonkey](https://www.tampermonkey.net) browser extension (or your userscript extension of choice e.g. Greasemonkey)
 2) Click the URL: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
