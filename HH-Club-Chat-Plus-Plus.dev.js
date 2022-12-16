@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.40
+// @version      0.41
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -440,6 +440,8 @@
                                     case '@epic':
                                     case '@bacon': wordLC = '@epicbacon'; break;
                                     case '@finder':
+                                    case '@finders':
+                                    case '@find':
                                     case '@finds': wordLC = '@finderkeeper'; break;
                                     case '@yoyo': wordLC = '@yoyowhan'; break;
                                     case '@hvj': wordLC = '@hvjkzv'; break;
@@ -2569,6 +2571,7 @@
     function getSponsorsHH()
     {
         return new Map([
+            [5248781, 'Safi the Orca'],
             [1964825, 'Master Maximus'],
             [3399159, 'Uxio'],
             [3563807, 'Lep']
