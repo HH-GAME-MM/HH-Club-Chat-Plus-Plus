@@ -73,7 +73,7 @@ Supported games: HH.com, CxH, PsH
 - Tested by Script Users: Compatible with Opera (Desktop), Kiwi Browser (Android)
 
 **SPONSORS**
-- Safi the Orca, Master Maximus, Uxio and lep - Thanks for sponsoring!
+- Safi the Orca, Master Maximus, Uxio and Lep - Thanks for sponsoring!
 - If you would like to support me, you can do so here: https://www.patreon.com/HHMM or here: https://www.buymeacoffee.com/HHMM
 
 ## Screenshots
