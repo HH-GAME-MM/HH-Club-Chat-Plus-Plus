@@ -18,7 +18,7 @@ Supported games: HH.com, CxH, PSH
 
 ## Features
 **SHARE THE SCRIPT**
-/script <optional text> = post the script links with an optional text (user friendly for non-script users)
+- /script <optional text> = post the script links with an optional text (user friendly for non-script users)
 
 **PING**
 - @club = ping all club members
