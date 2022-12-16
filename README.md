@@ -79,8 +79,8 @@ Supported games: HH.com, CxH, PsH
 ## Screenshots
 ![ClubChat++ Preview2](https://user-images.githubusercontent.com/107755486/199144676-46b46995-faaf-4f34-8611-92c7b4de6441.png)
 ![ClubChat++ Preview1 v0 40](https://user-images.githubusercontent.com/107755486/208198648-6a4977fa-a105-42f8-a9ea-7e26cc67c9d3.png)
-<img title="ClubChat++ Preview Tab Settings" src="https://user-images.githubusercontent.com/107755486/208203998-85399967-f5c5-4300-b75f-d57a23d45a3f.png" width="33%">
-<img title="ClubChat++ Preview Tab Help" src="https://user-images.githubusercontent.com/107755486/208204001-cf33fa98-b6e2-4e02-8933-8fe386264aad.png" width="33%">
-<img title="ClubChat++ Preview Tab Info" src="https://user-images.githubusercontent.com/107755486/208204004-c65fd785-adfa-4d0f-b7b9-9b82da11c0c6.png" width="33%">
+<img title="ClubChat++ Preview Tab Settings" src="https://user-images.githubusercontent.com/107755486/208203998-85399967-f5c5-4300-b75f-d57a23d45a3f.png" width="32%">
+<img title="ClubChat++ Preview Tab Help" src="https://user-images.githubusercontent.com/107755486/208204001-cf33fa98-b6e2-4e02-8933-8fe386264aad.png" width="32%">
+<img title="ClubChat++ Preview Tab Info" src="https://user-images.githubusercontent.com/107755486/208204004-c65fd785-adfa-4d0f-b7b9-9b82da11c0c6.png" width="32%">
   
  
