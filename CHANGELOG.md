@@ -2,7 +2,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.40] - 2022-12-15
+## [0.40-0.41] - 2022-12-15
 
 ### Added
 - The "Settings", "Help" and "Info" tabs have been added
