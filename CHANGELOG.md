@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.42] - 2022-12-28
+
+### Fixed
+- Fixed the offline "thank you" (dog) gif
+
 ## [0.41] - 2022-12-16
 
 ### Changed
