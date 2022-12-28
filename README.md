@@ -69,8 +69,7 @@ Supported games: HH.com, CxH, PsH
 
 **CREDITS**
 - Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"
-- Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Firefox Nightly (Android)
-- Tested by Script Users: Compatible with Opera (Desktop), Kiwi Browser (Android)
+- Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)
 
 **SPONSORS**
 - Safi the Orca, Master Maximus, Uxio and Lep - Thanks for sponsoring!
