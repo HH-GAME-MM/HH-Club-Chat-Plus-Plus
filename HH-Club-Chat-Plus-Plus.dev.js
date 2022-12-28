@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.41
+// @version      0.42
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1451,7 +1451,7 @@
                 'Web: <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus" target="_blank">HOMEPAGE</a> || <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">CHANGELOG</a><br/>' +
                 '<br/>' +
                 'Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"<br/>' +
-                'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Firefox Nightly (Android)<br/>' +
+                'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)<br/>' +
                 '<br/>' +
                 '<span class="title">SPONSORS</span><br/>' +
                 'Special thanks to my sponsors!<br/>' +
@@ -2402,7 +2402,7 @@
             ['!rule', ['nPWzt3Rfql0AAAAC/fight-club-rules.gif', 'ijKrOkX2MEcAAAAC/fight-club-first-rule-of-fight-club.gif']],
             ['!sad', ['Up7hRFmFY9AAAAAC/anime-sad-anime-pout.gif', 'B9w6cHA-RrYAAAAd/marin-cry-marin-sad.gif']],
             ['!sleepy', ['ajpTPte6fI8AAAAd/rin-tohsaka-pyjamas.gif']],
-            ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif', 'Qc9cm8By46YAAAAd/doggo-dog.gif']],
+            ['!thx', ['35hmBwYHYikAAAAC/the-office-bow.gif', 'xCQSK3wG0OQAAAAC/my-hero.gif', 'https://i.imgur.com/1cjdsob.gif']],
             ['!ty', '!thx'],
             ['!thanks', '!thx'],
             ['!whale', ['https://cdn.discordapp.com/attachments/344734413600587776/463933711193473044/Whale.png', 'Gb_N7yXyB-UAAAAC/marin-kitagawa-marin.gif', 'f_G-jdId4fkAAAAd/whale-gold.gif', 'id2Lsryg60cAAAAC/unusual-whales-unusual-whales-rain-money.gif']],
