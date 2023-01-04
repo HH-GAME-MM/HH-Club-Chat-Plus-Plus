@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.43] - 2023-01-04
+
+### Fixed
+- The chat user interface has been fixed after KK's chat patch today
+
 ## [0.42] - 2022-12-28
 
 ### Fixed
