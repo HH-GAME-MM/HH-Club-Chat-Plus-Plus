@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.42
+// @version      0.43
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -67,7 +67,6 @@
     document.head.appendChild(css);
     css.sheet.insertRule('div.chat-msg div.chat-msg-avatar {width:42px !important;height:42px !important;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-avatar img.icon {width:36px !important;height:36px !important;cursor:pointer;}');
-    css.sheet.insertRule('div.chat-msg div.chat-msg-txt {margin-top:-16px !important;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-time {margin-top:-2px;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.playername {cursor:pointer;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.member {color:#8a8ae6;}');
@@ -221,7 +220,7 @@
                 let msgIdClubId = parseInt(msgIdSplits[0]);
                 let msgIdPlayerId = parseInt(msgIdSplits[1]);
                 let msgIdTimestampMs = parseInt(msgIdSplits[2]);
-                let msgInfo = parseMessageInfo(node.lastElementChild.innerHTML);
+                let msgInfo = parseMessageInfo(node.lastElementChild.lastElementChild.innerHTML);
                 let html = msgInfo.html;
                 let htmlLC = html.toLowerCase();
                 let isPinnedMsg = (mutations[i].pinnedBlock == true);
@@ -665,7 +664,7 @@
                                     imgSrc = imgSrcArray[gifNr % imgSrcArray.length];
                                 }
 
-                                let htmlGif = '<a href="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" target="_blank"><img ' + (config.Gif == 'sl' ? 'class="small" ' : (config.Gif == 'sr' || isPinnedMsg ? 'class="smaller" ' : (config.Gif == 'sl' ? 'class="small" ' : ''))) + 'src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" title="' + gifTitle + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()"></a>';
+                                let htmlGif = '<a href="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" target="_blank"><img ' + (config.Gif == 'sr' || isPinnedMsg ? 'class="smaller" ' : (config.Gif == 'sl' ? 'class="small" ' : '')) + 'src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" title="' + gifTitle + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()"></a>';
 
                                 //are we at the beginning of the message?
                                 if(k == 0)
@@ -707,7 +706,7 @@
                     //add new html
                     let htmlNewStr = '';
                     htmlNew.forEach(e => { htmlNewStr += e.isValid ? (emojiOnly && e.isEmoji ? e.value.replace('class="emoji"', 'class="emoji-only"') : e.value) : e.invalidValue });
-                    node.lastElementChild.innerHTML = htmlNewStr;
+                    node.lastElementChild.lastElementChild.innerHTML = htmlNewStr;
 
                     //scrolling
                     ClubChat.resizeNiceScrollAndUpdatePosition();
