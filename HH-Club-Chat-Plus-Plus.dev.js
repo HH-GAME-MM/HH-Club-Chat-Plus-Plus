@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.43
+// @version      0.44
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -2794,7 +2794,7 @@ class EmojiKeyboard {
                         return;
                     this.emojis.get(categ).push({
                         emoji: emoji.emoji,
-                        url: "https://twemoji.maxcdn.com/v/13.0.1/72x72/" + emoji.unicode.replace(/ /g, '-').toLowerCase() + ".png",
+                        url: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/" + emoji.unicode.replace(/ /g, '-').toLowerCase() + ".png",
                         name: emoji.shortname,
                         unicode: emoji.unicode
                     });
