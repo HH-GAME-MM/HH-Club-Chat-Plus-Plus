@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.44] - 2023-01-11
+
+### Fixed
+- The emoji server has been switched from maxcdn.com to cloudflare.com, as maxcdn.com has been shut down for good
+
 ## [0.43] - 2023-01-04
 
 ### Fixed
