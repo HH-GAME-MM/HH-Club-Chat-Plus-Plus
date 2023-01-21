@@ -2569,7 +2569,7 @@
     function getSponsorsHH()
     {
         return new Map([
-            [5248781, 'Safi the Orca'],
+            [5248781, 'Safi'],
             [1964825, 'Master Maximus'],
             [3399159, 'Uxio'],
             [3563807, 'Lep']
