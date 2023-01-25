@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.46
+// @version      0.47
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -36,6 +36,7 @@
     const HHCLUBCHATPLUSPLUS_INDICATOR = '\u200D';
     const HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG = '\u200C';
     const HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH = 6; //6 = 4 + CONFIG_VERSION + CONFIG_INDICATOR
+    const MAX_MESSAGE_SIZE = 500;
     const mapGIFs = getMapGIFs();
     const mapEmojis = getMapEmojis();
     const mapCustomEmojiGifHosts = getMapCustomEmojiGifHosts();
@@ -75,6 +76,7 @@
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.self {color:#ffd700;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.active_light {display:inline-block;width:.75rem;height:.75rem;margin:0px 4px 4px 11px;transform:rotate(45deg);border:1px solid #000;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender span.HHCCPlusPlus {color:white;font-size:20px;line-height:1;margin:0px 2px 0px 5px;}');
+    css.sheet.insertRule('div.chat-msg div.chat-msg-info span.chat-msg-sender div.MaxMsgSize {display:inline-block;width:30px;color:red;font-size:10px;margin:0px 0px 1px 8px;border:solid 1px red;text-align:center;background-color:#700;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info {pointer-events: none;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-info * {pointer-events: auto;}');
     css.sheet.insertRule('div.chat-msg div.chat-msg-txt a {color:white;}');
@@ -138,7 +140,8 @@
         let ret = {
             html: html,
             sentByHHCCPlusPlus: html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR),
-            nicknameColor: null
+            nicknameColor: null,
+            maxMsgSize: MAX_MESSAGE_SIZE
         };
 
         if(ret.sentByHHCCPlusPlus)
@@ -171,6 +174,7 @@
                 }
             }
         }
+        if(ret.sentByHHCCPlusPlus) ret.maxMsgSize = MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH - 1;
         return ret;
     }
 
@@ -272,6 +276,16 @@
                     nodeSpanMsgSender_HHCCPlusPlus.setAttribute('title', 'HH Club Chat++');
                     nodeSpanMsgSender_HHCCPlusPlus.innerHTML = '++';
                     nodeSpanMsgSender.appendChild(nodeSpanMsgSender_HHCCPlusPlus);
+                }
+
+                //mark message when maximum message size is reached
+                if(msgInfo.maxMsgSize <= html.length)
+                {
+                    let nodeSpanMsgSender_MaxMsgSize = document.createElement('div');
+                    nodeSpanMsgSender_MaxMsgSize.setAttribute('class', 'MaxMsgSize');
+                    nodeSpanMsgSender_MaxMsgSize.setAttribute('title', 'Max Message Size reached (' + msgInfo.maxMsgSize + ' characters)');
+                    nodeSpanMsgSender_MaxMsgSize.innerHTML = 'Max';
+                    nodeSpanMsgSender.appendChild(nodeSpanMsgSender_MaxMsgSize);
                 }
 
                 //open the hero page when clicking on the avatar
@@ -929,7 +943,7 @@
         let container = document.querySelector('div.send-block-container');
         let input = document.createElement("input");
         input.setAttribute('class', 'club-chat-input-custom');
-        input.setAttribute('maxlength', 500 - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH - 1); //real maxlength is 500
+        input.setAttribute('maxlength', MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH - 1); //real maxlength is 500
         if(document.querySelector('input.club-chat-input').getAttribute('disabled') != null) input.setAttribute('disabled', 'disabled');
         input.addEventListener("keyup", onInputKeyUp_HHCCPlusPLus);
         container.appendChild(input);
@@ -1587,7 +1601,7 @@
         //++
         cssIFrame.sheet.insertRule('#chat_btn .chat_mix_icn::after {content:"++";position:absolute;width:auto;font-size:' + (is_Mobile ? 46 : 26) + 'px;bottom:-' + (is_Mobile ? 24 : 14) + 'px;right:' + (is_Mobile ? -7 : -6) + 'px;text-shadow:0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000;-moz-transform:rotate(0.05deg);}');
 
-        //KK Bug fixed: Position fix for exclamation mark
+        //KK bug fixed: Position fix for exclamation mark
         cssIFrame.sheet.insertRule('body div header img.new_notif.chat_btn_notif {left:' + (is_Mobile ? 75 : 43) + 'px !important}');
 
         //css ping message box
