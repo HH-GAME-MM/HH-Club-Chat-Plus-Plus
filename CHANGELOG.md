@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.46] - 2023-01-25
+
+### Fixed
+- KK bug fixed: Position of the exclamation mark
+
 ## [0.45] - 2023-01-21
 
 ### Changed
