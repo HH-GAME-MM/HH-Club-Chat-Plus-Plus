@@ -2,7 +2,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.46] - 2023-01-25
+## [0.46-0.47] - 2023-01-25
+
+### Added
+- Messages that reach the maximum length are now marked with "Max" (Max Message Size reached)
 
 ### Fixed
 - KK bug fixed: Position of the exclamation mark
