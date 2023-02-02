@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.47
+// @version      0.48
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -891,6 +891,7 @@
             {
                 pingMessageCount = 0; //reset ping counter, as we will receive all chat messages again after successful reconnection
                 ClubChat.hasInit = false;
+                ClubChat.hasPinnedMessageHandler = false; //the handler is lost after the connection is restored
                 fixClubChat();
             }
             else
@@ -1119,16 +1120,22 @@
             //update club id to prevent wrong call to unPinMsg()
             ClubChat.club_id = ClubChat.chatVars.CLUB_INFO.id_club;
 
-            //run this code once when the chat is ready
-            if(typeof ClubChat.hasFirstInit == 'undefined')
+            //add pinned message handler
+            if(typeof ClubChat.hasPinnedMessageHandler == 'undefined' || !ClubChat.hasPinnedMessageHandler)
             {
-                ClubChat.hasFirstInit = true;
+                ClubChat.hasPinnedMessageHandler = true;
 
                 //parse pinned messages
                 ClubChat.socket.on("pin", parsePinnedMessage);
 
                 //parse the pinned message if there already is one
                 parsePinnedMessage();
+            }
+
+            //run this code once when the chat is ready
+            if(typeof ClubChat.hasFirstInit == 'undefined')
+            {
+                ClubChat.hasFirstInit = true;
 
                 //add custom tabs
                 addCustomTabs();
