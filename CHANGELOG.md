@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.48] - 2023-02-02
+
+### Fixed
+- The problem that the pinned message lost its formatting after reconnection was fixed
+
 ## [0.46-0.47] - 2023-01-25
 
 ### Added
