@@ -2,7 +2,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.49] - 2023-02-06
+## [0.49-0.50] - 2023-02-06
 
 ### Added
 - Added sorting feature for custom gifs and emojis. Click the [⇔] button.
