@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Added sorting feature for custom gifs and emojis. Click the [⇔] button.
 
+### Changed
+- Minor changes to enhance the user experience
+
 ## [0.48] - 2023-02-02
 
 ### Fixed
