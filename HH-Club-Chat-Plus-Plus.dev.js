@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.49
+// @version      0.50
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1848,25 +1848,32 @@
         emojiKeyboard.auto_reconstruction = true;
         emojiKeyboard.default_placeholder = "Search GIF / Emoji ...";
         emojiKeyboard.customEmojiGifDeleteMode = 0;
-        emojiKeyboard.customEmojiGifSwapMode = 0;
-        emojiKeyboard.customEmojiGifSwapMode_FirstEmojiGif = null;
+        emojiKeyboard.customEmojiGifSortMode = 0;
+        emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif = null;
         emojiKeyboard.callback = (emoji, closed) => {
 
-            //SwapMode for custom Emojis/Gifs enabled?
-            if(emojiKeyboard.customEmojiGifSwapMode > 0)
+            //SortMode for custom Emojis/Gifs enabled?
+            if(emojiKeyboard.customEmojiGifSortMode > 0)
             {
-                if(emojiKeyboard.customEmojiGifSwapMode_FirstEmojiGif == null)
+                if(emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif == null)
                 {
-                    emojiKeyboard.customEmojiGifSwapMode_FirstEmojiGif = emoji.emoji;
+                    emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif = emoji.emoji;
+                    emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emoji.emoji + '"]').classList.add('MoveSwapMode_Selected');
+                }
+                else if(emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif == emoji.emoji)
+                {
+                    emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif = null;
+                    emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emoji.emoji + '"]').classList.remove('MoveSwapMode_Selected');
                 }
                 else
                 {
-                    let emojiGif1 = emojiKeyboard.customEmojiGifSwapMode_FirstEmojiGif;
+                    let emojiGif1 = emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif;
                     let emojiGif2 = emoji.emoji;
 
                     if(emojiGif1 != emojiGif2)
                     {
-                        emojiKeyboard.customEmojiGifSwapMode_FirstEmojiGif = null;
+                        emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif = null;
+                        let isMoveMode = (emojiKeyboard.customEmojiGifSortMode == 1); //2 = SwapMode
 
                         let isEmoji1 = isCustomEmojiCode(emojiGif1);
                         let isEmoji2 = isCustomEmojiCode(emojiGif2);
@@ -1876,32 +1883,42 @@
                         let ret = false;
                         if(isEmoji1 && isEmoji2)
                         {
-                            ret = swapCustomEmojiInLocalStore(emojiGif1, emojiGif2);
+                            if(isMoveMode) ret = moveCustomEmojiInLocalStore(emojiGif1, emojiGif2);
+                            else ret = swapCustomEmojiInLocalStore(emojiGif1, emojiGif2);
                         }
                         else if(isGif1 && isGif2)
                         {
-                            ret = swapCustomGifInLocalStore(emojiGif1, emojiGif2);
-                        }
-                        else if((isEmoji1 || isEmoji2) && (isGif1 || isGif2))
-                        {
-                            alert('The position of custom gifs and emojis cannot be swapped with each other.');
+                            if(isMoveMode) ret = moveCustomGifInLocalStore(emojiGif1, emojiGif2);
+                            else ret = swapCustomGifInLocalStore(emojiGif1, emojiGif2);
                         }
                         else
                         {
-                            alert('The position of non-custom gifs and emojis cannot be swapped.');
+                            if(isMoveMode) alert('Movement is invalid. A custom gif / emoji cannot be moved in front of a non-custom gif / emoji or into a different category.');
+                            else alert('Movement is invalid. A custom gif / emoji cannot be swapped with a non-custom gif / emoji or into a different category.');
                         }
                         if(ret)
                         {
                             let nodeEmojiGif1 = emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emojiGif1 + '"]');
                             let nodeEmojiGif2 = emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emojiGif2 + '"]');
 
-                            //swap and remove selected
-                            let oldPosNode1 = document.createElement("span");
-                            nodeEmojiGif1.before(oldPosNode1);
-                            nodeEmojiGif2.before(nodeEmojiGif1);
-                            oldPosNode1.replaceWith(nodeEmojiGif2);
+                            if(isMoveMode)
+                            {
+                                //move
+                                nodeEmojiGif2.before(nodeEmojiGif1);
+                            }
+                            else
+                            {
+                                //swap
+                                let oldPosNode1 = document.createElement("span");
+                                nodeEmojiGif1.before(oldPosNode1);
+                                nodeEmojiGif2.before(nodeEmojiGif1);
+                                oldPosNode1.replaceWith(nodeEmojiGif2);
+                            }
+
+                            //remove selected style
                             nodeEmojiGif1.classList.remove('selected');
                             nodeEmojiGif2.classList.remove('selected');
+                            nodeEmojiGif1.classList.remove('MoveSwapMode_Selected');
                         }
                     }
                 }
@@ -2213,7 +2230,7 @@
     padding: 4px;
 }
 
-.emojikb-categ .emojikb-emoji.selected, .emojikb-categ .emojikb-emoji.lazy {
+.emojikb-categ .emojikb-emoji.selected, .emojikb-categ .emojikb-emoji.lazy, .emojikb-categ .emojikb-emoji.MoveSwapMode_Selected {
     background-color: #ffa23e;
 }
 
@@ -2308,17 +2325,32 @@
 
     function confirmSortModeCustomEmojiGif(span)
     {
-        if(span.innerText == '[⇔]')
+        if(span.innerText == '[⇔]' && emojiKeyboard.customEmojiGifSortMode == 0)
         {
-            alert('You can now swap the positions of two emojis / gifs. Click on "SWAP MODE" to exit the mode.');
-            span.innerText = '[SWAP MODE]';
-            emojiKeyboard.customEmojiGifSwapMode++;
+            alert('"MOVE MODE" has been activated.\n\nYou can now move emojis / gifs. Click on a emoji / gif and then on another emoji / gif to move it in front of it.\n\nClick on "MOVE MODE" to switch to "SWAP MODE".');
+            span.innerText = '[MOVE MODE]';
+            emojiKeyboard.customEmojiGifSortMode = 1;
         }
-        else
+        else if(span.innerText == '[MOVE MODE]' && emojiKeyboard.customEmojiGifSortMode == 1)
+        {
+            alert('"SWAP MODE" has been activated.\n\nYou can now swap two emojis / gifs. Click on two gifs to swap their positions.\n\nClick on "SWAP MODE" to exit the mode completely.');
+            span.innerText = '[SWAP MODE]';
+            emojiKeyboard.customEmojiGifSortMode = 2;
+            if(emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif != null)
+            {
+                emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif + '"]').classList.remove('MoveSwapMode_Selected');
+                emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif = null;
+            }
+        }
+        else if(span.innerText == '[SWAP MODE]' && emojiKeyboard.customEmojiGifSortMode == 2)
         {
             span.innerText = '[⇔]';
-            emojiKeyboard.customEmojiGifSwapMode--;
-            if(emojiKeyboard.customEmojiGifSwapMode == 0) emojiKeyboard.customEmojiGifSwapMode_FirstEmojiGif = null;
+            emojiKeyboard.customEmojiGifSortMode = 0;
+            if(emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif != null)
+            {
+                emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif + '"]').classList.remove('MoveSwapMode_Selected');
+                emojiKeyboard.customEmojiGifSortMode_FirstEmojiGif = null;
+            }
         }
     }
 
@@ -2358,6 +2390,25 @@
             {
                 customEmojis[index1] = emoji2;
                 customEmojis[index2] = emoji1;
+                saveCustomEmojisToLocalStorage(customEmojis);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function moveCustomEmojiInLocalStore(emoji1, emoji2)
+    {
+        let customEmojis = loadCustomEmojisFromLocalStorage();
+        let index1 = customEmojis.indexOf(emoji1);
+        if (index1 > -1)
+        {
+            let index2 = customEmojis.indexOf(emoji2);
+            if (index2 > -1)
+            {
+                customEmojis.splice(index1, 1);
+                index2 = customEmojis.indexOf(emoji2);
+                customEmojis.splice(index2, 0, emoji1);
                 saveCustomEmojisToLocalStorage(customEmojis);
                 return true;
             }
@@ -2413,6 +2464,25 @@
             {
                 customGifs[index1] = gif2;
                 customGifs[index2] = gif1;
+                saveCustomGifsToLocalStorage(customGifs);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function moveCustomGifInLocalStore(gif1, gif2)
+    {
+        let customGifs = loadCustomGifsFromLocalStorage();
+        let index1 = customGifs.indexOf(gif1);
+        if (index1 > -1)
+        {
+            let index2 = customGifs.indexOf(gif2);
+            if (index2 > -1)
+            {
+                customGifs.splice(index1, 1);
+                index2 = customGifs.indexOf(gif2);
+                customGifs.splice(index2, 0, gif1);
                 saveCustomGifsToLocalStorage(customGifs);
                 return true;
             }
@@ -2828,7 +2898,7 @@ class EmojiKeyboard {
     }
 
     click_on_emoji(kb, event) {
-        let closed = (!event.shiftKey && emojiKeyboard.customEmojiGifDeleteMode == 0 && emojiKeyboard.customEmojiGifSwapMode == 0 && config.EmojiKeyboard == 'AutoClose');
+        let closed = (!event.shiftKey && emojiKeyboard.customEmojiGifDeleteMode == 0 && emojiKeyboard.customEmojiGifSortMode == 0 && config.EmojiKeyboard == 'AutoClose');
         if(closed) kb.toggle_window();
         const data = Object.assign({}, event.target.dataset)
         kb.callback(data, closed);
