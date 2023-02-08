@@ -1,5 +1,5 @@
 # HH Club Chat++
-Upgrade Club Chat with various features and bug fixes
+Upgrade Club Chat with various features and bug fixes. Scroll down for screenshots ;-)
 
 Supported games: HH.com, CxH, PsH
 
