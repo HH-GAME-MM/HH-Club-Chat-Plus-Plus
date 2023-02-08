@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.50
+// @version      0.51
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -471,7 +471,8 @@
                                     case '@z': wordLC = '@zteev'; break;
                                     case '@zami': wordLC = '@zam'; break;
                                     case '@fakemm':
-                                    case '@hpfcc': wordLC = '@hērōēs_prāvī_forī_cc'; break;
+                                    case '@hpfcc':
+                                    case '@hērōēs_prāvī_forī_cc': wordLC = '@-fakemm-'; break;
                                 }
                             }
 
