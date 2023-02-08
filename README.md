@@ -74,7 +74,7 @@ Supported games: HH.com, CxH, PsH
 - Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)
 
 **SPONSORS**
-- Safi the Orca, Master Maximus, Uxio and Lep - Thanks for sponsoring!
+- Safi, Master Maximus, Uxio and Lep - Thanks for sponsoring!
 - If you would like to support me, you can do so here: https://www.patreon.com/HHMM or here: https://www.buymeacoffee.com/HHMM
 
 ## Screenshots
@@ -83,5 +83,5 @@ Supported games: HH.com, CxH, PsH
 <img title="ClubChat++ Preview Tab Settings" src="https://user-images.githubusercontent.com/107755486/208203998-85399967-f5c5-4300-b75f-d57a23d45a3f.png" width="32.5%">
 <img title="ClubChat++ Preview Tab Help" src="https://user-images.githubusercontent.com/107755486/208204001-cf33fa98-b6e2-4e02-8933-8fe386264aad.png" width="32.5%">
 <img title="ClubChat++ Preview Tab Info" src="https://user-images.githubusercontent.com/107755486/208204004-c65fd785-adfa-4d0f-b7b9-9b82da11c0c6.png" width="32.5%">
-  
+Note: The screenshots are outdated but similar
  
