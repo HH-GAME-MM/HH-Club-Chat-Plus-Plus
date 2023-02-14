@@ -24,6 +24,7 @@ Supported games: HH.com, CxH, PsH
 
 **PING**
 - @club = ping all club members
+- @online / @offline = ping all online/offline club members
 - @&lt;membername&gt; = ping a club member
 - Note 1: Club members will receive a notification outside of the chat, when the chat is not open
 - Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe
