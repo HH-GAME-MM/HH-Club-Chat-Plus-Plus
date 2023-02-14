@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.52] - 2023-02-14
+
+### Added
+- @online / @offline added to ping all online/offline club members
+
 ## [0.51] - 2023-02-08
 
 ### Changed
