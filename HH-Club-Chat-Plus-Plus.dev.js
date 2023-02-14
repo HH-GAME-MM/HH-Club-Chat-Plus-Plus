@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.51
+// @version      0.52
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -129,6 +129,7 @@
     let playerNamePing = null;
     let pingValidList = [];
     let pingMessageCount = 0;
+    let mapOnOffPings = cleanOnlineOfflinePingsInLocalStore();
     let lastMsgTimestamp = 0;
     let lastMsgTimestampSeen = loadLastMsgTimestampSeen(); //we cant use ClubChat.lastSeenMessage because its not available when we receive the first messages
     let lastBeepTimestamp = 0;
@@ -208,6 +209,8 @@
         if(pingValidList.length == 0 && document.querySelectorAll('div.chat-members-list div.member p.name-member').length != 0)
         {
             pingValidList.push('@club');
+            pingValidList.push('@online');
+            pingValidList.push('@offline');
             document.querySelectorAll('div.chat-members-list div.member p.name-member').forEach(e => pingValidList.push('@' + e.innerHTML.toLowerCase().replaceAll(' ', '_')));
             if(playerNamePing != null && !pingValidList.includes(playerNamePing)) pingValidList.push(playerNamePing); //KK bug fix after name change
         }
@@ -482,8 +485,33 @@
                                 //format the ping word
                                 htmlNew.push({ isValid: true, value: '<span class="ping">' + word + '</span>' });
 
+                                //@online / @offline pings
+                                let triggerOnOffPing = false;
+                                const key = msgIdTimestampMs + '-' + msgIdPlayerId;
+                                if(mapOnOffPings.has(key))
+                                {
+                                    triggerOnOffPing = mapOnOffPings.get(key);
+                                }
+                                else if(wordLC == '@online')
+                                {
+                                    triggerOnOffPing = (msgIdTimestampMs >= Date.now() - 5000);
+
+                                    //we do not need to save the @online trigger, if its false
+                                    if(triggerOnOffPing)
+                                    {
+                                        mapOnOffPings.set(key, triggerOnOffPing);
+                                        saveOnlineOfflinePingsToLocalStore(mapOnOffPings);
+                                    }
+                                }
+                                else if(wordLC == '@offline')
+                                {
+                                    triggerOnOffPing = (msgIdTimestampMs < Date.now() - 5000);
+                                    mapOnOffPings.set(key, triggerOnOffPing);
+                                    saveOnlineOfflinePingsToLocalStore(mapOnOffPings);
+                                }
+
                                 //is the ping for this user?
-                                if(!pingReceived && (wordLC == '@club' || (playerNamePing != null && wordLC == playerNamePing)))
+                                if(!pingReceived && (wordLC == '@club' || triggerOnOffPing || (playerNamePing != null && wordLC == playerNamePing)))
                                 {
                                     //only one ping per message
                                     pingReceived = true;
@@ -1416,6 +1444,7 @@
                 '<br/>' +
                 '<span class="title">PING</span><br/>' +
                 '@club = ping all club members<br/>' +
+                '@online / @offline = ping all online/offline club members<br/>' +
                 '@<span style="font-style:italic;">&lt;membername&gt;</span> = ping a club member<br/>' +
                 'Note 1: Club members will receive a notification outside of the chat, when the chat is not open<br/>' +
                 'Note 2: Replace spaces with underscores. E.g. to ping John Doe write @John_Doe<br/>' +
@@ -1660,9 +1689,7 @@
     function loadConfigFromLocalStore()
     {
         let json = localStorage.getItem('HHClubChatPlusPlus_Config');
-        let config;
-        if(json != null) config = JSON.parse(json);
-        else config = { };
+        let config = json != null ? JSON.parse(json) : { };
 
         //default config
         if(typeof config.Gif == 'undefined') config.Gif = '1'; //1 sl sr 0
@@ -1684,10 +1711,39 @@
         localStorage.setItem('HHClubChatPlusPlus_Config', JSON.stringify(config));
     }
 
+    function loadOnlineOfflinePingsFromLocalStore()
+    {
+        let json = localStorage.getItem('HHClubChatPlusPlus_OnlineOfflinePings');
+        return json != null ? new Map(JSON.parse(json)) : new Map();
+    }
+
+    function saveOnlineOfflinePingsToLocalStore(pings)
+    {
+        localStorage.setItem('HHClubChatPlusPlus_OnlineOfflinePings', JSON.stringify(Array.from(pings.entries())));
+    }
+
+    function cleanOnlineOfflinePingsInLocalStore()
+    {
+        let map = loadOnlineOfflinePingsFromLocalStore();
+
+        //remove pings older than 7 days
+        let dateNow = Date.now();
+        let keys = Array.from(map.keys());
+        let mapOldSize = map.size;
+        for(let i = 0; i < keys.length; i++)
+        {
+            let key = keys[i];
+            let timestamp = parseInt(key.substr(0, key.indexOf('-')));
+            if(timestamp < dateNow - 604800000) map.delete(key);
+        }
+        if(mapOldSize != map.size) saveOnlineOfflinePingsToLocalStore(map);
+        return map;
+    }
+
     function loadLastMsgTimestampSeen()
     {
         let lastMsgTimestampSeenLS = localStorage.getItem('HHClubChatPlusPlus_LastMsgTimestampSeen');
-        return lastMsgTimestampSeenLS == null ? 0 : parseInt(lastMsgTimestampSeenLS);
+        return lastMsgTimestampSeenLS != null ? parseInt(lastMsgTimestampSeenLS) : 0;
     }
 
     function saveLastMsgTimestampSeen()
