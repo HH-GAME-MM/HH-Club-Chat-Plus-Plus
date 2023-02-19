@@ -2,7 +2,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.53] - 2023-02-19
+## [0.53-0.54] - 2023-02-19
 
 ### Fixed
 - KK bug fixed: Since the patch from Wednesday the chat does not work after logging in as long as you do not refresh the page. This is a bug from Kinkoid. I have now added a bugfix for it (GAME_FEATURE_CLUB)
