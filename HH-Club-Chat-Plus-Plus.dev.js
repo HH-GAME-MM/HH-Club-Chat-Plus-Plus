@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.52
+// @version      0.53
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1130,6 +1130,13 @@
 
     function fixClubChat(attempts = 0)
     {
+        //KK bug fixed: GAME_FEATURE_CLUB
+        if(GAME_FEATURE_CLUB === false)
+        {
+            GAME_FEATURE_CLUB = true;
+            console.warn('KK Bug detected. GAME_FEATURE_CLUB is set to false. It\'s fixed now :)');
+        }
+
         if(!ClubChat.hasInit)
         {
             attempts++;
