@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.53
+// @version      0.54
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1186,7 +1186,9 @@
             else
             {
                 //fix didnt work 10 times. wait 60 seconds
-                setTimeout(fixClubChat, 60000);
+                //setTimeout(fixClubChat, 60000);
+                //temporarily changed due to KK bug GAME_FEATURE_CLUB
+                setTimeout(fixClubChat, 10000);
             }
         }
     }
@@ -1495,7 +1497,7 @@
                 '- Avatars are a bit bigger and clicking on them opens the hero page<br/>' +
                 '- Play sound on new message or ping<br/>' +
                 '- Chatlog in console<br/>' +
-                '- KK Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Member list outside the window"';
+                '- KK Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Member list outside the window", "Chat broken after login"';
         }
 
         function getTabContentInfo()
