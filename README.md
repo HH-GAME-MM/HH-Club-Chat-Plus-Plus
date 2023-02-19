@@ -68,7 +68,7 @@ Supported games: HH.com, CxH, PsH
 - Avatars are a bit bigger and clicking on them opens the hero page
 - Play sound on new message or ping
 - Chatlog in console
-- KK Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Member list outside the window"
+- KK Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Member list outside the window", "Chat broken after login"
 
 **CREDITS**
 - Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"
