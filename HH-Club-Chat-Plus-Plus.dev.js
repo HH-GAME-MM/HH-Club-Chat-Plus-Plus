@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.54
+// @version      0.55
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1503,7 +1503,19 @@
         function getTabContentInfo()
         {
             let sponsorsText = '';
-            getSponsorsHH().forEach((value, key) => { sponsorsText += '<li>' + value + '</li>'; });
+            getSponsorsHH().forEach((value, key) => {
+                sponsorsText += '<li style="height:25px;"><a style="text-decoration:none;" href="https://www.hentaiheroes.com/hero/' + key + '/profile.html" target="_blank">' + value.name + '</a>';
+                let activeText = (value.active ? 'Active' : 'Former');
+                let cssOpacity = (!value.active ? ';opacity:30%' : '');
+                switch(value.tier)
+                {
+                    case 'gold': sponsorsText += '<img title="' + activeText + ' Gold Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305494/eeec946e32054cb096050a17d1c70886/eyJ3Ijo0MDB9/1.png?token-time=2145916800&amp;token-hash=yzqxxAjHfqbwRuOMeoU9MbYDaoJcW86yQI0Sabsunds%3D">'; break;
+                    case 'silver': sponsorsText += '<img title="' + activeText + ' Silver Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305480/1e49ca84119b4f9e9eb17f2f45afd721/eyJ3Ijo0MDB9/1.png?token-time=2145916800&token-hash=wvDQ5Jbn_P9sz6UR-rUJpv1Fu-qitHUxM-flB0d31qU%3D">'; break;
+                    case 'bronze': sponsorsText += '<img title="' + activeText + ' Bronze Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305478/8e1f4980fe074ea080806bab81a0b5b9/eyJ3Ijo0MDB9/4.png?token-time=2145916800&token-hash=ciO4SIiTaNMD7Zqpof6-KiHjDrdibVoXetDVB4hnrH0%3D">'; break;
+                    case 'coffee': sponsorsText += '<span title="' + activeText + ' Coffee Supporter" style="margin-left:10px' + cssOpacity + '" >☕</span>'; break;
+                }
+                sponsorsText += '</li>';
+            });
             return '<span class="title">SCRIPT INFORMATION</span><br/>' +
                 'HH Club Chat++ Script v' + GM_info.script.version + '<br/>' +
                 'Web: <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus" target="_blank">HOMEPAGE</a> || <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">CHANGELOG</a><br/>' +
@@ -2839,10 +2851,10 @@
     function getSponsorsHH()
     {
         return new Map([
-            [5248781, 'Safi'],
-            [1964825, 'Master Maximus'],
-            [3399159, 'Uxio'],
-            [3563807, 'Lep']
+            [5248781, { name: 'Safi', tier: 'gold', active: true }],
+            [1964825, { name: 'Master Maximus', tier: 'silver', active: true }],
+            [3399159, { name: 'Uxio', tier: 'silver', active: true }],
+            [3563807, { name: 'Lep', tier: 'coffee', active: false }],
         ]);
     }
 
