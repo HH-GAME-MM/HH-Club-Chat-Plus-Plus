@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.55
+// @version      0.56
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -181,6 +181,9 @@
 
     //observe chat messages
     function observerMessagesFunction(mutations, observer) {
+
+        //user is not in a club if we do not have a chat token
+        if(ClubChat.chatVars.CHAT_TOKEN == '') return;
 
         //get iFrame
         let iFrame = getIFrame();
@@ -2854,6 +2857,7 @@
             [5248781, { name: 'Safi', tier: 'gold', active: true }],
             [1964825, { name: 'Master Maximus', tier: 'silver', active: true }],
             [3399159, { name: 'Uxio', tier: 'silver', active: true }],
+            [842927 , { name: 'Zteev', tier: 'coffee', active: true }],
             [3563807, { name: 'Lep', tier: 'coffee', active: false }],
         ]);
     }
@@ -3189,7 +3193,7 @@ class EmojiKeyboard {
                 categ_name.appendChild(categ_span_custom_minus);
 
                 let categ_span_custom_sort = document.createElement("span");
-                categ_span_custom_sort.setAttribute('style', 'cursor:pointer');
+                categ_span_custom_sort.setAttribute('style', 'cursor:pointer;margin-top:-1px');
                 categ_span_custom_sort.innerText = '[⇔]';
                 categ_span_custom_sort.addEventListener("click", function() { confirmSortModeCustomEmojiGif(this); });
                 categ_name.appendChild(categ_span_custom_sort);
