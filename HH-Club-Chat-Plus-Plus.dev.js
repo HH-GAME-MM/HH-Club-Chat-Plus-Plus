@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.56
+// @version      0.57
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -52,7 +52,7 @@
     addInsertPingIntoInput();
 
     //config
-    let config = loadConfigFromLocalStore();
+    let config = loadConfigFromLocalStorage();
 
     //club chat init fails sometimes. we fix it now
     fixClubChat();
@@ -476,9 +476,10 @@
                                     case '@nat': wordLC = '@natstar'; break;
                                     case '@z': wordLC = '@zteev'; break;
                                     case '@zami': wordLC = '@zam'; break;
+                                    case '@-fakemm-':
                                     case '@fakemm':
                                     case '@hpfcc':
-                                    case '@hērōēs_prāvī_forī_cc': wordLC = '@-fakemm-'; break;
+                                    case '@hērōēs_prāvī_forī_cc': wordLC = '@-ww-'; break;
                                 }
                             }
 
@@ -503,14 +504,14 @@
                                     if(triggerOnOffPing)
                                     {
                                         mapOnOffPings.set(key, triggerOnOffPing);
-                                        saveOnlineOfflinePingsToLocalStore(mapOnOffPings);
+                                        saveOnlineOfflinePingsToLocalStorage(mapOnOffPings);
                                     }
                                 }
                                 else if(wordLC == '@offline')
                                 {
                                     triggerOnOffPing = (msgIdTimestampMs < Date.now() - 5000);
                                     mapOnOffPings.set(key, triggerOnOffPing);
-                                    saveOnlineOfflinePingsToLocalStore(mapOnOffPings);
+                                    saveOnlineOfflinePingsToLocalStorage(mapOnOffPings);
                                 }
 
                                 //is the ping for this user?
@@ -1348,7 +1349,7 @@
                 if(typeof config[e.name] != 'undefined')
                 {
                     config[e.name] = e.value;
-                    saveConfigToLocalStore(config);
+                    saveConfigToLocalStorage(config);
                 }
             }
             ClubChat.changeConfigSponsors = function(e) {
@@ -1710,7 +1711,7 @@
         pingNotificationBox.setAttribute('class', 'ping');
     }
 
-    function loadConfigFromLocalStore()
+    function loadConfigFromLocalStorage()
     {
         let json = localStorage.getItem('HHClubChatPlusPlus_Config');
         let config = json != null ? JSON.parse(json) : { };
@@ -1730,25 +1731,25 @@
         return config;
     }
 
-    function saveConfigToLocalStore(config)
+    function saveConfigToLocalStorage(config)
     {
         localStorage.setItem('HHClubChatPlusPlus_Config', JSON.stringify(config));
     }
 
-    function loadOnlineOfflinePingsFromLocalStore()
+    function loadOnlineOfflinePingsFromLocalStorage()
     {
         let json = localStorage.getItem('HHClubChatPlusPlus_OnlineOfflinePings');
         return json != null ? new Map(JSON.parse(json)) : new Map();
     }
 
-    function saveOnlineOfflinePingsToLocalStore(pings)
+    function saveOnlineOfflinePingsToLocalStorage(pings)
     {
         localStorage.setItem('HHClubChatPlusPlus_OnlineOfflinePings', JSON.stringify(Array.from(pings.entries())));
     }
 
     function cleanOnlineOfflinePingsInLocalStore()
     {
-        let map = loadOnlineOfflinePingsFromLocalStore();
+        let map = loadOnlineOfflinePingsFromLocalStorage();
 
         //remove pings older than 7 days
         let dateNow = Date.now();
@@ -1760,7 +1761,7 @@
             let timestamp = parseInt(key.substr(0, key.indexOf('-')));
             if(timestamp < dateNow - 604800000) map.delete(key);
         }
-        if(mapOldSize != map.size) saveOnlineOfflinePingsToLocalStore(map);
+        if(mapOldSize != map.size) saveOnlineOfflinePingsToLocalStorage(map);
         return map;
     }
 
@@ -2012,12 +2013,12 @@
                 let ret = false;
                 if(isEmoji)
                 {
-                    ret = removeCustomEmojiFromLocalStore(emoji.emoji);
+                    ret = removeCustomEmojiFromLocalStorage(emoji.emoji);
                 }
                 else
                 {
                     isGif = isCustomGifCode(emoji.emoji);
-                    if(isGif) ret = removeCustomGifFromLocalStore(emoji.emoji);
+                    if(isGif) ret = removeCustomGifFromLocalStorage(emoji.emoji);
                 }
                 if(ret) emojiKeyboard.get_keyboard(document).querySelector('img.emojikb-emoji[data-emoji="' + emoji.emoji + '"]').remove();
             }
@@ -2367,7 +2368,7 @@
             let customEmojiGifCode = convertUrlToCustomEmojiGifCode(url, urlWithGif);
             if(customEmojiGifCode != null && isEmoji != urlWithGif)
             {
-                let ret = (isEmoji ? addCustomEmojiToLocalStore(customEmojiGifCode) : addCustomGifToLocalStore(customEmojiGifCode));
+                let ret = (isEmoji ? addCustomEmojiToLocalStorage(customEmojiGifCode) : addCustomGifToLocalStorage(customEmojiGifCode));
                 if(ret)
                 {
                     //add custom emoji/gif to emojiKeyboard
@@ -2435,7 +2436,7 @@
         }
     }
 
-    function addCustomEmojiToLocalStore(newCustomEmoji)
+    function addCustomEmojiToLocalStorage(newCustomEmoji)
     {
         let customEmojis = loadCustomEmojisFromLocalStorage();
         if(!customEmojis.includes(newCustomEmoji))
@@ -2447,7 +2448,7 @@
         return false;
     }
 
-    function removeCustomEmojiFromLocalStore(customEmoji)
+    function removeCustomEmojiFromLocalStorage(customEmoji)
     {
         let customEmojis = loadCustomEmojisFromLocalStorage();
         let index = customEmojis.indexOf(customEmoji);
@@ -2509,7 +2510,7 @@
         localStorage.setItem('HHClubChatPlusPlus_CustomEmojis', JSON.stringify(customEmojis));
     }
 
-    function addCustomGifToLocalStore(newCustomGif)
+    function addCustomGifToLocalStorage(newCustomGif)
     {
         let customGifs = loadCustomGifsFromLocalStorage();
         if(!customGifs.includes(newCustomGif))
@@ -2521,7 +2522,7 @@
         return false;
     }
 
-    function removeCustomGifFromLocalStore(customGif)
+    function removeCustomGifFromLocalStorage(customGif)
     {
         let customGifs = loadCustomGifsFromLocalStorage();
         let index = customGifs.indexOf(customGif);
@@ -2855,8 +2856,8 @@
     {
         return new Map([
             [5248781, { name: 'Safi', tier: 'gold', active: true }],
-            [1964825, { name: 'Master Maximus', tier: 'silver', active: true }],
             [3399159, { name: 'Uxio', tier: 'silver', active: true }],
+            [1964825, { name: 'Master Maximus', tier: 'silver', active: false }],
             [842927 , { name: 'Zteev', tier: 'coffee', active: true }],
             [3563807, { name: 'Lep', tier: 'coffee', active: false }],
         ]);
