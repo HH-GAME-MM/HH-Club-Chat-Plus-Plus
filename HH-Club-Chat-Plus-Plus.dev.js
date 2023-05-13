@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.59
+// @version      0.60
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -12,6 +12,9 @@
 // @match        https://*.pornstarharem.com/
 // @match        https://*.pornstarharem.com/?*
 // @match        https://*.pornstarharem.com/#*
+// @match        https://*.gayharem.com/
+// @match        https://*.gayharem.com/?*
+// @match        https://*.gayharem.com/#*
 // @run-at       document-end
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 // @updateURL    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
@@ -1524,7 +1527,7 @@
                 'HH Club Chat++ Script v' + GM_info.script.version + '<br/>' +
                 'Web: <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus" target="_blank">HOMEPAGE</a> || <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">CHANGELOG</a><br/>' +
                 '<br/>' +
-                'Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"<br/>' +
+                'Script coded by <a style="text-decoration:none;" href="https://www.hentaiheroes.com/hero/4266159/profile.html" target="_blank">-MM-</a> and tested with club mates <a style="text-decoration:none;" href="https://www.hentaiheroes.com/clubs.html?view_club=1898" target="_blank">"Hērōēs Prāvī Forī [EN]"</a><br/>' +
                 'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)<br/>' +
                 '<br/>' +
                 '<span class="title">SPONSORS</span><br/>' +
@@ -2855,10 +2858,11 @@
     function getSponsorsHH()
     {
         return new Map([
-            [5248781, { name: 'Safi', tier: 'gold', active: true }],
             [3399159, { name: 'Uxio', tier: 'silver', active: true }],
-            [1964825, { name: 'Master Maximus', tier: 'silver', active: false }],
+            [844437 , { name: 'holymolly', tier: 'coffee', active: true }],
             [842927 , { name: 'Zteev', tier: 'coffee', active: true }],
+            [5248781, { name: 'Safi', tier: 'gold', active: false }],
+            [1964825, { name: 'Master Maximus', tier: 'silver', active: false }],
             [3563807, { name: 'Lep', tier: 'coffee', active: false }],
         ]);
     }
