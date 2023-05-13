@@ -12,6 +12,9 @@
 // @match        https://*.pornstarharem.com/
 // @match        https://*.pornstarharem.com/?*
 // @match        https://*.pornstarharem.com/#*
+// @match        https://*.gayharem.com/
+// @match        https://*.gayharem.com/?*
+// @match        https://*.gayharem.com/#*
 // @run-at       document-end
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 // @updateURL    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
