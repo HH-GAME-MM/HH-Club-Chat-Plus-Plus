@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.60] - 2023-05-13
+
+### Added
+- Added support for GH
+
+### Changed
+- Sponsors updated
+- Minor changes to enhance the user experience
+
 ## [0.55-0.59] - 2023-02-28 to 2023-04-14
 
 ### Changed
