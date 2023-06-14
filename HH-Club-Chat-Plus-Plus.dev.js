@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.60
+// @version      0.61
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -778,6 +778,17 @@
 
                 //bug fix for different browsers
                 fixTabs();
+
+                setTimeout(function() {
+                    //add a new node with the system message
+                    let div = document.createElement('div');
+                    div.setAttribute('class', 'chat-system-msg');
+                    div.setAttribute('style', 'font-size:16px');
+                    div.innerHTML = ' <b style="font-size:14px;font-weight:bold;color:red">-MM-:</b> <span style="font-size:14px;color:red">Kinkoid has changed the chat tabs system. They have been temporarily disabled so that the chat can work again :)</span> ';
+                    let lastChatMsgNodes = document.querySelectorAll('div.club-chat-messages.dark_subpanel_box div.chat-msg');
+                    if(lastChatMsgNodes != null && lastChatMsgNodes.length != 0) lastChatMsgNodes[lastChatMsgNodes.length - 1].after(div);
+                    scrollDown();
+                }, 1000);
             }, 300);
         }
     }
@@ -1075,7 +1086,8 @@
                 if(e.target.tagName.toLowerCase() == 'p' && e.target.className == 'name-member')
                 {
                     //switch to chat and insert ping into input
-                    club_tabs.switchTab("chat_block", "chat-tabs", "chat-container");
+                    //TODO TABS
+                    //club_tabs.switchTab("chat_block", "chat-tabs", "chat-container");
                     ClubChat.insertPingIntoInput(e.target);
                 }
             }
@@ -1202,6 +1214,9 @@
 
     function addCustomTabs()
     {
+        //TODO TABS
+        return;
+
         //create custom tabs
         addNewTab('chat_hhclubchatplusplus_settings', 'chat-hhclubchatplusplus-settings', 'background-image:url(https://hh2.hh-content.com/design/menu/panel.svg);background-size:26px', getTagContentSettings('chat-hhclubchatplusplus-settings'));
         addNewTab('chat_hhclubchatplusplus_help', 'chat-hhclubchatplusplus-help', 'background-image:url(' + HHCLUBCHATPLUSPLUS_URL_RES + 'tabs/help.png);background-size:24px', getTabContentHelp());
@@ -1560,6 +1575,9 @@
 
     function fixTabs()
     {
+        //TODO TABS
+        return;
+
         //bug fix for different browsers: The members list is outside the window at the first visit + the same behavior with the custom tabs
         let visibleTabName = null;
         let tabs = [
@@ -1657,11 +1675,14 @@
     function addIFrameCss(iFrame)
     {
         let cssIFrame = iFrame.getElementById('cssIFrame');
-        if(cssIFrame == null) cssIFrame = iFrame.createElement('style');
-        iFrame.head.appendChild(cssIFrame);
-        cssIFrame.setAttribute('id', 'cssIFrame');
+        if(cssIFrame == null)
+        {
+            cssIFrame = iFrame.createElement('style');
+            cssIFrame.setAttribute('id', 'cssIFrame');
+            iFrame.head.appendChild(cssIFrame);
+        }
 
-        let is_Mobile = isMobile();
+        const is_Mobile = isMobile();
 
         //++
         cssIFrame.sheet.insertRule('#chat_btn .chat_mix_icn::after {content:"++";position:absolute;width:auto;font-size:' + (is_Mobile ? 46 : 26) + 'px;bottom:-' + (is_Mobile ? 24 : 14) + 'px;right:' + (is_Mobile ? -7 : -6) + 'px;text-shadow:0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000,0 0 1px #000;-moz-transform:rotate(0.05deg);}');
