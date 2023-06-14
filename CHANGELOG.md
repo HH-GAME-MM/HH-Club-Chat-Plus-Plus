@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.61] - 2023-06-14
+
+### Changed
+- Kinkoid has changed the chat tabs system. They have been temporarily disabled so that the chat can work again
+
 ## [0.60] - 2023-05-13
 
 ### Added
