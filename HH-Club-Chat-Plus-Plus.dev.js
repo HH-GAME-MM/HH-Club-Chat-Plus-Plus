@@ -784,7 +784,7 @@
                     let div = document.createElement('div');
                     div.setAttribute('class', 'chat-system-msg');
                     div.setAttribute('style', 'font-size:16px');
-                    div.innerHTML = ' <b style="font-size:14px;font-weight:bold;color:red">-MM-:</b> <span style="font-size:14px;color:red">Kinkoid has changed the chat tabs system. They have been temporarily disabled so that the chat can work again :)</span> ';
+                    div.innerHTML = ' <b style="font-size:14px;font-weight:bold;color:red">-MM-:</b> <span style="font-size:14px;color:red">Kinkoid has changed the chat tabs system. The custom chat tabs have been temporarily disabled so that the chat can work again :)</span> ';
                     let lastChatMsgNodes = document.querySelectorAll('div.club-chat-messages.dark_subpanel_box div.chat-msg');
                     if(lastChatMsgNodes != null && lastChatMsgNodes.length != 0) lastChatMsgNodes[lastChatMsgNodes.length - 1].after(div);
                     scrollDown();
