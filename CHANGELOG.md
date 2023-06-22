@@ -2,6 +2,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.62] - 2023-06-22
+
+### Added
+- Custom chat tabs (settings, help, information) adapted to the new tab system
+- The two default tab buttons (chat and members) are replaced as they can move the window
+- The active tab is highlighted with a pressed down tab button
+
 ## [0.61] - 2023-06-14
 
 ### Changed
