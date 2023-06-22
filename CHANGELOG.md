@@ -2,7 +2,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.62] - 2023-06-22
+## [0.62-0.63] - 2023-06-22
 
 ### Added
 - Custom chat tabs (settings, help, information) adapted to the new tab system
