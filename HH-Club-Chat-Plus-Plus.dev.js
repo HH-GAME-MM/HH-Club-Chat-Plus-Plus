@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.62
+// @version      0.63
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1131,7 +1131,7 @@
                 let div = document.querySelector('#resize-chat-box div.chat-tabs');
                 let a = document.createElement('a');
                 a.setAttribute('id', 'HHClubChatPlusPlus_UpdateMessage');
-                a.setAttribute('style', 'color:red');
+                a.setAttribute('style', 'color:red;margin-left:.3rem');
                 a.setAttribute('href', HHCLUBCHATPLUSPLUS_URL_DOWNLOAD);
                 a.setAttribute('target', '_blank');
                 a.innerHTML = 'HH Club Chat++ is outdated. Update now!';
@@ -1281,12 +1281,7 @@
             btnTab.setAttribute('id', id);
             btnTab.setAttribute('data-tab', name);
             btnTab.innerHTML = '<span class="clubMember_flat_icn" style="'+iconStyle+'"></span>';
-
-            //insert the button before the update message (if there is one)
-            let chatTabsNode = document.querySelector('div#club-chat-tabs');
-            let HHClubChatPlusPlus_UpdateMessage = document.getElementById('HHClubChatPlusPlus_UpdateMessage');
-            if(HHClubChatPlusPlus_UpdateMessage != null) chatTabsNode.insertBefore(btnTab, HHClubChatPlusPlus_UpdateMessage);
-            else chatTabsNode.appendChild(btnTab);
+            document.querySelector('div#club-chat-tabs').appendChild(btnTab);
         }
 
         function addNewTab(tabs, callback, name, bodyName, iconStyle, content)
