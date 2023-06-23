@@ -2,9 +2,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [0.64] - 2023-06-23
+## [0.64-0.65] - 2023-06-23
 
 ### Fixed
+- Under certain circumstances an error occurred when the chat reconnected. This meant that the connection could not be successfully restored (chat remained offline)
 - Minor compatibility issues of the chat tabs with different browsers (e.g. Google Chrome (Desktop))
 
 ## [0.62-0.63] - 2023-06-22
