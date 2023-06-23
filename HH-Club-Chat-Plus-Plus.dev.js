@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.64
+// @version      0.65
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1254,8 +1254,8 @@
             ClubChat.switchClubChatTab.bind(ClubChat)
         }
 
-        //default chat tabs
-        let tabs = {
+        //set our own tabs in ClubChat object for future use in initTabSystem + add the two default chat tabs
+        ClubChat.tabs = {
             chat_messages_list: {
                 callback: chatCb
             },
@@ -1263,15 +1263,24 @@
                 callback: chatCb
             }
         };
-        tabs.length = 2;
+        ClubChat.tabs.length = 2;
+
+        //to use our own tabs, we inject some code before the initTabSystem function
+        const initTabSystem_KK = initTabSystem;
+        initTabSystem = function(tabs_id, tabs) {
+            if(tabs_id === 'club-chat') {
+                arguments[1] = ClubChat.tabs; //replace tabs
+            }
+            initTabSystem_KK.apply(null, arguments); //forward all arguments
+        }
 
         //custom chat tabs
-        addNewTab(tabs, chatCb, 'chat_hhclubchatplusplus_settings', 'chat-hhclubchatplusplus-settings', 'background-image:url(https://hh2.hh-content.com/design/menu/panel.svg);background-size:26px', getTagContentSettings('chat-hhclubchatplusplus-settings'));
-        addNewTab(tabs, chatCb, 'chat_hhclubchatplusplus_help', 'chat-hhclubchatplusplus-help', 'background-image:url(' + HHCLUBCHATPLUSPLUS_URL_RES + 'tabs/help.png);background-size:24px', getTabContentHelp());
-        addNewTab(tabs, chatCb, 'chat_hhclubchatplusplus_info', 'chat-hhclubchatplusplus-info', 'background-image:url(https://hh2.hh-content.com/design/ic_info.svg);background-size:contain', getTabContentInfo());
+        addNewTab(chatCb, 'chat_hhclubchatplusplus_settings', 'chat-hhclubchatplusplus-settings', 'background-image:url(https://hh2.hh-content.com/design/menu/panel.svg);background-size:26px', getTagContentSettings('chat-hhclubchatplusplus-settings'));
+        addNewTab(chatCb, 'chat_hhclubchatplusplus_help', 'chat-hhclubchatplusplus-help', 'background-image:url(' + HHCLUBCHATPLUSPLUS_URL_RES + 'tabs/help.png);background-size:24px', getTabContentHelp());
+        addNewTab(chatCb, 'chat_hhclubchatplusplus_info', 'chat-hhclubchatplusplus-info', 'background-image:url(https://hh2.hh-content.com/design/ic_info.svg);background-size:contain', getTabContentInfo());
 
         //init tab system
-        initTabSystem("club-chat", tabs);
+        initTabSystem('club-chat', ClubChat.tabs);
 
         //resize custom tabs
         resizeCustomTabs();
@@ -1299,7 +1308,7 @@
             document.querySelector('div#club-chat-tabs').appendChild(btnTab);
         }
 
-        function addNewTab(tabs, callback, name, bodyName, iconStyle, content)
+        function addNewTab(callback, name, bodyName, iconStyle, content)
         {
             //add the css of a new tab
             css.sheet.insertRule('div.chat-active-wrapper div.' + bodyName + ' a {color:white;}');
@@ -1308,10 +1317,10 @@
             css.sheet.insertRule('div.chat-active-wrapper div.' + bodyName + ' .nicescroll-rails div {background:linear-gradient(to top,#ffa23e 0,#ff545c 100%);webkit-box-shadow:0 2px 0 1px rgba(0,0,0,.35),inset 0 3px 0 rgba(255,232,192,.75);-moz-box-shadow:0 2px 0 1px rgba(0,0,0,.35),inset 0 3px 0 rgba(255,232,192,.75);box-shadow:0 2px 0 1px rgba(0,0,0,.35),inset 0 3px 0 rgba(255,232,192,.75);}');
 
             //add the data of a new tab
-            tabs[name] = {
+            ClubChat.tabs[name] = {
                 callback: callback
             }
-            tabs.length++;
+            ClubChat.tabs.length++;
 
             //add the button of a new tab
             addNewTabButton(name + '_btn', name, iconStyle)
@@ -1321,7 +1330,7 @@
             tabNode.setAttribute('id', name);
             tabNode.setAttribute('class', bodyName + ' dark_subpanel_box switch-tab-content');
             tabNode.setAttribute('style', 'padding:10px;font-family:Tahoma,Helvetica,Arial,sans-serif;line-height:1.4;');
-            tabNode.setAttribute('tabindex', tabs.length);
+            tabNode.setAttribute('tabindex', ClubChat.tabs.length);
             tabNode.innerHTML = content;
             document.querySelector('div.chat-active-wrapper').appendChild(tabNode);
 
