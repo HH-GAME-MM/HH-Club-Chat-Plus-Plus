@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.63
+// @version      0.64
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -776,6 +776,9 @@
                 //resize custom tabs
                 resizeCustomTabs();
 
+                //bug fix for different browsers
+                fixTabs();
+
                 //important system message on start-up
                 /*
                 setTimeout(function() {
@@ -852,6 +855,9 @@
 
                     //resize custom tabs
                     resizeCustomTabs();
+
+                    //bug fix for different browsers
+                    fixTabs();
 
                     //scroll down in the chat when chat turns visible
                     scrollDown();
@@ -1270,8 +1276,17 @@
         //resize custom tabs
         resizeCustomTabs();
 
-        //activate chat tab
-        document.getElementById('club_members_tab').click();
+        //bug fix for different browsers + activate chat tab
+        fixTabs();
+
+        //delayed bug fix for different browsers
+        setTimeout(function() {
+            //resize custom tabs
+            resizeCustomTabs();
+
+            //bug fix for different browsers + activate chat tab
+            fixTabs();
+        }, 1);
 
         function addNewTabButton(id, name, iconStyle)
         {
@@ -1601,6 +1616,24 @@
                 $tab.getNiceScroll().resize();
             }
         });
+    }
+
+    function fixTabs()
+    {
+        //bug fix for different browsers: The members list is outside the window at the first visit + the same behavior with the custom tabs
+
+        //get active tab button (default tab is the chat)
+        let activeTabBtn = document.querySelector('button.switch-tab.tab-switcher-fade-in');
+        if(activeTabBtn === null) activeTabBtn = document.getElementById('club_members_tab');
+
+        //click through all tabs
+        let tabBtns = document.querySelectorAll('button.switch-tab');
+        for(let i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].click();
+        }
+
+        //click last active tab button
+        activeTabBtn.click();
     }
 
     function fixScrolling()
