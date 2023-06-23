@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.64] - 2023-06-23
+
+### Fixed
+- Compatibility issues with different browsers (e.g. Google Chrome (Desktop))
+
 ## [0.62-0.63] - 2023-06-22
 
 ### Added
