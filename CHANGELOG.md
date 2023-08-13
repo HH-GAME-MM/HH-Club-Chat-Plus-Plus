@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.66] - 2023-08-13
+
+### Changed
+- Updated sponsors and rewrote the code for the sponsors to support all games
+
 ## [0.64-0.65] - 2023-06-23
 
 ### Fixed
