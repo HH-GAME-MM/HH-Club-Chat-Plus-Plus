@@ -75,7 +75,7 @@ Supported games: HH.com, CxH, PsH, GH
 - Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)
 
 **SPONSORS**
-- Uxio, holymolly, Zteev, Safi, Master Maximus and Lep - Thanks for sponsoring!
+- Uxio, Darkyz, xnh0x, Bobick, holymolly, Zteev, Safi, Master Maximus and Lep - Thanks for sponsoring!
 - If you would like to support me, you can do so here: https://www.patreon.com/HHMM or here: https://www.buymeacoffee.com/HHMM
 
 ## Screenshots
