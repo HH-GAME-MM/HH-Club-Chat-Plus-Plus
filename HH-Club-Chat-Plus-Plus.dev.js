@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++
-// @version      0.65
+// @version      0.66
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/
@@ -1578,12 +1578,42 @@
 
         function getTabContentInfo()
         {
+            let sponsorsList = [];
+            const sponsors = getSponsors();
+
+            //first add the sponsors for the current game
+            sponsors.forEach((value, key) => {
+                if(key.startsWith(window.location.hostname + '/')) sponsorsList.push({ key, value });
+            });
+
+            //add the sponsors for the other games and exclude sponsors already added
+            sponsors.forEach((value, key) => {
+                let i = 0;
+                for(; i < sponsorsList.length; i++) {
+                    if(value.name === sponsorsList[i].value.name) break;
+                }
+                if(i === sponsorsList.length) sponsorsList.push({ key, value });
+            });
+
+            //sort sponsors by order number
+            for(let i = 0; i < sponsorsList.length; i++) {
+                for(let j = 0; j < sponsorsList.length; j++) {
+                    if(sponsorsList[i].value.order < sponsorsList[j].value.order) {
+                        let tmp = sponsorsList[i];
+                        sponsorsList[i] = sponsorsList[j];
+                        sponsorsList[j] = tmp;
+                    }
+                }
+            }
+
+            //create sponsors text
             let sponsorsText = '';
-            getSponsorsHH().forEach((value, key) => {
-                sponsorsText += '<li style="height:25px;"><a style="text-decoration:none;" href="https://www.hentaiheroes.com/hero/' + key + '/profile.html" target="_blank">' + value.name + '</a>';
-                let activeText = (value.active ? 'Active' : 'Former');
-                let cssOpacity = (!value.active ? ';opacity:30%' : '');
-                switch(value.tier)
+            for(let i = 0; i < sponsorsList.length; i++)
+            {
+                sponsorsText += '<li style="height:25px;"><a style="text-decoration:none;" href="https://' + sponsorsList[i].key + '/profile.html" target="_blank">' + sponsorsList[i].value.name + '</a>';
+                let activeText = (sponsorsList[i].value.active ? 'Active' : 'Former');
+                let cssOpacity = (!sponsorsList[i].value.active ? ';opacity:30%' : '');
+                switch(sponsorsList[i].value.tier)
                 {
                     case 'gold': sponsorsText += '<img title="' + activeText + ' Gold Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305494/eeec946e32054cb096050a17d1c70886/eyJ3Ijo0MDB9/1.png?token-time=2145916800&amp;token-hash=yzqxxAjHfqbwRuOMeoU9MbYDaoJcW86yQI0Sabsunds%3D">'; break;
                     case 'silver': sponsorsText += '<img title="' + activeText + ' Silver Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305480/1e49ca84119b4f9e9eb17f2f45afd721/eyJ3Ijo0MDB9/1.png?token-time=2145916800&token-hash=wvDQ5Jbn_P9sz6UR-rUJpv1Fu-qitHUxM-flB0d31qU%3D">'; break;
@@ -1591,7 +1621,8 @@
                     case 'coffee': sponsorsText += '<span title="' + activeText + ' Coffee Supporter" style="margin-left:10px' + cssOpacity + '" >☕</span>'; break;
                 }
                 sponsorsText += '</li>';
-            });
+            }
+
             return '<span class="title">SCRIPT INFORMATION</span><br/>' +
                 'HH Club Chat++ Script v' + GM_info.script.version + '<br/>' +
                 'Web: <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus" target="_blank">HOMEPAGE</a> || <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">CHANGELOG</a><br/>' +
@@ -2909,23 +2940,32 @@
 
     function isSponsorOrMM(id)
     {
-        if(window.location.hostname.includes('.hentaiheroes.com'))
-        {
-            if(id == 4266159) return true; //-MM-
-            return getSponsorsHH().has(id);
-        }
-        return false;
+        //-MM-
+        if((window.location.hostname === 'www.hentaiheroes.com' && id == 4266159) ||
+           (window.location.hostname === 'test.hentaiheroes.com' && id == 119511)) return true;
+
+        //Sponsors
+        return getSponsors().has(window.location.hostname + '/hero/' + id);
     }
 
-    function getSponsorsHH()
+    function getSponsors()
     {
         return new Map([
-            [3399159, { name: 'Uxio', tier: 'silver', active: true }],
-            [844437 , { name: 'holymolly', tier: 'coffee', active: true }],
-            [842927 , { name: 'Zteev', tier: 'coffee', active: true }],
-            [5248781, { name: 'Safi', tier: 'gold', active: false }],
-            [1964825, { name: 'Master Maximus', tier: 'silver', active: false }],
-            [3563807, { name: 'Lep', tier: 'coffee', active: false }],
+            ['www.hentaiheroes.com/hero/3399159', { name: 'Uxio', tier: 'silver', active: true, order: 1 }],
+
+            ['www.hentaiheroes.com/hero/124704' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
+            ['www.comixharem.com/hero/29164' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
+            ['www.pornstarharem.com/hero/1851' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
+            ['test.hentaiheroes.com/hero/158794' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
+            ['nutaku.haremheroes.com/hero/4443024' , { name: 'xnh0x', tier: 'coffee', active: true, order: 3 }],
+            ['www.hentaiheroes.com/hero/3512557' , { name: 'Bobick', tier: 'coffee', active: true, order: 4 }],
+            ['www.hentaiheroes.com/hero/844437' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
+            ['nutaku.haremheroes.com/hero/2261654' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
+            ['www.hentaiheroes.com/hero/842927' , { name: 'Zteev', tier: 'coffee', active: true, order: 6 }],
+
+            ['www.hentaiheroes.com/hero/5248781', { name: 'Safi', tier: 'gold', active: false, order: 7 }],
+            ['www.hentaiheroes.com/hero/1964825', { name: 'Master Maximus', tier: 'silver', active: false, order: 8 }],
+            ['www.hentaiheroes.com/hero/3563807', { name: 'Lep', tier: 'coffee', active: false, order: 9 }],
         ]);
     }
 
