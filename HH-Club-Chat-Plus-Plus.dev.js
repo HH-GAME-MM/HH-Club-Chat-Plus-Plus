@@ -36,9 +36,18 @@
     const HHCLUBCHATPLUSPLUS_URL_DOWNLOAD = 'https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js';
     const HHCLUBCHATPLUSPLUS_URL_PUSHVERSION = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/pushVersion.gif';
     const HHCLUBCHATPLUSPLUS_URL_RES = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/res/';
+
     const HHCLUBCHATPLUSPLUS_INDICATOR = '\u200D';
+
+    const HHCLUBCHATPLUSPLUS_VERSION_0 = '0';
     const HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG = '\u200C';
     const HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH = 6; //6 = 4 + CONFIG_VERSION + CONFIG_INDICATOR
+
+    const HHCLUBCHATPLUSPLUS_VERSION_INV_CONFIG = '\u2000';
+    const HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG = '\u200B';
+    const HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_COLOR_LENGTH = 6;
+    const HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH = HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_COLOR_LENGTH + 2; // COLOR + CONFIG_VERSION + CONFIG_INDICATOR
+
     const MAX_MESSAGE_SIZE = 500;
     const mapGIFs = getMapGIFs();
     const mapEmojis = getMapEmojis();
@@ -143,42 +152,73 @@
     {
         let ret = {
             html: html,
-            sentByHHCCPlusPlus: html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR),
+            sentByHHCCPlusPlus: false,
             nicknameColor: null,
             maxMsgSize: MAX_MESSAGE_SIZE
         };
 
-        if(ret.sentByHHCCPlusPlus)
+        if(html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR))
         {
+            ret.sentByHHCCPlusPlus = true;
             ret.html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR.length).trimEnd();
+            ret.maxMsgSize = MAX_MESSAGE_SIZE - 1;
         }
-        else if(html.length > HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length + 4) //min. length without indicator = 5 = 4 + 1 = AAAA + version
+        else if(html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG) 
+                    && html.length > HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length + 4) //min. length without indicator = 5 = 4 + 1 = AAAA + version
         {
-            ret.sentByHHCCPlusPlus = html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG);
-            if(ret.sentByHHCCPlusPlus)
-            {
-                let version = html.charAt(html.length - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length - 1);
+            ret.sentByHHCCPlusPlus = true;
 
-                //check version
-                if(version == '0')
+            let version = html.charAt(html.length - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length - 1);
+
+            //check version
+            if(version == HHCLUBCHATPLUSPLUS_VERSION_0)
+            {
+                try
                 {
-                    try
+                    let nicknameColor = convertBase64ToHexColor(html.substr(html.length - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length - 1 - 4, 4));
+                    if(isHexColor(nicknameColor))
                     {
-                        let nicknameColor = convertBase64ToHexColor(html.substr(html.length - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length - 1 - 4, 4));
-                        if(isHexColor(nicknameColor))
-                        {
-                            ret.nicknameColor = nicknameColor;
-                            ret.html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length - 1 - 4).trimEnd();
-                        }
+                        ret.nicknameColor = nicknameColor;
+                        ret.html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length - 1 - 4).trimEnd();
                     }
-                    catch (e)
-                    {
-                        console.error(e);
-                    }
+                    ret.maxMsgSize = MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH - 1;
+                }
+                catch (e)
+                {
+                    // something went wrong, maybe had indicatior character randomly at the end
+                    ret.sentByHHCCPlusPlus = false;
+                    console.error(e);
                 }
             }
         }
-        if(ret.sentByHHCCPlusPlus) ret.maxMsgSize = MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH - 1;
+        else if(html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG) 
+                    && html.length >= HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH)
+        {
+            ret.sentByHHCCPlusPlus = true;
+
+            let version = html.charAt(html.length - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG.length - 1);
+
+            //check version
+            if(version == HHCLUBCHATPLUSPLUS_VERSION_INV_CONFIG)
+            {
+                try
+                {
+                    let nicknameColor = convertInvToHexColor(html.substr(-HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH, HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_COLOR_LENGTH));
+                    if(isHexColor(nicknameColor))
+                    {
+                        ret.nicknameColor = nicknameColor;
+                        ret.html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH).trimEnd();
+                    }
+                    ret.maxMsgSize = MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH - 1;
+                }
+                catch (e)
+                {
+                    // something went wrong, maybe had indicatior character randomly at the end
+                    ret.sentByHHCCPlusPlus = false;
+                    console.error(e);
+                }
+            }
+        }
         return ret;
     }
 
@@ -994,7 +1034,7 @@
         let container = document.querySelector('div.send-block-container');
         let input = document.createElement("input");
         input.setAttribute('class', 'club-chat-input-custom');
-        input.setAttribute('maxlength', MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH - 1); //real maxlength is 500
+        input.setAttribute('maxlength', MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH - 1); //real maxlength is 500
         if(document.querySelector('input.club-chat-input').getAttribute('disabled') != null) input.setAttribute('disabled', 'disabled');
         input.addEventListener("keyup", onInputKeyUp_HHCCPlusPLus);
         container.appendChild(input);
@@ -1055,7 +1095,7 @@
                 let msgInfo = HHCLUBCHATPLUSPLUS_INDICATOR;
                 if(config.NicknameColor == '1' && isHexColor(config.NicknameColor2))
                 {
-                    msgInfo = convertHexColorToBase64(config.NicknameColor2) + '0' + HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG; //AAAA + CONFIG_VERSION + CONFIG_INDICATOR
+                    msgInfo = convertHexColorToInv(config.NicknameColor2) + HHCLUBCHATPLUSPLUS_VERSION_INV_CONFIG + HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG; //AAAAAA + CONFIG_VERSION + CONFIG_INDICATOR
                 }
 
                 input.value = text + ' ' + msgInfo;
@@ -1950,11 +1990,7 @@
         return /^#[0-9A-F]{6}$/i.test(value);
     }
 
-    function convertHexColorToBase64(hex)
-    {
-        return btoa(String.fromCharCode(parseInt(hex.substr(1, 2), 16), parseInt(hex.substr(3, 2), 16), parseInt(hex.substr(5, 2), 16)));
-    }
-
+    // deprecated: only used to decode old color format
     function convertBase64ToHexColor(base64)
     {
         let charCodes = atob(base64);
@@ -1966,6 +2002,36 @@
             ret += hex;
         }
         return ret;
+    }
+
+    const mapHexToInv = { // mapping to invisible characters
+        '0':'\u2000', '4':'\u2004', '8':'\u2008', 'c':'\u200C',
+        '1':'\u2001', '5':'\u2005', '9':'\u2009', 'd':'\u200D',
+        '2':'\u2002', '6':'\u2006', 'a':'\u200A', 'e':'\u200E',
+        '3':'\u2003', '7':'\u2007', 'b':'\u200B', 'f':'\u200F',
+        '#':''
+    };
+
+    const mapInvToHex = (()=>{
+        let map = {};
+        for(const [key, value] of Object.entries(mapHexToInv)) {
+            map[value] = key;
+        }
+        return map;
+    })();
+
+    function convertHexColorToInv(hex)
+    {
+        let inv = '';
+        hex.split('').forEach(c => {inv += mapHexToInv[c];});
+        return inv;
+    }
+
+    function convertInvToHexColor(inv)
+    {
+        let hex = '#';
+        inv.split('').forEach(c => {hex += mapInvToHex[c];});
+        return hex;
     }
 
     function initColoris()
