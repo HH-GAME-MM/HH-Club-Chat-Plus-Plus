@@ -42,6 +42,7 @@
     const MAX_MESSAGE_SIZE = 500;
     const mapGIFs = getMapGIFs();
     const mapEmojis = getMapEmojis();
+    const mapGameIcons = getMapGameIcons();
     const mapCustomEmojiGifHosts = getMapCustomEmojiGifHosts();
     const mapCustomEmojiGifFileExtensions = getMapCustomEmojiGifFileExtensions();
 
@@ -663,10 +664,10 @@
                             }
 
                             //emojis
-                            if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC))
+                            if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && (mapEmojis.has(wordLC) || mapGameIcons.has(wordLC)))
                             {
-                                let emojiId = mapEmojis.get(wordLC);
-                                if(emojiId.startsWith(':')) emojiId = mapEmojis.get(emojiId); //emoji alias
+                                let emojiId = mapEmojis.has(wordLC) ? mapEmojis.get(wordLC) : mapGameIcons.get(wordLC);
+                                if(emojiId.startsWith(':')) emojiId = mapEmojis.has(emojiId) ? mapEmojis.get(emojiId) : mapGameIcons.get(emojiId); //emoji alias
                                 let url = emojiId.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + emojiId.substr(4) : 'https://cdn.discordapp.com/emojis/' + emojiId + '.webp?size=48&quality=lossless';
                                 htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
                                 htmlNew[wordIndex].isEmoji = true;
@@ -2146,19 +2147,23 @@
         emojiKeyboardCss.sheet.insertRule('img.emojikb-emoji[data-category="GIFs"] { width: auto; height: auto; max-width: 200px; max-height: 100px; }');
 
         //add emojis to emojiKeyboard
-        let emojiKeyboardEmojis = emojiKeyboard.emojis.get('Emojis');
-        mapEmojis.forEach((value, key) => {
-            //is it not an alias?
-            if(!value.startsWith(':'))
-            {
-                emojiKeyboardEmojis.push({
-                    url: value.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + value.substr(4) : 'https://cdn.discordapp.com/emojis/' + value + '.webp?size=48&quality=lossless',
-                    name: key,
-                    emoji: key,
-                    unicode: key
-                });
-            }
-        });
+        function addEmojisToCategory(map, category) {
+            let emojiList = emojiKeyboard.emojis.get(category);
+            map.forEach((value, key) => {
+                //is it not an alias?
+                if(!value.startsWith(':'))
+                {
+                    emojiList.push({
+                        url: value.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + value.substr(4) : 'https://cdn.discordapp.com/emojis/' + value + '.webp?size=48&quality=lossless',
+                        name: key,
+                        emoji: key,
+                        unicode: key
+                    });
+                }
+            });
+        }
+        addEmojisToCategory(mapEmojis,'Emojis');
+        addEmojisToCategory(mapGameIcons,'HH');
 
         //add custom emojis to emojiKeyboard
         let customEmojis = loadCustomEmojisFromLocalStorage();
@@ -2792,10 +2797,9 @@
         ]);
     }
 
-    function getMapEmojis()
+    function getMapGameIcons()
     {
         return new Map([
-
             [':ep:', 'res:pachinko_ep1.png'],
             [':ep10:', 'res:pachinko_ep10.png'],
             [':epd:', 'res:pachinko_epd.png'],
@@ -2953,7 +2957,12 @@
             [':lme:', ':lm:'],
             [':leaguemastery:', ':lm:'],
             // end of row
+        ]);
+    }
 
+    function getMapEmojis()
+    {
+        return new Map([
             [':kek:', '588599124312457217'],
             [':pikaponder:', '862672993720336394'],
             [':surprised:', '589875097058279437'],
@@ -2993,7 +3002,6 @@
             [':tada:', 'res:tada.png'],
             [':sadtada:', '733120928137085019'],
             [':notlikethis:', '866732254357356624'],
-
         ]);
     }
 
@@ -3043,7 +3051,8 @@ const categories = new Map([
     ['Symbols', ['Symbols']],
     ['Flags', ['Flags']],
     ['GIFs', []],
-    ['Emojis', []]
+    ['Emojis', []],
+    ['HH', []],
 ]);
 
 /*window.onload = function () {
@@ -3314,8 +3323,9 @@ class EmojiKeyboard {
         // filling lists
         let first_emoji;
         for (const v of [
-            [SVG_HTML.custom, 'Emojis'],
-            [SVG_HTML.custom, 'GIFs'],
+            [SVG_HTML.discord, 'Emojis'],
+            [SVG_HTML.gif, 'GIFs'],
+            [SVG_HTML.hh, 'HH'],
             [SVG_HTML.head, 'People'],
             [SVG_HTML.leaf, 'Nature'],
             [SVG_HTML.food, 'Food'],
@@ -3343,7 +3353,7 @@ class EmojiKeyboard {
             categ_span.innerText = v[1];
             categ_name.appendChild(parse_svg(v[0]));
             categ_name.appendChild(categ_span);
-            if(v[0] == SVG_HTML.custom)
+            if(v[0] == SVG_HTML.discord || v[0] == SVG_HTML.gif)
             {
                 let categ_span_custom_plus = document.createElement("span");
                 categ_span_custom_plus.setAttribute('style', 'cursor:pointer');
@@ -3364,7 +3374,7 @@ class EmojiKeyboard {
                 categ_name.appendChild(categ_span_custom_sort);
             }
             categ_div.appendChild(categ_name);
-            let emojis_sorted = (v[1] != 'Emojis' && v[1] != 'GIFs' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1])); //do not sort custom emojis / gifs
+            let emojis_sorted = (v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != 'HH' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1])); //do not sort custom emojis / gifs
             for (const emoji of emojis_sorted) {
                 let img = document.createElement("img");
                 img.dataset.name = emoji.name;
@@ -3380,7 +3390,7 @@ class EmojiKeyboard {
                 } else {
                     img.src = emoji.url;
                 }
-                if(v[1] != 'Emojis' && v[1] != 'GIFs') //no error handler for custom emojis / gifs
+                if(v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != 'HH') //no error handler for custom emojis / gifs
                 {
                     img.addEventListener('error', err => {
                         // console.info(err.target.dataset);
