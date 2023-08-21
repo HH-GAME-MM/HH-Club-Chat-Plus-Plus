@@ -3149,8 +3149,10 @@ class EmojiKeyboard {
 
     get_keyboard(document) {
         let kb = document.getElementById("emojikb-maindiv");
-        if (!kb)
-            kb = this.create_keyboard(document);
+        if (!kb) {
+            this.create_keyboard(document);
+            kb = document.getElementById("emojikb-maindiv");
+        }
         return kb
     }
 
