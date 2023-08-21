@@ -3179,8 +3179,7 @@ class EmojiKeyboard {
             const categ = target.dataset.emojikb_categ;
             const targets = target.ownerDocument.querySelectorAll('div.emojikb-categname[data-emojikb_categ="' + categ + '"]');
             if (!targets[0]) return;
-            targets[0].parentNode.scrollIntoView(true, { behavior: "instant" }); // let's not trigger hundreds of lazy loading
-            targets[0].parentNode.parentNode.scrollTop++; // make sure the observator is triggered
+            targets[0].parentNode.parentNode.scrollTop = targets[0].parentNode.offsetTop + 1;
         }
     }
 
