@@ -3182,7 +3182,7 @@ class EmojiKeyboard {
     click_on_category(kb, event, stay) {
         let target;
         if (event.target) {
-            target = event.target.nodeName == "path" ? event.target.parentNode : event.target;
+            target = (event.target.nodeName == "path" || event.target.nodeName == "ellipse" )? event.target.parentNode : event.target;
         } else target = event;
         $('#emojikb-leftlist>svg.selected').removeClass('selected');
         target.classList.add("selected");
