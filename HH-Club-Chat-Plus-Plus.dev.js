@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         HH Club Chat++
+// @name         HH Club Chat++ (Dev Version)
 // @version      0.67
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
@@ -162,9 +162,8 @@
         {
             ret.sentByHHCCPlusPlus = true;
             ret.html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR.length).trimEnd();
-            ret.maxMsgSize = MAX_MESSAGE_SIZE - 1;
         }
-        else if(html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG) 
+        else if(html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG)
                     && html.length > HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length + 4) //min. length without indicator = 5 = 4 + 1 = AAAA + version
         {
             ret.sentByHHCCPlusPlus = true;
@@ -182,17 +181,16 @@
                         ret.nicknameColor = nicknameColor;
                         ret.html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG.length - 1 - 4).trimEnd();
                     }
-                    ret.maxMsgSize = MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_WITH_CONFIG_MAX_LENGTH - 1;
                 }
                 catch (e)
                 {
-                    // something went wrong, maybe had indicatior character randomly at the end
+                    // something went wrong, maybe had indicator character randomly at the end
                     ret.sentByHHCCPlusPlus = false;
                     console.error(e);
                 }
             }
         }
-        else if(html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG) 
+        else if(html.endsWith(HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG)
                     && html.length >= HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH)
         {
             ret.sentByHHCCPlusPlus = true;
@@ -210,16 +208,16 @@
                         ret.nicknameColor = nicknameColor;
                         ret.html = html.substr(0, html.length - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH).trimEnd();
                     }
-                    ret.maxMsgSize = MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH - 1;
                 }
                 catch (e)
                 {
-                    // something went wrong, maybe had indicatior character randomly at the end
+                    // something went wrong, maybe had indicator character randomly at the end
                     ret.sentByHHCCPlusPlus = false;
                     console.error(e);
                 }
             }
         }
+        if(ret.sentByHHCCPlusPlus) ret.maxMsgSize = MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH - 1;
         return ret;
     }
 
@@ -1656,9 +1654,9 @@
                 let cssOpacity = (!sponsorsList[i].value.active ? ';opacity:30%' : '');
                 switch(sponsorsList[i].value.tier)
                 {
-                    case 'gold': sponsorsText += '<img title="' + activeText + ' Gold Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305494/eeec946e32054cb096050a17d1c70886/eyJ3Ijo0MDB9/1.png?token-time=2145916800&amp;token-hash=yzqxxAjHfqbwRuOMeoU9MbYDaoJcW86yQI0Sabsunds%3D">'; break;
+                    case 'gold': sponsorsText += '<img title="' + activeText + ' Gold Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305494/eeec946e32054cb096050a17d1c70886/eyJ3Ijo0MDB9/2.png?token-time=2145916800&token-hash=JX_PWjK7Y4_--W2qHZlPBUycpjGkNKYlzObfAMFL8Yk%3D">'; break;
                     case 'silver': sponsorsText += '<img title="' + activeText + ' Silver Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305480/1e49ca84119b4f9e9eb17f2f45afd721/eyJ3Ijo0MDB9/1.png?token-time=2145916800&token-hash=wvDQ5Jbn_P9sz6UR-rUJpv1Fu-qitHUxM-flB0d31qU%3D">'; break;
-                    case 'bronze': sponsorsText += '<img title="' + activeText + ' Bronze Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305478/8e1f4980fe074ea080806bab81a0b5b9/eyJ3Ijo0MDB9/4.png?token-time=2145916800&token-hash=ciO4SIiTaNMD7Zqpof6-KiHjDrdibVoXetDVB4hnrH0%3D">'; break;
+                    case 'bronze': sponsorsText += '<img title="' + activeText + ' Bronze Tier Supporter" style="height:20px;margin-left:10px' + cssOpacity + '" src="https://c10.patreonusercontent.com/4/patreon-media/p/reward/9305478/8e1f4980fe074ea080806bab81a0b5b9/eyJ3Ijo0MDB9/5.png?token-time=2145916800&token-hash=Dl_V_41v3sOy_1kDuVvn97sPETMjnyhNU2XTr71QRTQ%3D">'; break;
                     case 'coffee': sponsorsText += '<span title="' + activeText + ' Coffee Supporter" style="margin-left:10px' + cssOpacity + '" >☕</span>'; break;
                 }
                 sponsorsText += '</li>';
@@ -2073,7 +2071,7 @@
         //fuse.js
         let fuseJsFile = document.createElement('script');
         fuseJsFile.src = 'https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js';
-        fuseJsFile.onload = function() { initEmojiKeyboard_OnLoad(); }
+        fuseJsFile.onload = initEmojiKeyboard_OnLoad;
         document.head.appendChild(fuseJsFile);
 
         //emoji_keyboard.css
@@ -2212,7 +2210,7 @@
         document.head.appendChild(emojiKeyboardCss);
         emojiKeyboardCss.sheet.insertRule('img.emojikb-emoji[data-category="GIFs"] { width: auto; height: auto; max-width: 200px; max-height: 100px; }');
 
-        //add emojis to emojiKeyboard
+        //add Emojis/GameIcons to emojiKeyboard
         function addEmojisToCategory(map, category) {
             let emojiList = emojiKeyboard.emojis.get(category);
             map.forEach((value, key) => {
@@ -2232,6 +2230,7 @@
         addEmojisToCategory(mapGameIcons,'HH');
 
         //add custom emojis to emojiKeyboard
+        let emojiKeyboardEmojis = emojiKeyboard.emojis.get('Emojis');
         let customEmojis = loadCustomEmojisFromLocalStorage();
         customEmojis.forEach(e => {
             emojiKeyboardEmojis.push({
@@ -2432,6 +2431,17 @@
     margin: 8px 8px 0 8px;
     position: relative;
     flex-grow: 1;
+}
+
+#emojikb-show::-webkit-scrollbar {
+  width: 4px;
+}
+
+#emojikb-show::-webkit-scrollbar-thumb {
+  background: linear-gradient(to top,#ffa23e 0,#ff545c 100%);
+  border-radius: 5px;
+  height: 40px;
+  box-shadow: 0 2px 0 1px rgba(0,0,0,.35), inset 0 3px 0 rgba(255,232,192,.75);
 }
 
 #emojikb-show svg {
@@ -2948,7 +2958,7 @@
             [':endurance:', 'res:stats_endurance.png'],
             [':mojo:', 'res:mojo.png'],
             // end of row
-            
+
             [':cscroll:', 'res:scroll_common.png'],
             [':cbulb:', ':cscroll:'],
             [':rscroll:', 'res:scroll_rare.png'],
@@ -3215,10 +3225,8 @@ class EmojiKeyboard {
 
     get_keyboard(document) {
         let kb = document.getElementById("emojikb-maindiv");
-        if (!kb) {
-            this.create_keyboard(document);
-            kb = document.getElementById("emojikb-maindiv");
-        }
+        if (!kb)
+            kb = this.create_keyboard(document);
         return kb
     }
 
@@ -3495,6 +3503,7 @@ class EmojiKeyboard {
         main_div.appendChild(search_div);
         main_div.appendChild(div2);
         document.documentElement.appendChild(main_div);
+        return main_div;
     }
 
     addCustomEmojiGifCode(code, url, isEmoji) {
