@@ -51,6 +51,7 @@
     const MAX_MESSAGE_SIZE = 500;
     const mapGIFs = getMapGIFs();
     const mapEmojis = getMapEmojis();
+    const mapGameIcons = getMapGameIcons();
     const mapCustomEmojiGifHosts = getMapCustomEmojiGifHosts();
     const mapCustomEmojiGifFileExtensions = getMapCustomEmojiGifFileExtensions();
 
@@ -703,10 +704,10 @@
                             }
 
                             //emojis
-                            if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && mapEmojis.has(wordLC))
+                            if(wordLC.length > 2 && wordLC.startsWith(':') && wordLC.endsWith(':') && (mapEmojis.has(wordLC) || mapGameIcons.has(wordLC)))
                             {
-                                let emojiId = mapEmojis.get(wordLC);
-                                if(emojiId.startsWith(':')) emojiId = mapEmojis.get(emojiId); //emoji alias
+                                let emojiId = mapEmojis.has(wordLC) ? mapEmojis.get(wordLC) : mapGameIcons.get(wordLC);
+                                if(emojiId.startsWith(':')) emojiId = mapEmojis.has(emojiId) ? mapEmojis.get(emojiId) : mapGameIcons.get(emojiId); //emoji alias
                                 let url = emojiId.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + emojiId.substr(4) : 'https://cdn.discordapp.com/emojis/' + emojiId + '.webp?size=48&quality=lossless';
                                 htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title="' + wordLC + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">';
                                 htmlNew[wordIndex].isEmoji = true;
@@ -2212,19 +2213,23 @@
         emojiKeyboardCss.sheet.insertRule('img.emojikb-emoji[data-category="GIFs"] { width: auto; height: auto; max-width: 200px; max-height: 100px; }');
 
         //add emojis to emojiKeyboard
-        let emojiKeyboardEmojis = emojiKeyboard.emojis.get('Emojis');
-        mapEmojis.forEach((value, key) => {
-            //is it not an alias?
-            if(!value.startsWith(':'))
-            {
-                emojiKeyboardEmojis.push({
-                    url: value.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + value.substr(4) : 'https://cdn.discordapp.com/emojis/' + value + '.webp?size=48&quality=lossless',
-                    name: key,
-                    emoji: key,
-                    unicode: key
-                });
-            }
-        });
+        function addEmojisToCategory(map, category) {
+            let emojiList = emojiKeyboard.emojis.get(category);
+            map.forEach((value, key) => {
+                //is it not an alias?
+                if(!value.startsWith(':'))
+                {
+                    emojiList.push({
+                        url: value.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + value.substr(4) : 'https://cdn.discordapp.com/emojis/' + value + '.webp?size=48&quality=lossless',
+                        name: key,
+                        emoji: key,
+                        unicode: key
+                    });
+                }
+            });
+        }
+        addEmojisToCategory(mapEmojis,'Emojis');
+        addEmojisToCategory(mapGameIcons,'HH');
 
         //add custom emojis to emojiKeyboard
         let customEmojis = loadCustomEmojisFromLocalStorage();
@@ -2858,6 +2863,169 @@
         ]);
     }
 
+    function getMapGameIcons()
+    {
+        return new Map([
+            [':ep:', 'res:pachinko_ep1.png'],
+            [':ep10:', 'res:pachinko_ep10.png'],
+            [':epd:', 'res:pachinko_epd.png'],
+            [':myp:', 'res:pachinko_myp1.png'],
+            [':myp3:', 'res:pachinko_myp3.png'],
+            [':myp6:', 'res:pachinko_myp6.png'],
+            [':qp:', 'res:pachinko_qp1.png'],
+            [':qp2:', 'res:pachinko_qp2.png'],
+            [':qp10:', 'res:pachinko_qp10.png'],
+            [':gp:', 'res:pachinko_gp1.png'],
+            [':gp10:', 'res:pachinko_gp10.png'],
+            [':evp:', 'res:pachinko_evp.png'],
+            // end of row
+
+            [':w1:', 'res:league_1.png'],
+            [':w2:', 'res:league_2.png'],
+            [':w3:', 'res:league_3.png'],
+            [':s1:', 'res:league_4.png'],
+            [':s2:', 'res:league_5.png'],
+            [':s3:', 'res:league_6.png'],
+            [':d1:', 'res:league_7.png'],
+            [':d2:', 'res:league_8.png'],
+            [':d3:', 'res:league_9.png'],
+
+            [':hc:', '320538924156059649'],
+            [':hardcore:', ':hc:'],
+            [':shagger:', ':hc:'],
+            [':ch:', '320538924801851392'],
+            [':charm:', ':ch:'],
+            [':lover:', ':ch:'],
+            [':kh:', '320538923753275394'],
+            [':knowhow:', ':kh:'],
+            [':expert:', ':kh:'],
+            // end of row
+
+            [':rainbow:', '901254800690278491'],
+            [':balanced:', ':rainbow:'],
+            [':black:', '901255133004976149'],
+            [':dominatrix:', ':black:'],
+            [':red:', '901254872429637682'],
+            [':eccentric:', ':red:'],
+            [':green:', '901254909276602418'],
+            [':exhibitionist:', ':green:'],
+            [':orange:', '901254970542788628'],
+            [':physical:', ':orange:'],
+            [':yellow:', '901255043871830016'],
+            [':playful:', ':yellow:'],
+            [':blue:', '901255091665895424'],
+            [':sensual:', ':blue:'],
+            [':white:', '901255190433370192'],
+            [':submissive:', ':white:'],
+            [':purple:', '901255233773137991'],
+            [':voyeur:', ':purple:'],
+
+            [':attack:', 'res:stats_attack.png'],
+            [':defense:', 'res:stats_defense.png'],
+            [':ego:', 'res:stats_ego.png'],
+            // end of row
+
+            [':allgem:', '918072869043458048'],
+            [':allgems:', ':allgem:'],
+            [':blackgem:', '910701075361845288'],
+            [':blackgems:', ':blackgem:'],
+            [':redgem:', '910701075420557412'],
+            [':redgems:', ':redgem:'],
+            [':greengem:', '910701075550576720'],
+            [':greengems:', ':greengem:'],
+            [':orangegem:', '910701075181469737'],
+            [':orangegems:', ':orangegem:'],
+            [':yellowgem:', '910701075852591144'],
+            [':yellowgems:', ':yellowgem:'],
+            [':bluegem:', '910701075345068034'],
+            [':bluegems:', ':bluegem:'],
+            [':whitegem:', '910701075672232016'],
+            [':whitegems:', ':whitegem:'],
+            [':purplegem:', '910701077568040990'],
+            [':purplegems:', ':purplegem:'],
+
+            [':harmony:', 'res:stats_harmony.png'],
+            [':endurance:', 'res:stats_endurance.png'],
+            [':mojo:', 'res:mojo.png'],
+            // end of row
+            
+            [':cscroll:', 'res:scroll_common.png'],
+            [':cbulb:', ':cscroll:'],
+            [':rscroll:', 'res:scroll_rare.png'],
+            [':rbulb:', ':rscroll:'],
+            [':escroll:', 'res:scroll_epic.png'],
+            [':ebulb:', ':escroll:'],
+            [':lscroll:', 'res:scroll_legendary.png'],
+            [':lbulb:', ':lscroll:'],
+            [':mscroll:', 'res:scroll_mythic.png'],
+            [':mbulb:', ':mscroll:'],
+
+            [':potion_endurance:', '948310353735987240'],
+            [':bbpotion:', ':potion_love:'],
+            [':potion_love:', '948310353828282408'],
+            [':pogpotion:', ':potion_love:'],
+            [':potion_lust:', '948310353979252786'],
+            [':povpotion:', ':potion_lust:'],
+            [':penetrationpotion:', '1073585652756643850'],
+            [':dppotion:', ':penetrationpotion:'],
+            [':crystal:', '999279877834428416'],
+            [':crystal_token:', ':crystal:'],
+            [':shard:', '540690525238591518'],
+            [':shards:', ':shard:'],
+            [':datingtoken:', '849076003882926100'],
+            [':dating:', ':datingtoken:'],
+            // end of row
+
+            [':nutaku_gold:', '923585084081197117'],
+            [':nugold:', ':nutaku_gold:'],
+            [':cash:', '856969607537623050'],
+            [':koban:', '294927828682801153'],
+            [':kobans:', ':koban:'],
+            [':gold:', '856150808739315712'],
+            [':ymen:', '294927828972208128'],
+            [':money:', ':ymen:'],
+
+            [':energy:', '864645021561782332'],
+            [':combativity:', '848991758301265990'],
+            [':fisting:', ':combativity:'],
+            [':kiss:', '860659467876302889'],
+            [':league:', '860659427950460930'],
+            [':condom:', ':league:'],
+            [':condoms:', ':league:'],
+            [':worship:', '902508422988169226'],
+            [':ticket:', '596905784160419876'],
+            [':kk:', '915301903561265194'],
+            [':kinkoid:', ':kk:'],
+            // end of row
+
+            [':sultrycoin:', '1037358279275335720'],
+            [':sultrycoins:', ':sultrycoin:'],
+            [':key:', '1037336214459650148'],
+            [':keys:', ':key:'],
+
+            [':flowers:', '860867149009780757'],
+            [':magazine:', '923655467140542544'],
+            [':spellbook:', '923655294381359104'],
+            [':book:', 'res:book.png'],
+
+            [':perfume:', '917383948408086529'],
+            [':sandalwood:', ':perfume:'],
+            [':atm:', '917383948554862632'],
+            [':memories:', ':atm:'],
+            [':ginseng:', '917383948387115018'],
+            [':cordy:', '917383948512919552'],
+            [':cordys:', ':cordy:'],
+            [':cordyceps:', ':cordy:'],
+            [':am:', '917383948496154675'],
+            [':ame:', ':am:'],
+            [':allmastery:', ':am:'],
+            [':lm:', 'res:booster_lm.png'],
+            [':lme:', ':lm:'],
+            [':leaguemastery:', ':lm:'],
+            // end of row
+        ]);
+    }
+
     function getMapEmojis()
     {
         return new Map([
@@ -2882,7 +3050,11 @@
             [':thinky:', '878610897709436928'],
             [':thonk:', '860651714293006387'],
             [':smug:', '1002518587833057320'],
+            [':smug_asuna:', 'res:asuna_smug.png'],
+            [':2bsip:', 'res:2b_sip.png'],
             [':happy_rin:', '953395143510224957'],
+            [':happy_asuna:', 'res:asuna_happy.png'],
+            [':2bgasm:', '650834937272074270'],
             [':thx:', '294932319020515348'],
             [':ty:', ':thx:'],
             [':thanks:', ':thx:'],
@@ -2896,111 +3068,6 @@
             [':tada:', 'res:tada.png'],
             [':sadtada:', '733120928137085019'],
             [':notlikethis:', '866732254357356624'],
-
-            [':energy:', '864645021561782332'],
-            [':combativity:', '848991758301265990'],
-            [':fisting:', ':combativity:'],
-            [':kiss:', '860659467876302889'],
-            [':league:', '860659427950460930'],
-            [':worship:', '902508422988169226'],
-            [':ticket:', '596905784160419876'],
-
-            [':ymen:', '294927828972208128'],
-            [':money:', ':ymen:'],
-            [':koban:', '294927828682801153'],
-            [':kobans:', ':koban:'],
-
-            [':potion_endurance:', '948310353735987240'],
-            [':potion_love:', '948310353828282408'],
-            [':potion_lust:', '948310353979252786'],
-            [':crystal:', '999279877834428416'],
-            [':crystal_token:', ':crystal:'],
-
-            [':shard:', '540690525238591518'],
-            [':shards:', ':shard:'],
-
-            [':flowers:', '860867149009780757'],
-            [':magazine:', '923655467140542544'],
-            [':spellbook:', '923655294381359104'],
-            [':book:', 'res:book.png'],
-
-            [':perfume:', '917383948408086529'],
-            [':sandalwood:', ':perfume:'],
-            [':atm:', '917383948554862632'],
-            [':memories:', ':atm:'],
-            [':ginseng:', '917383948387115018'],
-            [':cordy:', '917383948512919552'],
-            [':cordys:', ':cordy:'],
-            [':cordyceps:', ':cordy:'],
-            [':am:', '917383948496154675'],
-            [':ame:', ':am:'],
-            [':allmastery:', ':am:'],
-
-            [':ep:', '677981592706088982'],
-            [':ep10:', '904111725299765268'],
-            [':myp:', 'res:myp.png'],
-            [':myp3:', 'res:myp3.png'],
-            [':myp6:', 'res:myp6.png'],
-            [':gp:', 'res:gp.png'],
-            [':gp10:', '938587821755744316'],
-
-            [':datingtoken:', '849076003882926100'],
-            [':dating:', ':datingtoken:'],
-            [':sultrycoin:', '1037358279275335720'],
-            [':sultrycoins:', ':sultrycoin:'],
-            [':key:', '1037336214459650148'],
-            [':keys:', ':key:'],
-
-            [':kk:', '915301903561265194'],
-            [':kinkoid:', ':kk:'],
-
-            [':hc:', '320538924156059649'],
-            [':hardcore:', ':hc:'],
-            [':shagger:', ':hc:'],
-            [':ch:', '320538924801851392'],
-            [':charm:', ':ch:'],
-            [':lover:', ':ch:'],
-            [':kh:', '320538923753275394'],
-            [':knowhow:', ':kh:'],
-            [':expert:', ':kh:'],
-
-            [':allgem:', '918072869043458048'],
-            [':allgems:', ':allgem:'],
-            [':blackgem:', '910701075361845288'],
-            [':blackgems:', ':blackgem:'],
-            [':redgem:', '910701075420557412'],
-            [':redgems:', ':redgem:'],
-            [':greengem:', '910701075550576720'],
-            [':greengems:', ':greengem:'],
-            [':orangegem:', '910701075181469737'],
-            [':orangegems:', ':orangegem:'],
-            [':yellowgem:', '910701075852591144'],
-            [':yellowgems:', ':yellowgem:'],
-            [':bluegem:', '910701075345068034'],
-            [':bluegems:', ':bluegem:'],
-            [':whitegem:', '910701075672232016'],
-            [':whitegems:', ':whitegem:'],
-            [':purplegem:', '910701077568040990'],
-            [':purplegems:', ':purplegem:'],
-
-            [':rainbow:', '901254800690278491'],
-            [':balanced:', ':rainbow:'],
-            [':black:', '901255133004976149'],
-            [':dominatrix:', ':black:'],
-            [':red:', '901254872429637682'],
-            [':eccentric:', ':red:'],
-            [':green:', '901254909276602418'],
-            [':exhibitionist:', ':green:'],
-            [':orange:', '901254970542788628'],
-            [':physical:', ':orange:'],
-            [':yellow:', '901255043871830016'],
-            [':playful:', ':yellow:'],
-            [':blue:', '901255091665895424'],
-            [':sensual:', ':blue:'],
-            [':white:', '901255190433370192'],
-            [':submissive:', ':white:'],
-            [':purple:', '901255233773137991'],
-            [':voyeur:', ':purple:'],
         ]);
     }
 
@@ -3050,7 +3117,8 @@ const categories = new Map([
     ['Symbols', ['Symbols']],
     ['Flags', ['Flags']],
     ['GIFs', []],
-    ['Emojis', []]
+    ['Emojis', []],
+    ['HH', []],
 ]);
 
 /*window.onload = function () {
@@ -3147,8 +3215,10 @@ class EmojiKeyboard {
 
     get_keyboard(document) {
         let kb = document.getElementById("emojikb-maindiv");
-        if (!kb)
-            kb = this.create_keyboard(document);
+        if (!kb) {
+            this.create_keyboard(document);
+            kb = document.getElementById("emojikb-maindiv");
+        }
         return kb
     }
 
@@ -3178,7 +3248,7 @@ class EmojiKeyboard {
     click_on_category(kb, event, stay) {
         let target;
         if (event.target) {
-            target = event.target.nodeName == "path" ? event.target.parentNode : event.target;
+            target = (event.target.nodeName == "path" || event.target.nodeName == "ellipse" )? event.target.parentNode : event.target;
         } else target = event;
         $('#emojikb-leftlist>svg.selected').removeClass('selected');
         target.classList.add("selected");
@@ -3186,8 +3256,7 @@ class EmojiKeyboard {
             const categ = target.dataset.emojikb_categ;
             const targets = target.ownerDocument.querySelectorAll('div.emojikb-categname[data-emojikb_categ="' + categ + '"]');
             if (!targets[0]) return;
-            targets[0].parentNode.scrollIntoView(true, { behavior: "instant" }); // let's not trigger hundreds of lazy loading
-            targets[0].parentNode.parentNode.scrollTop++; // make sure the observator is triggered
+            targets[0].parentNode.parentNode.scrollTop = targets[0].parentNode.offsetTop + 1;
         }
     }
 
@@ -3322,8 +3391,9 @@ class EmojiKeyboard {
         // filling lists
         let first_emoji;
         for (const v of [
-            [SVG_HTML.custom, 'Emojis'],
-            [SVG_HTML.custom, 'GIFs'],
+            [SVG_HTML.discord, 'Emojis'],
+            [SVG_HTML.gif, 'GIFs'],
+            [SVG_HTML.hh, 'HH'],
             [SVG_HTML.head, 'People'],
             [SVG_HTML.leaf, 'Nature'],
             [SVG_HTML.food, 'Food'],
@@ -3351,7 +3421,7 @@ class EmojiKeyboard {
             categ_span.innerText = v[1];
             categ_name.appendChild(parse_svg(v[0]));
             categ_name.appendChild(categ_span);
-            if(v[0] == SVG_HTML.custom)
+            if(v[0] == SVG_HTML.discord || v[0] == SVG_HTML.gif)
             {
                 let categ_span_custom_plus = document.createElement("span");
                 categ_span_custom_plus.setAttribute('style', 'cursor:pointer');
@@ -3372,7 +3442,7 @@ class EmojiKeyboard {
                 categ_name.appendChild(categ_span_custom_sort);
             }
             categ_div.appendChild(categ_name);
-            let emojis_sorted = (v[1] != 'Emojis' && v[1] != 'GIFs' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1])); //do not sort custom emojis / gifs
+            let emojis_sorted = (v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != 'HH' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1])); //do not sort custom emojis / gifs
             for (const emoji of emojis_sorted) {
                 let img = document.createElement("img");
                 img.dataset.name = emoji.name;
@@ -3388,7 +3458,7 @@ class EmojiKeyboard {
                 } else {
                     img.src = emoji.url;
                 }
-                if(v[1] != 'Emojis' && v[1] != 'GIFs') //no error handler for custom emojis / gifs
+                if(v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != 'HH') //no error handler for custom emojis / gifs
                 {
                     img.addEventListener('error', err => {
                         // console.info(err.target.dataset);
@@ -3466,6 +3536,9 @@ const SVG_HTML = {
     tea: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 5.999H17V4.999C17 4.448 16.553 3.999 16 3.999H4C3.447 3.999 3 4.448 3 4.999V12.999C3 14.488 3.47 15.865 4.265 16.999H15.722C16.335 16.122 16.761 15.105 16.92 13.999H18C20.205 13.999 22 12.205 22 9.999C22 7.794 20.205 5.999 18 5.999V5.999ZM18 12H17V8H18C19.104 8 20 8.897 20 10C20 11.102 19.104 12 18 12Z"></path><path d="M2 18H18V20H2V18Z"></path></svg>',
     heart: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 4.001C14.406 4.001 12.93 4.838 12 6.081C11.07 4.838 9.594 4.001 8 4.001C5.243 4.001 3 6.244 3 9.001C3 14.492 11.124 19.633 11.471 19.849C11.633 19.95 11.817 20.001 12 20.001C12.183 20.001 12.367 19.95 12.529 19.849C12.876 19.633 21 14.492 21 9.001C21 6.244 18.757 4.001 16 4.001V4.001Z"></path></svg>',
     flag: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.002H14V3.002C14 2.45 13.553 2.002 13 2.002H4C3.447 2.002 3 2.45 3 3.002V22.002H5V14.002H10.586L8.293 16.295C8.007 16.581 7.922 17.011 8.076 17.385C8.23 17.759 8.596 18.002 9 18.002H20C20.553 18.002 21 17.554 21 17.002V7.002C21 6.45 20.553 6.002 20 6.002Z"></path></svg>',
-    custom: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>'
+    custom: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>',
+    hh: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path class="cls-3" d="M 74 68 L 68.17 50 L 57.42 53.52 L 57.63 54.18 L 63.19 71.32 L 63.24 71.49 L 53.82 78.76 L 46.77 57 L 36.11 60.46 L 41.88 78.33 L 31.22 81.81 L 25.5 64 L 21.94 65.14 L 18.49 54.49 L 22 53.3 L 16.26 35.39 L 26.89 32 L 32.72 50 L 43.45 46.54 L 42.85 44.67 L 37.68 28.68 L 37.62 28.51 L 47.05 21.24 L 54.05 42.99 L 64.72 39.55 L 59 21.66 L 69.65 18.19 L 75.37 36 L 78.93 34.85 L 82.38 45.55 L 78.83 46.73 L 84.61 64.65 L 74 68 Z"></path><ellipse style="fill: rgba(216, 216, 216, 0); stroke-width: 6px; stroke: rgb(255, 255, 255);" cx="50" cy="50" rx="43.5" ry="43.5"></ellipse></svg>',
+    gif: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M 10.647 8.65 C 10.657 8.699 10.666 8.762 10.674 8.841 C 10.682 8.919 10.687 9.003 10.688 9.093 C 10.689 9.184 10.686 9.274 10.68 9.364 C 10.673 9.455 10.66 9.537 10.641 9.61 C 10.621 9.683 10.595 9.743 10.562 9.789 C 10.53 9.836 10.492 9.859 10.448 9.859 C 10.375 9.859 10.264 9.817 10.115 9.734 C 9.968 9.651 9.779 9.559 9.548 9.456 C 9.318 9.353 9.043 9.261 8.724 9.178 C 8.404 9.095 8.037 9.053 7.622 9.053 C 7.207 9.053 6.838 9.113 6.515 9.232 C 6.192 9.352 5.908 9.516 5.664 9.723 C 5.42 9.93 5.216 10.175 5.055 10.456 C 4.894 10.737 4.771 11.038 4.686 11.36 C 4.601 11.683 4.557 12.017 4.552 12.364 C 4.548 12.711 4.579 13.052 4.646 13.389 C 4.721 13.765 4.84 14.095 5.004 14.378 C 5.167 14.661 5.369 14.898 5.61 15.088 C 5.85 15.279 6.124 15.423 6.431 15.52 C 6.739 15.618 7.071 15.667 7.428 15.667 C 7.667 15.667 7.899 15.643 8.124 15.594 C 8.348 15.545 8.551 15.471 8.731 15.374 L 8.736 13.184 L 6.949 13.184 C 6.891 13.184 6.84 13.161 6.796 13.114 C 6.752 13.068 6.72 12.994 6.7 12.891 C 6.69 12.842 6.683 12.779 6.677 12.7 C 6.671 12.622 6.669 12.54 6.668 12.455 C 6.669 12.37 6.672 12.283 6.68 12.195 C 6.686 12.107 6.701 12.029 6.724 11.961 C 6.747 11.892 6.776 11.836 6.812 11.792 C 6.847 11.748 6.891 11.726 6.944 11.726 L 10.145 11.726 C 10.307 11.726 10.432 11.78 10.522 11.888 C 10.612 11.995 10.656 12.147 10.656 12.342 L 10.649 16.136 C 10.647 16.229 10.638 16.308 10.622 16.374 C 10.606 16.439 10.579 16.499 10.541 16.553 C 10.499 16.612 10.389 16.681 10.209 16.762 C 10.03 16.843 9.807 16.922 9.542 17 C 9.276 17.078 8.976 17.144 8.64 17.198 C 8.304 17.251 7.955 17.278 7.594 17.278 C 6.915 17.278 6.302 17.2 5.753 17.044 C 5.205 16.887 4.725 16.654 4.314 16.344 C 3.903 16.034 3.563 15.654 3.293 15.205 C 3.023 14.756 2.83 14.239 2.713 13.653 C 2.609 13.126 2.563 12.608 2.577 12.1 C 2.59 11.592 2.666 11.11 2.802 10.653 C 2.939 10.197 3.136 9.775 3.392 9.386 C 3.65 8.998 3.971 8.662 4.357 8.379 C 4.743 8.096 5.191 7.875 5.701 7.716 C 6.212 7.557 6.789 7.478 7.433 7.478 C 7.79 7.478 8.132 7.506 8.461 7.563 C 8.789 7.619 9.087 7.687 9.355 7.768 C 9.623 7.848 9.851 7.935 10.04 8.028 C 10.23 8.121 10.357 8.193 10.424 8.244 C 10.491 8.295 10.54 8.353 10.572 8.416 C 10.603 8.479 10.629 8.557 10.647 8.65 Z M 14.564 16.861 C 14.564 16.91 14.549 16.953 14.517 16.992 C 14.486 17.031 14.433 17.063 14.357 17.088 C 14.281 17.112 14.181 17.13 14.056 17.143 C 13.932 17.155 13.777 17.161 13.592 17.161 C 13.401 17.161 13.245 17.155 13.123 17.143 C 13.001 17.13 12.903 17.112 12.83 17.088 C 12.757 17.063 12.704 17.031 12.671 16.992 C 12.639 16.953 12.626 16.91 12.631 16.861 L 12.643 7.896 C 12.639 7.847 12.653 7.803 12.687 7.764 C 12.72 7.725 12.775 7.693 12.851 7.669 C 12.927 7.644 13.026 7.626 13.148 7.614 C 13.27 7.602 13.424 7.596 13.61 7.596 C 13.795 7.596 13.948 7.602 14.07 7.614 C 14.193 7.626 14.291 7.644 14.367 7.669 C 14.443 7.693 14.495 7.725 14.525 7.764 C 14.555 7.803 14.57 7.847 14.57 7.896 L 14.564 16.861 Z M 21.911 7.947 C 21.917 7.976 21.924 8.029 21.932 8.105 C 21.939 8.18 21.944 8.264 21.945 8.357 C 21.947 8.45 21.945 8.546 21.94 8.647 C 21.936 8.747 21.924 8.84 21.905 8.925 C 21.885 9.01 21.856 9.08 21.817 9.134 C 21.779 9.187 21.728 9.214 21.665 9.214 L 18.567 9.214 L 18.561 11.763 L 21.476 11.763 C 21.544 11.763 21.599 11.79 21.639 11.844 C 21.679 11.897 21.708 11.968 21.725 12.056 C 21.732 12.09 21.738 12.145 21.743 12.221 C 21.748 12.296 21.751 12.379 21.752 12.47 C 21.753 12.56 21.75 12.655 21.743 12.755 C 21.736 12.856 21.722 12.946 21.702 13.026 C 21.681 13.107 21.652 13.174 21.613 13.228 C 21.575 13.281 21.524 13.308 21.461 13.308 L 18.568 13.308 L 18.568 16.846 C 18.569 16.9 18.553 16.946 18.522 16.985 C 18.491 17.024 18.437 17.056 18.362 17.08 C 18.286 17.105 18.186 17.124 18.062 17.139 C 17.938 17.154 17.783 17.161 17.598 17.161 C 17.407 17.161 17.251 17.154 17.128 17.139 C 17.005 17.124 16.907 17.105 16.835 17.08 C 16.761 17.056 16.708 17.024 16.677 16.985 C 16.644 16.946 16.63 16.9 16.634 16.846 L 16.639 8.247 C 16.64 8.032 16.697 7.877 16.811 7.782 C 16.923 7.687 17.06 7.639 17.221 7.639 L 21.66 7.639 C 21.743 7.639 21.8 7.666 21.833 7.72 C 21.866 7.774 21.892 7.85 21.911 7.947 Z" style="fill: rgb(255, 255, 255);"></path></svg>',
+    discord: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.8943 4.34399C17.5183 3.71467 16.057 3.256 14.5317 3C14.3396 3.33067 14.1263 3.77866 13.977 4.13067C12.3546 3.89599 10.7439 3.89599 9.14391 4.13067C8.99457 3.77866 8.77056 3.33067 8.58922 3C7.05325 3.256 5.59191 3.71467 4.22552 4.34399C1.46286 8.41865 0.716188 12.3973 1.08952 16.3226C2.92418 17.6559 4.69486 18.4666 6.4346 19C6.86126 18.424 7.24527 17.8053 7.57594 17.1546C6.9466 16.92 6.34927 16.632 5.77327 16.2906C5.9226 16.184 6.07194 16.0667 6.21061 15.9493C9.68793 17.5387 13.4543 17.5387 16.889 15.9493C17.0383 16.0667 17.177 16.184 17.3263 16.2906C16.7503 16.632 16.153 16.92 15.5236 17.1546C15.8543 17.8053 16.2383 18.424 16.665 19C18.4036 18.4666 20.185 17.6559 22.01 16.3226C22.4687 11.7787 21.2836 7.83202 18.8943 4.34399ZM8.05593 13.9013C7.01058 13.9013 6.15725 12.952 6.15725 11.7893C6.15725 10.6267 6.98925 9.67731 8.05593 9.67731C9.11191 9.67731 9.97588 10.6267 9.95454 11.7893C9.95454 12.952 9.11191 13.9013 8.05593 13.9013ZM15.065 13.9013C14.0196 13.9013 13.1652 12.952 13.1652 11.7893C13.1652 10.6267 13.9983 9.67731 15.065 9.67731C16.121 9.67731 16.985 10.6267 16.9636 11.7893C16.9636 12.952 16.1317 13.9013 15.065 13.9013Z" stroke-linejoin="round" style="stroke: rgb(255, 255, 255);"/></svg>'
 }
 })();
