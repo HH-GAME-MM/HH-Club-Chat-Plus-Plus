@@ -2,6 +2,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.67] - 2023-09-06
+
+### Added
+- New emojis and new game icons
+- The personal nickname color for sponsors is now invisible for players without the script
+- The scrollbar has been beautified for Chrome, Edge and Opera (and probably more)
+
+### Changed
+- The emojis are now divided into two categories "Emojis" and "HH"
+
+### Code contributions
+- Many thanks for the code contributions xnh0x
+
 ## [0.66] - 2023-08-13
 
 ### Changed
