@@ -1619,8 +1619,10 @@
                 const sponsors = getSponsors();
 
                 //first add the sponsors for the current game
+                let hostname = window.location.hostname;
+                if(hostname === 'osapi.nutaku.com') hostname = 'nutaku.haremheroes.com';
                 sponsors.forEach((value, key) => {
-                    if(key.startsWith(window.location.hostname + '/')) sponsorsList.push({ key, value });
+                    if(key.startsWith(hostname + '/')) sponsorsList.push({ key, value });
                 });
 
                 //add the sponsors for the other games and exclude sponsors already added
@@ -3010,7 +3012,9 @@
                (window.location.hostname === 'test.hentaiheroes.com' && id == 119511)) return true;
 
             //Sponsors
-            return getSponsors().has(window.location.hostname + '/hero/' + id);
+            let hostname = window.location.hostname;
+            if(hostname === 'osapi.nutaku.com') hostname = 'nutaku.haremheroes.com';
+            return getSponsors().has(hostname + '/hero/' + id);
         }
 
         function getSponsors()
@@ -3023,11 +3027,9 @@
                 ['www.pornstarharem.com/hero/1851' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
                 ['test.hentaiheroes.com/hero/158794' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
                 ['nutaku.haremheroes.com/hero/4443024' , { name: 'xnh0x', tier: 'coffee', active: true, order: 3 }],
-                ['osapi.nutaku.com/hero/4443024' , { name: 'xnh0x', tier: 'coffee', active: true, order: 3 }],
                 ['www.hentaiheroes.com/hero/3512557' , { name: 'Bobick', tier: 'coffee', active: true, order: 4 }],
                 ['www.hentaiheroes.com/hero/844437' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
                 ['nutaku.haremheroes.com/hero/2261654' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
-                ['osapi.nutaku.com/hero/2261654' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
                 ['www.hentaiheroes.com/hero/842927' , { name: 'Zteev', tier: 'coffee', active: true, order: 6 }],
 
                 ['www.hentaiheroes.com/hero/5248781', { name: 'Safi', tier: 'gold', active: false, order: 7 }],
