@@ -3027,6 +3027,7 @@
                 ['www.hentaiheroes.com/hero/3512557' , { name: 'Bobick', tier: 'coffee', active: true, order: 4 }],
                 ['www.hentaiheroes.com/hero/844437' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
                 ['nutaku.haremheroes.com/hero/2261654' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
+                ['osapi.nutaku.com/hero/2261654' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
                 ['www.hentaiheroes.com/hero/842927' , { name: 'Zteev', tier: 'coffee', active: true, order: 6 }],
 
                 ['www.hentaiheroes.com/hero/5248781', { name: 'Safi', tier: 'gold', active: false, order: 7 }],
