@@ -3023,6 +3023,7 @@
                 ['www.pornstarharem.com/hero/1851' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
                 ['test.hentaiheroes.com/hero/158794' , { name: 'Darkyz', tier: 'coffee', active: true, order: 2 }],
                 ['nutaku.haremheroes.com/hero/4443024' , { name: 'xnh0x', tier: 'coffee', active: true, order: 3 }],
+                ['osapi.nutaku.com/hero/4443024' , { name: 'xnh0x', tier: 'coffee', active: true, order: 3 }],
                 ['www.hentaiheroes.com/hero/3512557' , { name: 'Bobick', tier: 'coffee', active: true, order: 4 }],
                 ['www.hentaiheroes.com/hero/844437' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
                 ['nutaku.haremheroes.com/hero/2261654' , { name: 'holymolly', tier: 'coffee', active: true, order: 5 }],
@@ -3539,7 +3540,6 @@
                 if(e.data.type === 'ping')
                 {
                     const pingMessageCount = e.data.pingMessageCount;
-
                     const pingNotificationBox = getPingNotificationBox();
                     if(pingMessageCount > 0)
                     {
