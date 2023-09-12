@@ -7,14 +7,11 @@
 // @match        https://*.comixharem.com/*
 // @match        https://*.pornstarharem.com/*
 // @match        https://*.gayharem.com/*
-// @match        https://osapi.nutaku.com/gadgets/ifr*tid=harem-heroes*
 // @match        https://nutaku.haremheroes.com/*
+// @match        https://osapi.nutaku.com/gadgets/ifr*tid=harem-heroes*
 // @match        https://osapi.nutaku.com/gadgets/ifr*tid=comix-harem*
-// @match        https://nutaku.comixharem.com/*
 // @match        https://osapi.nutaku.com/gadgets/ifr*tid=pornstar-harem*
-// @match        https://nutaku.pornstarharem.com/*
 // @match        https://osapi.nutaku.com/gadgets/ifr*tid=gay-harem*
-// @match        https://nutaku.gayharem.com/*
 // @run-at       document-end
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=hentaiheroes.com
