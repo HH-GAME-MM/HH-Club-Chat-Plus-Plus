@@ -9,6 +9,12 @@
 // @match        https://*.gayharem.com/*
 // @match        https://osapi.nutaku.com/gadgets/ifr*tid=harem-heroes*
 // @match        https://nutaku.haremheroes.com/*
+// @match        https://osapi.nutaku.com/gadgets/ifr*tid=comix-harem*
+// @match        https://nutaku.comixharem.com/*
+// @match        https://osapi.nutaku.com/gadgets/ifr*tid=pornstar-harem*
+// @match        https://nutaku.pornstarharem.com/*
+// @match        https://osapi.nutaku.com/gadgets/ifr*tid=gay-harem*
+// @match        https://nutaku.gayharem.com/*
 // @run-at       document-end
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=hentaiheroes.com
@@ -1619,8 +1625,7 @@
                 const sponsors = getSponsors();
 
                 //first add the sponsors for the current game
-                let hostname = window.location.hostname;
-                if(hostname === 'osapi.nutaku.com') hostname = 'nutaku.haremheroes.com';
+                let hostname = getGameHostname();
                 sponsors.forEach((value, key) => {
                     if(key.startsWith(hostname + '/')) sponsorsList.push({ key, value });
                 });
@@ -3022,9 +3027,25 @@
                (window.location.hostname === 'test.hentaiheroes.com' && id == 119511)) return true;
 
             //Sponsors
+            return getSponsors().has(getGameHostname() + '/hero/' + id);
+        }
+
+        function getGameHostname()
+        {
             let hostname = window.location.hostname;
-            if(hostname === 'osapi.nutaku.com') hostname = 'nutaku.haremheroes.com';
-            return getSponsors().has(hostname + '/hero/' + id);
+            if(hostname === 'osapi.nutaku.com')
+            {
+                if(window.location.search.includes('tid=harem-heroes')) {
+                    hostname = 'nutaku.haremheroes.com';
+                } else if(window.location.search.includes('tid=comix-harem')) {
+                    hostname = 'nutaku.comixharem.com';
+                } else if(window.location.search.includes('tid=pornstar-harem')) {
+                    hostname = 'nutaku.pornstarharem.com';
+                } else if(window.location.search.includes('tid=gay-harem')) {
+                    hostname = 'nutaku.gayharem.com';
+                }
+            }
+            return hostname;
         }
 
         function getSponsors()
