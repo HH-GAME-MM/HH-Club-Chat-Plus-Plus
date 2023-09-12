@@ -377,7 +377,7 @@
 
                     //open the hero page when clicking on the avatar
                     node.querySelector('div.chat-msg-avatar img').addEventListener('click', (e) => {
-                        window[0].postMessage({ HHCCPlusPlus: true, type: 'hero_page_popup', msgIdPlayerId }, '*');
+                        window[0].postMessage({ HHCCPlusPlus: true, type: 'hero_page_popup', playerId: msgIdPlayerId }, '*');
                         document.querySelector('#resize-chat-box div.chat-wrapper div.chat-container a.close_cross').click();
                     });
 
@@ -1649,7 +1649,17 @@
                 let sponsorsText = '';
                 for(let i = 0; i < sponsorsList.length; i++)
                 {
-                    sponsorsText += '<li style="height:25px;"><a style="text-decoration:none;" href="https://' + sponsorsList[i].key + '/profile.html" target="_blank">' + sponsorsList[i].value.name + '</a>';
+                    if(sponsorsList[i].key.includes(hostname)){
+                        // popup for profiles of current game
+                        sponsorsText += '<li style="height:25px; cursor: pointer;" onclick="' +
+                            'window[0].postMessage({ HHCCPlusPlus: true, type: \'hero_page_popup\', playerId: ' + sponsorsList[i].key.split('/').pop() + '}, \'*\');' +
+                            'document.querySelector(\'#resize-chat-box div.chat-wrapper div.chat-container a.close_cross\').click();' +
+                            '"> ' + sponsorsList[i].value.name;
+                    } else {
+                        // new tab for profiles of other games
+                        sponsorsText += '<li style="height:25px;"><a style="text-decoration:none;" href="https://' + sponsorsList[i].key + '/profile.html" target="_blank">' + sponsorsList[i].value.name + '</a>';
+                    }
+
                     let activeText = (sponsorsList[i].value.active ? 'Active' : 'Former');
                     let cssOpacity = (!sponsorsList[i].value.active ? ';opacity:30%' : '');
                     switch(sponsorsList[i].value.tier)
@@ -3561,7 +3571,7 @@
                 }
                 else if(e.data.type === 'hero_page_popup')
                 {
-                    hero_page_popup({id:e.data.msgIdPlayerId});
+                    hero_page_popup({id:e.data.playerId});
                 }
                 else if(e.data.type === 'disconnected')
                 {
