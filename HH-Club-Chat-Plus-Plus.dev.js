@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         HH Club Chat++ (Dev Version) 
+// @name         HH Club Chat++ (Dev Version)
 // @version      0.68
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
