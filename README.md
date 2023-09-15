@@ -1,7 +1,7 @@
 # HH Club Chat++
 Upgrade Club Chat with various features and bug fixes. Scroll down for screenshots ;-)
 
-Supported games: HH.com, CxH, PsH, GH
+Supported games: HH, CxH, PsH, GH and the Nutaku versions of the games
 
 ## Windows / Mac OS - Installation instructions:
 1. Install [TamperMonkey](https://www.tampermonkey.net) browser extension (or your userscript extension of choice e.g. Greasemonkey)
