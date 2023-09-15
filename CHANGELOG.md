@@ -2,6 +2,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.68] - 2023-09-15
+
+### Added
+- Added Nutaku support (HH, CxH, PsH, GH)
+
+### Changed
+- Open sponsor profile in popup for current game
+
 ## [0.67] - 2023-09-06
 
 ### Added
