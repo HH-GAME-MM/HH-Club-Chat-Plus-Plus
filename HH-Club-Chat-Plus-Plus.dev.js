@@ -397,7 +397,7 @@
 
                     //open the hero page when clicking on the avatar
                     node.querySelector('div.chat-msg-avatar img').addEventListener('click', (e) => {
-                        window[0].postMessage({ HHCCPlusPlus: true, type: 'hero_page_popup', playerId: msgIdPlayerId }, '*');
+                        window[0].postMessage({ HHCCPlusPlus: true, type: 'heroPagePopup', playerId: msgIdPlayerId }, '*');
                         document.querySelector('#resize-chat-box div.chat-wrapper div.chat-container a.close_cross').click();
                     });
 
@@ -1671,7 +1671,7 @@
                     if(sponsorsList[i].key.includes(hostname)){
                         // popup for profiles of current game
                         sponsorsText += '<li style="height:25px; cursor: pointer;" onclick="' +
-                            'window[0].postMessage({ HHCCPlusPlus: true, type: \'hero_page_popup\', playerId: ' + sponsorsList[i].key.split('/').pop() + '}, \'*\');' +
+                            'window[0].postMessage({ HHCCPlusPlus: true, type: \'heroPagePopup\', playerId: ' + sponsorsList[i].key.split('/').pop() + '}, \'*\');' +
                             'document.querySelector(\'#resize-chat-box div.chat-wrapper div.chat-container a.close_cross\').click();' +
                             '"> ' + sponsorsList[i].value.name;
                     } else {
@@ -3594,7 +3594,7 @@
                     case 'ping':
                         receivedPing(e);
                         break;
-                    case 'hero_page_popup':
+                    case 'heroPagePopup':
                         receivedHeroPagePopup(e);
                         break;
                     case 'disconnected':
