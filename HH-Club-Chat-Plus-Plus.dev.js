@@ -174,6 +174,9 @@
                     case 'fixClubChat':
                         receivedFixClubChat(e);
                         break;
+                    case 'girlsUpdate':
+                        receivedGirlsUpdate(e);
+                        break;
                     default:
                         console.warn('unknown message type: ' + e.data.type);
                         break;
@@ -187,6 +190,10 @@
             ClubChat.hasInit = false;
             ClubChat.hasPinnedMessageHandler = false; //the handler is lost after the connection is restored
             fixClubChat();
+        }
+
+        function receivedGirlsUpdate(e) {
+            localStorage.setItem('HHClubChatPlusPlus_GirlDictionary', JSON.stringify(e.data.girls));
         }
 
         window.addEventListener('message', receiveMessage);
@@ -406,7 +413,7 @@
                         let girlName = null;
 
                         //is it a girl id or a girl name?
-                        let girlDictionary = getHHPlusPlusGirlDictionary();
+                        let girlDictionary = getGirlDictionary();
                         if(strIsInt(param1))
                         {
                             girlId = parseInt(param1);
@@ -434,7 +441,7 @@
                         let girlGrade = -1;
 
                         //is it a girl id or a girl name?
-                        let girlDictionary = getHHPlusPlusGirlDictionary();
+                        let girlDictionary = getGirlDictionary();
                         if(strIsInt(param1))
                         {
                             girlId = parseInt(param1);
@@ -1086,7 +1093,7 @@
                         //is it a girl name?
                         if(!strIsInt(param1))
                         {
-                            let girlId = getGirlIdByName(param1, getHHPlusPlusGirlDictionary());
+                            let girlId = getGirlIdByName(param1, getGirlDictionary());
                             if(girlId != -1) text = cmd + girlId; //change the girl name to the girl id
                         }
                     }
@@ -1918,10 +1925,15 @@
             return -1;
         }
 
-        function getHHPlusPlusGirlDictionary()
+        function getGirlDictionary()
         {
-            let girlDictJSON = localStorage.getItem('HHPlusPlusGirlDictionary');
-            return girlDictJSON != null ? new Map(JSON.parse(girlDictJSON)) : new Map();
+            let girlDictJSON = localStorage.getItem('HHClubChatPlusPlus_GirlDictionary');
+            if (girlDictJSON != null) {
+                return new Map(JSON.parse(girlDictJSON))
+            } else {
+                // TODO suggest to open harem
+                return new Map();
+            }
         }
 
         function strIsInt(s)
@@ -3639,6 +3651,15 @@
                 document.querySelectorAll('#popup_message close').forEach(e => { e.setAttribute('onClick', 'this.parentNode.remove()'); });
             }
         }
+
+        (function sendGirlDictionaryToChatFrame()
+        {
+            // TODO grab and send data when visiting harem instead of relying on HH++
+            let girlDictJSON = localStorage.getItem('HHPlusPlusGirlDictionary');
+            if (girlDictJSON != null) {
+                window.parent.postMessage({ HHCCPlusPlus: true, type: 'girlsUpdate', girls: JSON.parse(girlDictJSON) }, '*');
+            }
+        })();
 
         window.addEventListener('message', receiveMessage);
     }
