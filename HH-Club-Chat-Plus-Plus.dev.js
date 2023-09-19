@@ -83,6 +83,39 @@
         const mapCustomEmojiGifHosts = getMapCustomEmojiGifHosts();
         const mapCustomEmojiGifFileExtensions = getMapCustomEmojiGifFileExtensions();
 
+        //local storage keys
+        const BASE_KEY = 'HHClubChatPlusPlus_';
+        const KEY_CONFIG = BASE_KEY + GAME_INFO.tag + '_Config';
+        const KEY_CUSTOM_EMOJIS = BASE_KEY + GAME_INFO.tag + '_CustomEmojis';
+        const KEY_CUSTOM_GIFS = BASE_KEY + GAME_INFO.tag + '_CustomGifs';
+        const KEY_GIRL_DICTIONARY = BASE_KEY + GAME_INFO.tag + '_GirlDictionary';
+        const KEY_LAST_MESSAGE_TIMESTAMP_SEEN = BASE_KEY + GAME_INFO.tag + '_LastMsgTimestampSeen';
+        const KEY_ONLINE_OFFLINE_PINGS = BASE_KEY + GAME_INFO.tag + '_OnlineOfflinePings';
+        const KEY_POSITION_AND_SIZE = BASE_KEY + GAME_INFO.tag + '_PositionAndSize';
+
+        // migration to tagged keys, remove in later version
+        (function(){
+            const keyPairs = new Map([
+                [KEY_CONFIG, BASE_KEY + 'Config'],
+                [KEY_CUSTOM_EMOJIS, BASE_KEY + 'CustomEmojis'],
+                [KEY_CUSTOM_GIFS, BASE_KEY + 'CustomGifs'],
+                [KEY_GIRL_DICTIONARY, BASE_KEY + 'GirlDictionary'],
+                [KEY_LAST_MESSAGE_TIMESTAMP_SEEN, BASE_KEY + 'LastMsgTimestampSeen'],
+                [KEY_ONLINE_OFFLINE_PINGS, BASE_KEY + 'OnlineOfflinePings'],
+                [KEY_POSITION_AND_SIZE, BASE_KEY + 'PositionAndSize']
+            ]);
+            for (const [newKey, oldKey] of keyPairs) {
+                // check if new key has been used
+                if (localStorage.getItem(newKey)) { continue }
+                // move value to new key if it exists
+                const oldValue = localStorage.getItem(oldKey);
+                if (oldValue) {
+                    localStorage.setItem(newKey, oldValue);
+                    localStorage.removeItem(oldKey);
+                }
+            }
+        })();
+
         //check push version
         checkPushVersion();
 
@@ -194,7 +227,7 @@
         }
 
         function receivedGirlsUpdate(e) {
-            localStorage.setItem('HHClubChatPlusPlus_GirlDictionary', JSON.stringify(e.data.girls));
+            localStorage.setItem(KEY_GIRL_DICTIONARY, JSON.stringify(e.data.girls));
         }
 
         window.addEventListener('message', receiveMessage);
@@ -1806,7 +1839,7 @@
 
         function loadConfigFromLocalStorage()
         {
-            let json = localStorage.getItem('HHClubChatPlusPlus_Config');
+            let json = localStorage.getItem(KEY_CONFIG);
             let config = json != null ? JSON.parse(json) : { };
 
             //default config
@@ -1826,18 +1859,18 @@
 
         function saveConfigToLocalStorage(config)
         {
-            localStorage.setItem('HHClubChatPlusPlus_Config', JSON.stringify(config));
+            localStorage.setItem(KEY_CONFIG, JSON.stringify(config));
         }
 
         function loadOnlineOfflinePingsFromLocalStorage()
         {
-            let json = localStorage.getItem('HHClubChatPlusPlus_OnlineOfflinePings');
+            let json = localStorage.getItem(KEY_ONLINE_OFFLINE_PINGS);
             return json != null ? new Map(JSON.parse(json)) : new Map();
         }
 
         function saveOnlineOfflinePingsToLocalStorage(pings)
         {
-            localStorage.setItem('HHClubChatPlusPlus_OnlineOfflinePings', JSON.stringify(Array.from(pings.entries())));
+            localStorage.setItem(KEY_ONLINE_OFFLINE_PINGS, JSON.stringify(Array.from(pings.entries())));
         }
 
         function cleanOnlineOfflinePingsInLocalStore()
@@ -1860,13 +1893,13 @@
 
         function loadLastMsgTimestampSeen()
         {
-            let lastMsgTimestampSeenLS = localStorage.getItem('HHClubChatPlusPlus_LastMsgTimestampSeen');
+            let lastMsgTimestampSeenLS = localStorage.getItem(KEY_LAST_MESSAGE_TIMESTAMP_SEEN);
             return lastMsgTimestampSeenLS != null ? parseInt(lastMsgTimestampSeenLS) : 0;
         }
 
         function saveLastMsgTimestampSeen()
         {
-            localStorage.setItem('HHClubChatPlusPlus_LastMsgTimestampSeen', lastMsgTimestampSeen);
+            localStorage.setItem(KEY_LAST_MESSAGE_TIMESTAMP_SEEN, lastMsgTimestampSeen);
         }
 
         function loadLastChatWindowPositionAndSize(chatWnd)
@@ -1874,7 +1907,7 @@
             //disabled on mobile
             if(!isMobile())
             {
-                let vars = localStorage.getItem('HHClubChatPlusPlus_PositionAndSize');
+                let vars = localStorage.getItem(KEY_POSITION_AND_SIZE);
                 if(vars != null)
                 {
                     let splits = vars.split(',');
@@ -1889,14 +1922,14 @@
             }
             else
             {
-                localStorage.removeItem('HHClubChatPlusPlus_PositionAndSize');
+                localStorage.removeItem(KEY_POSITION_AND_SIZE);
             }
         }
 
         function saveLastChatWindowPositionAndSize(chatWnd)
         {
             //disabled on mobile
-            if(!isMobile()) localStorage.setItem('HHClubChatPlusPlus_PositionAndSize', chatWnd.style.left + ',' + chatWnd.style.top + ',' + chatWnd.style.width + ',' + chatWnd.style.height);
+            if(!isMobile()) localStorage.setItem(KEY_POSITION_AND_SIZE, chatWnd.style.left + ',' + chatWnd.style.top + ',' + chatWnd.style.width + ',' + chatWnd.style.height);
         }
 
         function getGirlNameById(id, girlDictionary)
@@ -1927,7 +1960,7 @@
 
         function getGirlDictionary()
         {
-            let girlDictJSON = localStorage.getItem('HHClubChatPlusPlus_GirlDictionary');
+            let girlDictJSON = localStorage.getItem(KEY_GIRL_DICTIONARY);
             if (girlDictJSON != null) {
                 return new Map(Object.entries(JSON.parse(girlDictJSON)));
             } else {
@@ -2635,14 +2668,14 @@
 
         function loadCustomEmojisFromLocalStorage()
         {
-            let json = localStorage.getItem('HHClubChatPlusPlus_CustomEmojis');
+            let json = localStorage.getItem(KEY_CUSTOM_EMOJIS);
             if(json == null) json = '[]';
             return JSON.parse(json);
         }
 
         function saveCustomEmojisToLocalStorage(customEmojis)
         {
-            localStorage.setItem('HHClubChatPlusPlus_CustomEmojis', JSON.stringify(customEmojis));
+            localStorage.setItem(KEY_CUSTOM_EMOJIS, JSON.stringify(customEmojis));
         }
 
         function addCustomGifToLocalStorage(newCustomGif)
@@ -2709,14 +2742,14 @@
 
         function loadCustomGifsFromLocalStorage()
         {
-            let json = localStorage.getItem('HHClubChatPlusPlus_CustomGifs');
+            let json = localStorage.getItem(KEY_CUSTOM_GIFS);
             if(json == null) json = '[]';
             return JSON.parse(json);
         }
 
         function saveCustomGifsToLocalStorage(customGifs)
         {
-            localStorage.setItem('HHClubChatPlusPlus_CustomGifs', JSON.stringify(customGifs));
+            localStorage.setItem(KEY_CUSTOM_GIFS, JSON.stringify(customGifs));
         }
 
         function convertUrlToCustomEmojiGifCode(url, urlWithGif)
