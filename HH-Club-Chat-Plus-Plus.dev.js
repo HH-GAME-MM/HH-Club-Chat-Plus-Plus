@@ -170,15 +170,32 @@
             {
                 //console.log('ChatFrame-ReceiveMessage', e.data);
 
-                if(e.data.type === 'fixClubChat')
-                {
-                    pingMessageCount = 0; //reset ping counter, as we will receive all chat messages again after successful reconnection
-                    ClubChat.hasInit = false;
-                    ClubChat.hasPinnedMessageHandler = false; //the handler is lost after the connection is restored
-                    fixClubChat();
+                switch (e.data.type){
+                    case 'fixClubChat':
+                        receivedFixClubChat(e);
+                        break;
+                    case 'girlsUpdate':
+                        receivedGirlsUpdate(e);
+                        break;
+                    default:
+                        console.warn('unknown message type: ' + e.data.type);
+                        break;
                 }
             }
         }
+
+        function receivedFixClubChat(e)
+        {
+            pingMessageCount = 0; //reset ping counter, as we will receive all chat messages again after successful reconnection
+            ClubChat.hasInit = false;
+            ClubChat.hasPinnedMessageHandler = false; //the handler is lost after the connection is restored
+            fixClubChat();
+        }
+
+        function receivedGirlsUpdate(e) {
+            localStorage.setItem('HHClubChatPlusPlus_GirlDictionary', JSON.stringify(e.data.girls));
+        }
+
         window.addEventListener('message', receiveMessage);
 
         //chat variables
@@ -380,7 +397,7 @@
 
                     //open the hero page when clicking on the avatar
                     node.querySelector('div.chat-msg-avatar img').addEventListener('click', (e) => {
-                        window[0].postMessage({ HHCCPlusPlus: true, type: 'hero_page_popup', playerId: msgIdPlayerId }, '*');
+                        window[0].postMessage({ HHCCPlusPlus: true, type: 'heroPagePopup', playerId: msgIdPlayerId }, '*');
                         document.querySelector('#resize-chat-box div.chat-wrapper div.chat-container a.close_cross').click();
                     });
 
@@ -396,7 +413,7 @@
                         let girlName = null;
 
                         //is it a girl id or a girl name?
-                        let girlDictionary = getHHPlusPlusGirlDictionary();
+                        let girlDictionary = getGirlDictionary();
                         if(strIsInt(param1))
                         {
                             girlId = parseInt(param1);
@@ -424,7 +441,7 @@
                         let girlGrade = -1;
 
                         //is it a girl id or a girl name?
-                        let girlDictionary = getHHPlusPlusGirlDictionary();
+                        let girlDictionary = getGirlDictionary();
                         if(strIsInt(param1))
                         {
                             girlId = parseInt(param1);
@@ -1076,7 +1093,7 @@
                         //is it a girl name?
                         if(!strIsInt(param1))
                         {
-                            let girlId = getGirlIdByName(param1, getHHPlusPlusGirlDictionary());
+                            let girlId = getGirlIdByName(param1, getGirlDictionary());
                             if(girlId != -1) text = cmd + girlId; //change the girl name to the girl id
                         }
                     }
@@ -1654,7 +1671,7 @@
                     if(sponsorsList[i].key.includes(hostname)){
                         // popup for profiles of current game
                         sponsorsText += '<li style="height:25px; cursor: pointer;" onclick="' +
-                            'window[0].postMessage({ HHCCPlusPlus: true, type: \'hero_page_popup\', playerId: ' + sponsorsList[i].key.split('/').pop() + '}, \'*\');' +
+                            'window[0].postMessage({ HHCCPlusPlus: true, type: \'heroPagePopup\', playerId: ' + sponsorsList[i].key.split('/').pop() + '}, \'*\');' +
                             'document.querySelector(\'#resize-chat-box div.chat-wrapper div.chat-container a.close_cross\').click();' +
                             '"> ' + sponsorsList[i].value.name;
                     } else {
@@ -1908,10 +1925,15 @@
             return -1;
         }
 
-        function getHHPlusPlusGirlDictionary()
+        function getGirlDictionary()
         {
-            let girlDictJSON = localStorage.getItem('HHPlusPlusGirlDictionary');
-            return girlDictJSON != null ? new Map(JSON.parse(girlDictJSON)) : new Map();
+            let girlDictJSON = localStorage.getItem('HHClubChatPlusPlus_GirlDictionary');
+            if (girlDictJSON != null) {
+                return new Map(JSON.parse(girlDictJSON))
+            } else {
+                // TODO suggest to open harem
+                return new Map();
+            }
         }
 
         function strIsInt(s)
@@ -3568,53 +3590,77 @@
             {
                 //console.log('GameFrame-ReceiveMessage', e.data);
 
-                if(e.data.type === 'ping')
-                {
-                    const pingMessageCount = e.data.pingMessageCount;
-                    const pingNotificationBox = getPingNotificationBox();
-                    if(pingMessageCount > 0)
-                    {
-                        if(pingMessageCount === 1) {
-                            pingNotificationBox.firstChild.innerHTML = 'There is a new message for you!';
-                        } else {
-                            pingNotificationBox.firstChild.innerHTML = 'There are ' + pingMessageCount + ' new messages for you!';
-                        }
-
-                        pingNotificationBox.setAttribute('class', 'ping visible');
-                    }
-                    else
-                    {
-                        pingNotificationBox.setAttribute('class', 'ping');
-                    }
-                }
-                else if(e.data.type === 'hero_page_popup')
-                {
-                    hero_page_popup({id:e.data.playerId});
-                }
-                else if(e.data.type === 'disconnected')
-                {
-                    let popup_message = document.querySelector('#popup_message div');
-                    let msgLC = popup_message == null ? null : popup_message.innerHTML.toLowerCase();
-                    if(msgLC == null || (
-                        !msgLC.includes('chat server') && //EN
-                        !msgLC.includes('chatserver') && //DE
-                        !msgLC.includes('chat serveur') && //FR
-                        !msgLC.includes('server chat') && //IT
-                        !msgLC.includes('servidor de chat') && //ES
-                        !msgLC.includes('チャットサーバー') && //JP
-                        !msgLC.includes('чат') //RU
-                    ))
-                    {
-                        window.parent.postMessage({ HHCCPlusPlus: true, type: 'fixClubChat' }, '*');
-                    }
-                    else
-                    {
-                        //KK BUG: if there are multiple popups, only one can be closed. FIX: add onclick handlers to all error popups
-                        document.querySelectorAll('#popup_message close').forEach(e => { e.setAttribute('onClick', 'this.parentNode.remove()'); });
-                    }
+                switch (e.data.type) {
+                    case 'ping':
+                        receivedPing(e);
+                        break;
+                    case 'heroPagePopup':
+                        receivedHeroPagePopup(e);
+                        break;
+                    case 'disconnected':
+                        receivedDisconnected(e);
+                        break;
+                    default:
+                        console.warn('unknown message type: ' + e.data.type);
+                        break;
                 }
             }
         }
+
+        function receivedPing(e) {
+            const pingMessageCount = e.data.pingMessageCount;
+            const pingNotificationBox = getPingNotificationBox();
+            if(pingMessageCount > 0)
+            {
+                if(pingMessageCount === 1) {
+                    pingNotificationBox.firstChild.innerHTML = 'There is a new message for you!';
+                } else {
+                    pingNotificationBox.firstChild.innerHTML = 'There are ' + pingMessageCount + ' new messages for you!';
+                }
+
+                pingNotificationBox.setAttribute('class', 'ping visible');
+            }
+            else
+            {
+                pingNotificationBox.setAttribute('class', 'ping');
+            }
+        }
+
+        function receivedHeroPagePopup(e) {
+            hero_page_popup({id:e.data.playerId});
+        }
+
+        function receivedDisconnected(e) {
+            let popup_message = document.querySelector('#popup_message div');
+            let msgLC = popup_message == null ? null : popup_message.innerHTML.toLowerCase();
+            if(msgLC == null || (
+                !msgLC.includes('chat server') && //EN
+                !msgLC.includes('chatserver') && //DE
+                !msgLC.includes('chat serveur') && //FR
+                !msgLC.includes('server chat') && //IT
+                !msgLC.includes('servidor de chat') && //ES
+                !msgLC.includes('チャットサーバー') && //JP
+                !msgLC.includes('чат') //RU
+            ))
+            {
+                window.parent.postMessage({ HHCCPlusPlus: true, type: 'fixClubChat' }, '*');
+            }
+            else
+            {
+                //KK BUG: if there are multiple popups, only one can be closed. FIX: add onclick handlers to all error popups
+                document.querySelectorAll('#popup_message close').forEach(e => { e.setAttribute('onClick', 'this.parentNode.remove()'); });
+            }
+        }
+
+        (function sendGirlDictionaryToChatFrame()
+        {
+            // TODO grab and send data when visiting harem instead of relying on HH++
+            let girlDictJSON = localStorage.getItem('HHPlusPlusGirlDictionary');
+            if (girlDictJSON != null) {
+                window.parent.postMessage({ HHCCPlusPlus: true, type: 'girlsUpdate', girls: JSON.parse(girlDictJSON) }, '*');
+            }
+        })();
+
         window.addEventListener('message', receiveMessage);
     }
 
