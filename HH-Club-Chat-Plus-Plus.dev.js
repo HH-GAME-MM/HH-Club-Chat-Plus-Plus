@@ -75,6 +75,7 @@
         const HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_COLOR_LENGTH = 6;
         const HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH = HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_COLOR_LENGTH + 2; // COLOR + CONFIG_VERSION + CONFIG_INDICATOR
 
+        const GAME_INFO = getGameInfo();
         const MAX_MESSAGE_SIZE = 500;
         const mapGIFs = getMapGIFs();
         const mapEmojis = getMapEmojis();
@@ -1639,9 +1640,8 @@
                 const sponsors = getSponsors();
 
                 //first add the sponsors for the current game
-                let hostname = getGameHostname();
                 sponsors.forEach((value, key) => {
-                    if(key.startsWith(hostname + '/')) sponsorsList.push({ key, value });
+                    if(key.startsWith(GAME_INFO.hostname + '/')) sponsorsList.push({ key, value });
                 });
 
                 //add the sponsors for the other games and exclude sponsors already added
@@ -1668,7 +1668,7 @@
                 let sponsorsText = '';
                 for(let i = 0; i < sponsorsList.length; i++)
                 {
-                    if(sponsorsList[i].key.includes(hostname)){
+                    if(sponsorsList[i].key.includes(GAME_INFO.hostname)){
                         // popup for profiles of current game
                         sponsorsText += '<li style="height:25px; cursor: pointer;" onclick="' +
                             'window[0].postMessage({ HHCCPlusPlus: true, type: \'heroPagePopup\', playerId: ' + sponsorsList[i].key.split('/').pop() + '}, \'*\');' +
@@ -3046,12 +3046,15 @@
                (window.location.hostname === 'test.hentaiheroes.com' && id == 119511)) return true;
 
             //Sponsors
-            return getSponsors().has(getGameHostname() + '/hero/' + id);
+            return getSponsors().has(GAME_INFO.hostname + '/hero/' + id);
         }
 
-        function getGameHostname()
+        function getGameInfo()
         {
             let hostname = window.location.hostname;
+            let tag = null;
+            let contentUrl = null;
+            let wikiUrl = null;
             if(hostname === 'osapi.nutaku.com')
             {
                 if(window.location.search.includes('tid=harem-heroes')) {
@@ -3064,7 +3067,24 @@
                     hostname = 'nutaku.gayharem.com';
                 }
             }
-            return hostname;
+            if(hostname.includes('hentaiheroes') || hostname.includes('haremheroes')) {
+                tag = 'HH';
+                contentUrl = "https://hh.hh-content.com/pictures/girls/";
+                wikiUrl = "https://harem-battle.club/wiki/Harem-Heroes/HH:";
+            } else if(hostname.includes('comixharem')) {
+                tag = 'CxH';
+                contentUrl = "https://ch.hh-content.com/pictures/girls/";
+                // no wiki
+            } else if(hostname.includes('pornstarharem')) {
+                tag = 'PsH';
+                contentUrl = "https://th.hh-content.com/pictures/girls/";
+                // no wiki
+            } else if(hostname.includes('gayharem')) {
+                tag = 'GH';
+                contentUrl = "https://gh.hh-content.com/pictures/girls/";
+                wikiUrl = "https://harem-battle.club/wiki/Gay-Harem/GH:";
+            }
+            return { tag, hostname, contentUrl, wikiUrl };
         }
 
         function getSponsors()
