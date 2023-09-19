@@ -463,8 +463,11 @@
                         //girl found?
                         if(girlId != -1)
                         {
-                            let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
-                            htmlNew.push({ isValid: true, value: '<div class="girl"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : 'Girl ID ' + girlId) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="https://hh2.hh-content.com/pictures/girls/'+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                            let url = null;
+                            if (girlName != 'Unknown Girl' && GAME_INFO.wikiUrl) {
+                                url = GAME_INFO.wikiUrl + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '');
+                            }
+                            htmlNew.push({ isValid: true, value: '<div class="girl"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : (girlName != 'Unknown Girl' ? girlName : 'Girl ID ' + girlId)) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="'+GAME_INFO.contentUrl+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                         }
                     }
                     else if(htmlLC.startsWith('/poses ') && htmlLC.length > 7 && !isPinnedMsg)
@@ -507,12 +510,15 @@
                             if(girlGrade == -1) girlGrade = 6; //use 6 girl poses if we have the girl but no girl grade
                             for(let k = 0; k <= girlGrade; k++)
                             {
-                                htmlPoses += '<a href="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="https://hh2.hh-content.com/pictures/girls/' + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
+                                htmlPoses += '<a href="' + GAME_INFO.contentUrl + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="' + GAME_INFO.contentUrl + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
                             }
                             htmlPoses += (config.PosesInSpoilerBlock == '1' ? '</span>' : '');
 
-                            let url = girlName != 'Unknown Girl' ? 'https://harem-battle.club/wiki/Harem-Heroes/HH:' + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '') : null;
-                            htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: Girl ID ' + girlId) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                            let url = null;
+                            if (girlName != 'Unknown Girl' && GAME_INFO.wikiUrl) {
+                                url = GAME_INFO.wikiUrl + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '');
+                            }
+                            htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: ' + (girlName != 'Unknown Girl' ? girlName : 'Girl ID ' + girlId)) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                         }
                     }
                     else if(htmlLC.startsWith('/plain '))
