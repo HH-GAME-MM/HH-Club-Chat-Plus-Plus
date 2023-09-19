@@ -23,7 +23,7 @@
 (function() {
     //definitions
     'use strict';
-    /*global ClubChat,initTabSystem,hero_page_popup,$*/
+    /* global ClubChat, initTabSystem, hero_page_popup, girlsDataList, $ */
 
     const isInIFrame = inIFrame();
     if((!isInIFrame && window.location.pathname === '/') || window.location.hostname === 'osapi.nutaku.com')
@@ -1929,7 +1929,7 @@
         {
             let girlDictJSON = localStorage.getItem('HHClubChatPlusPlus_GirlDictionary');
             if (girlDictJSON != null) {
-                return new Map(JSON.parse(girlDictJSON))
+                return new Map(Object.entries(JSON.parse(girlDictJSON)));
             } else {
                 // TODO suggest to open harem
                 return new Map();
@@ -3652,14 +3652,16 @@
             }
         }
 
-        (function sendGirlDictionaryToChatFrame()
+        if (window.location.pathname === '/harem.html')
         {
-            // TODO grab and send data when visiting harem instead of relying on HH++
-            let girlDictJSON = localStorage.getItem('HHPlusPlusGirlDictionary');
-            if (girlDictJSON != null) {
-                window.parent.postMessage({ HHCCPlusPlus: true, type: 'girlsUpdate', girls: JSON.parse(girlDictJSON) }, '*');
-            }
-        })();
+            // scrape harem data and send to chat frame
+            let girlDict = {};
+            Object.values(girlsDataList).forEach((girl) => {
+                const {id_girl, name, nb_grades} = girl;
+                girlDict[id_girl] = {name: name, grade: nb_grades};
+            });
+            window.parent.postMessage({ HHCCPlusPlus: true, type: 'girlsUpdate', girls: girlDict }, '*');
+        }
 
         window.addEventListener('message', receiveMessage);
     }
