@@ -1636,8 +1636,8 @@
                     '/dice = roll a dice (D6, 1-6)<br/>' +
                     '<br/>' +
                     '<span class="title">GIRL COMMANDS</span><br/>' +
-                    '/girl <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl (HH++ required)<br/>' +
-                    '/poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block (HH++ required)<br/>' +
+                    '/girl <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl<br/>' +
+                    '/poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block<br/>' +
                     '<br/>' +
                     '<span class="title">TEXT FORMATTING</span><br/>' +
                     '*italic* = <span style="font-style:italic;">italic</span><br/>' +
