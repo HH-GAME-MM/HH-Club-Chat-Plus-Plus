@@ -2226,7 +2226,7 @@
                 });
             }
             addEmojisToCategory(mapEmojis,'Emojis');
-            addEmojisToCategory(mapGameIcons,'HH');
+            addEmojisToCategory(mapGameIcons, GAME_INFO.game);
 
             //add custom emojis to emojiKeyboard
             let emojiKeyboardEmojis = emojiKeyboard.emojis.get('Emojis');
@@ -2874,6 +2874,35 @@
 
         function getMapGameIcons()
         {
+            const flavorEmojis = {
+                ':hard_currency:': {
+                    'HH':  '294927828682801153', // kobans
+                    'CxH': '856150808739315712', // gold
+                    'PsH': '856150808739315712', // gold
+                    'GH':  '294927828682801153'  // kobans
+                },
+                ':kiss:': {
+                    'HH':  '860659467876302889', // lips
+                    'CxH': '860659467876302889', // lips
+                    'PsH': '860659467876302889', // lips
+                    'GH':  '870302290291093554'  // mustache
+                },
+                ':money:': {
+                    'HH':  '294927828972208128', // ymen
+                    'CxH': '856969607537623050', // cash
+                    'PsH': '294927828972208128', // ymen
+                    'GH':  '294927828972208128'  // ymen
+                },
+                ':ticket:': {
+                    'HH':  '596905784160419876',
+                    'CxH': '999693596074704966',
+                    'PsH': 'res:champion_ticket_psh.png',
+                    'GH':  '596908065375387678'
+                }
+            }
+
+            const flavorEmoji = (name) => [name, flavorEmojis[name][GAME_INFO.tag]];
+
             return new Map([
                 [':ep:', 'res:pachinko_ep1.png'],
                 [':ep10:', 'res:pachinko_ep10.png'],
@@ -2983,30 +3012,26 @@
                 [':shards:', ':shard:'],
                 [':datingtoken:', '849076003882926100'],
                 [':dating:', ':datingtoken:'],
-                // end of row
+                // end of row, below the row alignment doesn't matter
 
-                [':nutaku_gold:', '923585084081197117'],
-                [':nugold:', ':nutaku_gold:'],
-                [':cash:', '856969607537623050'],
-                [':koban:', '294927828682801153'],
-                [':kobans:', ':koban:'],
-                [':gold:', '856150808739315712'],
-                [':ymen:', '294927828972208128'],
-                [':money:', ':ymen:'],
-
+                flavorEmoji(':hard_currency:'),
+                [':koban:', ':hard_currency:'],
+                [':kobans:', ':hard_currency:'],
+                [':nuban:', ':hard_currency:'],
+                [':nubans:', ':hard_currency:'],
+                [':gold:', ':hard_currency:'],
+                flavorEmoji(':money:'),
+                [':ymen:', ':money:'],
+                [':cash:', ':money:'],
                 [':energy:', '864645021561782332'],
                 [':combativity:', '848991758301265990'],
                 [':fisting:', ':combativity:'],
-                [':kiss:', '860659467876302889'],
+                flavorEmoji(':kiss:'),
                 [':league:', '860659427950460930'],
                 [':condom:', ':league:'],
                 [':condoms:', ':league:'],
                 [':worship:', '902508422988169226'],
-                [':ticket:', '596905784160419876'],
-                [':kk:', '915301903561265194'],
-                [':kinkoid:', ':kk:'],
-                // end of row
-
+                flavorEmoji(':ticket:'),
                 [':sultrycoin:', '1037358279275335720'],
                 [':sultrycoins:', ':sultrycoin:'],
                 [':key:', '1037336214459650148'],
@@ -3031,7 +3056,9 @@
                 [':lm:', 'res:booster_lm.png'],
                 [':lme:', ':lm:'],
                 [':leaguemastery:', ':lm:'],
-                // end of row
+
+                [':kk:', '915301903561265194'],
+                [':kinkoid:', ':kk:'],
             ]);
         }
 
@@ -3093,6 +3120,7 @@
         function getGameInfo()
         {
             let hostname = window.location.hostname;
+            let game = null;
             let tag = null;
             let contentUrl = null;
             let wikiUrl = null;
@@ -3108,24 +3136,35 @@
                     hostname = 'nutaku.gayharem.com';
                 }
             }
-            if(hostname.includes('hentaiheroes') || hostname.includes('haremheroes')) {
+            if(hostname.includes('hentaiheroes')) {
+                game = 'Hentai Heroes';
                 tag = 'HH';
-                contentUrl = "https://hh.hh-content.com/pictures/girls/";
-                wikiUrl = "https://harem-battle.club/wiki/Harem-Heroes/HH:";
+                contentUrl = 'https://hh.hh-content.com/pictures/girls/';
+                wikiUrl = 'https://harem-battle.club/wiki/Harem-Heroes/HH:';
+            } else if(hostname.includes('haremheroes')) {
+                game = 'Harem Heroes';
+                tag = 'HH';
+                contentUrl = 'https://hh2.hh-content.com/pictures/girls/';
+                wikiUrl = 'https://harem-battle.club/wiki/Harem-Heroes/HH:';
             } else if(hostname.includes('comixharem')) {
+                game = 'Comix Harem';
                 tag = 'CxH';
-                contentUrl = "https://ch.hh-content.com/pictures/girls/";
+                contentUrl = 'https://ch.hh-content.com/pictures/girls/';
                 // no wiki
             } else if(hostname.includes('pornstarharem')) {
+                game = 'Pornstar Harem';
                 tag = 'PsH';
-                contentUrl = "https://th.hh-content.com/pictures/girls/";
+                contentUrl = 'https://th.hh-content.com/pictures/girls/';
                 // no wiki
             } else if(hostname.includes('gayharem')) {
+                game = 'Gay Harem';
                 tag = 'GH';
-                contentUrl = "https://gh.hh-content.com/pictures/girls/";
-                wikiUrl = "https://harem-battle.club/wiki/Gay-Harem/GH:";
+                contentUrl = hostname.includes('nutaku')
+                    ? 'https://gh.hh-content.com/pictures/girls/'
+                    : 'https://gh2.hh-content.com/pictures/girls/';
+                wikiUrl = 'https://harem-battle.club/wiki/Gay-Harem/GH:';
             }
-            return { tag, hostname, contentUrl, wikiUrl };
+            return { game, tag, hostname, contentUrl, wikiUrl };
         }
 
         function getSponsors()
@@ -3165,7 +3204,7 @@
             ['Flags', ['Flags']],
             ['GIFs', []],
             ['Emojis', []],
-            ['HH', []],
+            [GAME_INFO.game, []],
         ]);
 
         /*window.onload = function () {
@@ -3438,7 +3477,7 @@
                 for (const v of [
                     [SVG_HTML.discord, 'Emojis'],
                     [SVG_HTML.gif, 'GIFs'],
-                    [SVG_HTML.hh, 'HH'],
+                    [SVG_HTML.hh, GAME_INFO.game],
                     [SVG_HTML.head, 'People'],
                     [SVG_HTML.leaf, 'Nature'],
                     [SVG_HTML.food, 'Food'],
@@ -3487,7 +3526,7 @@
                         categ_name.appendChild(categ_span_custom_sort);
                     }
                     categ_div.appendChild(categ_name);
-                    let emojis_sorted = (v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != 'HH' ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1])); //do not sort custom emojis / gifs
+                    let emojis_sorted = ((v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != GAME_INFO.game) ? this.emojis.get(v[1]).sort((a, b) => a.unicode.localeCompare(b.unicode)) : this.emojis.get(v[1])); //do not sort custom emojis / gifs
                     for (const emoji of emojis_sorted) {
                         let img = document.createElement("img");
                         img.dataset.name = emoji.name;
@@ -3503,7 +3542,7 @@
                         } else {
                             img.src = emoji.url;
                         }
-                        if(v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != 'HH') //no error handler for custom emojis / gifs
+                        if(v[1] != 'Emojis' && v[1] != 'GIFs' && v[1] != GAME_INFO.game) //no error handler for custom emojis / gifs
                         {
                             img.addEventListener('error', err => {
                                 // console.info(err.target.dataset);
