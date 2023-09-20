@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++ (Dev Version)
-// @version      0.68
+// @version      0.69
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/*
@@ -122,8 +122,9 @@
         //create new input and send button
         createNewInputAndSendButton();
 
-        //add insert ping into input function
+        //add insert ping into input and hero page popup function
         addInsertPingIntoInput();
+        addHeroPagePopup();
 
         //config
         let config = loadConfigFromLocalStorage();
@@ -432,10 +433,7 @@
                     }
 
                     //open the hero page when clicking on the avatar
-                    node.querySelector('div.chat-msg-avatar img').addEventListener('click', (e) => {
-                        window[0].postMessage({ HHCCPlusPlus: true, type: 'heroPagePopup', playerId: msgIdPlayerId }, '*');
-                        document.querySelector('#resize-chat-box div.chat-wrapper div.chat-container a.close_cross').click();
-                    });
+                    node.querySelector('div.chat-msg-avatar img').addEventListener('click', () => { ClubChat.heroPagePopup(msgIdPlayerId) });
 
                     //new html
                     let htmlNew = [];
@@ -1217,6 +1215,15 @@
             }
         }
 
+        function addHeroPagePopup()
+        {
+            //add new function
+            ClubChat.heroPagePopup = function(playerId) {
+                window[0].postMessage({ HHCCPlusPlus: true, type: 'heroPagePopup', playerId }, '*');
+                document.querySelector('#resize-chat-box div.chat-wrapper div.chat-container a.close_cross').click();
+            }
+        }
+
         function checkPushVersion()
         {
             //return if there is already an update message
@@ -1711,13 +1718,14 @@
                 {
                     if(sponsorsList[i].key.includes(GAME_INFO.hostname)){
                         // popup for profiles of current game
-                        sponsorsText += '<li style="height:25px; cursor: pointer;" onclick="' +
-                            'window[0].postMessage({ HHCCPlusPlus: true, type: \'heroPagePopup\', playerId: ' + sponsorsList[i].key.split('/').pop() + '}, \'*\');' +
-                            'document.querySelector(\'#resize-chat-box div.chat-wrapper div.chat-container a.close_cross\').click();' +
-                            '"> ' + sponsorsList[i].value.name;
+                        sponsorsText += '<li style="height:25px"><a style="text-decoration:none;" href="#" onclick="' +
+                            'ClubChat.heroPagePopup(' + sponsorsList[i].key.split('/').pop() + ')' +
+                            '">' + sponsorsList[i].value.name + '</a>';
                     } else {
                         // new tab for profiles of other games
-                        sponsorsText += '<li style="height:25px;"><a style="text-decoration:none;" href="https://' + sponsorsList[i].key + '/profile.html" target="_blank">' + sponsorsList[i].value.name + '</a>';
+                        sponsorsText += '<li style="height:25px"><a style="text-decoration:none;" href="#" onclick="' +
+                            'window.open(\'https://' + sponsorsList[i].key + '/profile.html\', \'_blank\');' +
+                            '">' + sponsorsList[i].value.name + '</a>';
                     }
 
                     let activeText = (sponsorsList[i].value.active ? 'Active' : 'Former');
@@ -1736,7 +1744,7 @@
                     'HH Club Chat++ Script v' + GM_info.script.version + '<br/>' +
                     'Web: <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus" target="_blank">HOMEPAGE</a> || <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">CHANGELOG</a><br/>' +
                     '<br/>' +
-                    'Script coded by <a style="text-decoration:none;" href="https://www.hentaiheroes.com/hero/4266159/profile.html" target="_blank">-MM-</a> and tested with club mates <a style="text-decoration:none;" href="https://www.hentaiheroes.com/clubs.html?view_club=1898" target="_blank">"Hērōēs Prāvī Forī [EN]"</a><br/>' +
+                    'Script coded by <a style="text-decoration:none;" href="#" onclick="' + (GAME_INFO.hostname === 'www.hentaiheroes.com' ? 'ClubChat.heroPagePopup(4266159)' : 'window.open(\'https://www.hentaiheroes.com/hero/4266159/profile.html\', \'_blank\');') + '">-MM-</a> and tested with club mates <a style="text-decoration:none;" href="https://www.hentaiheroes.com/clubs.html?view_club=1898" target="_blank">"Hērōēs Prāvī Forī [EN]"</a>. Code contributions from <a style="text-decoration:none;" href="#" onclick="' + (GAME_INFO.hostname === 'nutaku.haremheroes.com' ? 'ClubChat.heroPagePopup(4443024)' : 'window.open(\'https://nutaku.haremheroes.com/hero/4443024/profile.html\', \'_blank\');') + '">xnh0x</a> <img width="20" height="20" title="Thank you" alt="Thank you" src="https://cdn.discordapp.com/emojis/294932319020515348.webp?size=48&quality=lossless"><br/>' +
                     'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)<br/>' +
                     '<br/>' +
                     '<span class="title">SPONSORS</span><br/>' +
@@ -1746,6 +1754,7 @@
                     'If you would like to support me, you can do so here:<br/><li><a href="https://www.patreon.com/HHMM" target="_blank">https://www.patreon.com/HHMM</a></li><li><a href="https://www.buymeacoffee.com/HHMM" target="_blank">https://www.buymeacoffee.com/HHMM</a></li>' +
                     '<br/>' +
                     '<span class="title">OTHER SCRIPTS</span><br/>' +
+                    '<li><a href="https://github.com/HH-GAME-MM/HH-Leagues-Plus-Plus" target="_blank">HH Leagues++</a></li>'+
                     '<li><a href="https://github.com/HH-GAME-MM/HH-Harem" target="_blank">HH Harem</a></li>' +
                     '<li><a href="https://github.com/HH-GAME-MM/HH-Simulate-Headband-in-Pantheon" target="_blank">HH Simulate Headband in Pantheon</a></li>';
             }
@@ -2987,16 +2996,16 @@
                 [':mojo:', 'res:mojo.png'],
                 // end of row
 
-                [':cscroll:', 'res:scroll_common.png'],
-                [':cbulb:', ':cscroll:'],
-                [':rscroll:', 'res:scroll_rare.png'],
-                [':rbulb:', ':rscroll:'],
-                [':escroll:', 'res:scroll_epic.png'],
-                [':ebulb:', ':escroll:'],
-                [':lscroll:', 'res:scroll_legendary.png'],
-                [':lbulb:', ':lscroll:'],
-                [':mscroll:', 'res:scroll_mythic.png'],
-                [':mbulb:', ':mscroll:'],
+                [':cbulb:', 'res:scroll_common.png'],
+                [':cscroll:', ':cbulb:'],
+                [':rbulb:', 'res:scroll_rare.png'],
+                [':rscroll:', ':rbulb:'],
+                [':ebulb:', 'res:scroll_epic.png'],
+                [':escroll:', ':ebulb:'],
+                [':lbulb:', 'res:scroll_legendary.png'],
+                [':lscroll:', ':lbulb:'],
+                [':mbulb:', 'res:scroll_mythic.png'],
+                [':mscroll:', ':mbulb:'],
 
                 [':potion_endurance:', '948310353735987240'],
                 [':bbpotion:', ':potion_love:'],
