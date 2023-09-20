@@ -2221,6 +2221,8 @@
             //add Emojis/GameIcons to emojiKeyboard
             function addEmojisToCategory(map, category) {
                 let emojiList = emojiKeyboard.emojis.get(category);
+                let aliasIndex = emojiKeyboard.alias.get(category).get('toIndex');
+                let aliasLists = emojiKeyboard.alias.get(category).get('lists');
                 map.forEach((value, key) => {
                     //is it not an alias?
                     if(!value.startsWith(':'))
@@ -2231,6 +2233,11 @@
                             emoji: key,
                             unicode: key
                         });
+                    }
+                    else
+                    {
+                        aliasIndex.push({name: key, unicode: key});
+                        if (!aliasLists.get(value)?.push(key)) { aliasLists.set(value, [key]) }
                     }
                 });
             }
@@ -3224,6 +3231,10 @@
         class EmojiKeyboard {
             constructor() {
                 this.emojis = new Map(Array.from(categories, v => [v[0], []])); // we take categories names with empty lists
+                this.alias = new Map([
+                    ['Emojis', new Map([['toIndex',[]], ['lists', new Map()]])],
+                    [GAME_INFO.game, new Map([['toIndex',[]], ['lists', new Map()]])],
+                ]);
                 this.categories = Array.from(categories.keys());
                 this.init_base_emojis();
                 this.callback = (emoji, gotClosed) => { };
@@ -3367,8 +3378,13 @@
                 const result = Array.from(this.fuse.search(event.target.value), e => e.item.name);
                 let hiddens = new Map(Array.from(this.categories, v => [v, 0]));
                 event.target.ownerDocument.querySelectorAll('img.emojikb-emoji').forEach(e => {
-                    e.classList.toggle('emojikb-hidden', !result.includes(e.dataset.name));
-                    if (!result.includes(e.dataset.name)) {
+                    let found = result.includes(e.dataset.name);
+                    if (!found) {
+                        // check if alias matches search instead
+                        found = !!this.alias.get(e.dataset.category)?.get('lists').get(e.dataset.name)?.filter(alias => result.includes(alias)).length;
+                    }
+                    e.classList.toggle('emojikb-hidden', !found);
+                    if (!found) {
                         hiddens.set(e.dataset.category, hiddens.get(e.dataset.category) + 1);
                     }
                 })
@@ -3383,6 +3399,9 @@
                 let flattened = [];
                 for (const list of this.emojis.values()) {
                     flattened = flattened.concat(list);
+                }
+                for (const aliasCategory of this.alias.values()) {
+                    flattened = flattened.concat(aliasCategory.get('toIndex'));
                 }
                 this.fuseIndex = Fuse.createIndex(['name', 'unicode'], flattened);
                 this.fuse = new Fuse(flattened, {
