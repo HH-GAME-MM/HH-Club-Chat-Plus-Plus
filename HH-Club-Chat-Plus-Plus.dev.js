@@ -369,6 +369,8 @@
                     let html = msgInfo.html;
                     let htmlLC = html.toLowerCase();
                     let isPinnedMsg = (mutations[i].pinnedBlock == true);
+                    const UNKNOWN_GIRL = GAME_INFO.tag == 'GH' ? 'Unknown Guy' :'Unknown Girl';
+                    const HER = GAME_INFO.tag == 'GH' ? 'him' :'her';
 
                     //change the playername color (self gold, club leader red, club co leaders orange, members blue) and add "click to ping"
                     let nodeSpanMsgSender = node.querySelector('div.chat-msg-info span.chat-msg-sender');
@@ -452,7 +454,7 @@
                         {
                             girlId = parseInt(param1);
                             girlName = getGirlNameById(girlId, girlDictionary);
-                            if(girlName == null) girlName = 'Unknown Girl';
+                            if(girlName == null) girlName = UNKNOWN_GIRL;
                         }
                         else
                         {
@@ -464,10 +466,10 @@
                         if(girlId != -1)
                         {
                             let url = null;
-                            if (girlName != 'Unknown Girl' && GAME_INFO.wikiUrl) {
+                            if (girlName != UNKNOWN_GIRL && GAME_INFO.wikiUrl) {
                                 url = GAME_INFO.wikiUrl + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '');
                             }
-                            htmlNew.push({ isValid: true, value: '<div class="girl"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : (girlName != 'Unknown Girl' ? girlName : 'Girl ID ' + girlId)) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about her!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="'+GAME_INFO.contentUrl+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                            htmlNew.push({ isValid: true, value: '<div class="girl"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : (girlName != UNKNOWN_GIRL ? girlName : 'Girl ID ' + girlId)) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about ' + HER + '!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="'+GAME_INFO.contentUrl+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.resizeNiceScrollAndUpdatePosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                         }
                     }
                     else if(htmlLC.startsWith('/poses ') && htmlLC.length > 7 && !isPinnedMsg)
@@ -485,7 +487,7 @@
                             girlName = getGirlNameById(girlId, girlDictionary);
                             if(girlName == null)
                             {
-                                girlName = 'Unknown Girl';
+                                girlName = UNKNOWN_GIRL;
                             }
                             else
                             {
@@ -515,10 +517,10 @@
                             htmlPoses += (config.PosesInSpoilerBlock == '1' ? '</span>' : '');
 
                             let url = null;
-                            if (girlName != 'Unknown Girl' && GAME_INFO.wikiUrl) {
+                            if (girlName != UNKNOWN_GIRL && GAME_INFO.wikiUrl) {
                                 url = GAME_INFO.wikiUrl + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '');
                             }
-                            htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: ' + (girlName != 'Unknown Girl' ? girlName : 'Girl ID ' + girlId)) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                            htmlNew.push({ isValid: true, value: '<div class="poses">' + (url != null ? '<a href="' + url + '" target="_blank">Poses: ' + girlName + '</a>' : '<span>Poses: ' + (girlName != UNKNOWN_GIRL ? girlName : 'Girl ID ' + girlId)) + '</span><br/><br/>' + htmlPoses + '</div>' + (url != null ? '<br/><br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                         }
                     }
                     else if(htmlLC.startsWith('/plain '))
