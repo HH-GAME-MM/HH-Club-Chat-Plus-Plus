@@ -1124,6 +1124,9 @@
                     let cmd = null;
                     if(textLC.startsWith('!hh ') && textLC.length > 4) { textLC = '/girl ' + textLC.substr(4); text = '/girl ' + text.substr(4); alert('!hh is deprecated. Try to use the new command /girl') } //TODO remove line (remove old commands !hh & !poses)
                     else if(textLC.startsWith('!poses ') && textLC.length > 7) { textLC = '/poses ' + textLC.substr(7); text = '/poses ' + text.substr(7); alert('!poses is deprecated. Try to use the new command /poses') } //TODO remove line (remove old commands !hh & !poses)
+
+                    // command /guy as alias for /girl
+                    if(textLC.startsWith('/guy ') && textLC.length > 5) { textLC = '/girl ' + textLC.substr(5); text = '/girl ' + text.substr(5); }
                     if(textLC.startsWith('/girl ') && textLC.length > 6) cmd = '/girl ';
                     else if(textLC.startsWith('/poses ') && textLC.length > 7) cmd = '/poses '; //TODO remove !poses
                     if(cmd != null)
@@ -1628,6 +1631,7 @@
 
             function getTabContentHelp()
             {
+                const GIRL = GAME_INFO.tag == 'GH' ? 'guy' : 'girl';
                 let gifsRandom = '';
                 mapGIFs.forEach((value, key) => { if((Array.isArray(value) && value.length != 1) || (!Array.isArray(value) && mapGIFs.get(value).length != 1)) gifsRandom += key + ' '; });
                 return '<span class="title">SHARE THE SCRIPT</span><br/>' +
@@ -1644,9 +1648,9 @@
                     '<span class="title">DICE</span><br/>' +
                     '/dice = roll a dice (D6, 1-6)<br/>' +
                     '<br/>' +
-                    '<span class="title">GIRL COMMANDS</span><br/>' +
-                    '/girl <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl<br/>' +
-                    '/poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block<br/>' +
+                    '<span class="title">' + GIRL.toUpperCase() + ' COMMANDS</span><br/>' +
+                    '/' + GIRL + ' <span style="font-style:italic;">&lt;' + GIRL + ' name / ' + GIRL + ' id&gt;</span> = post a wiki link for a ' + GIRL + '<br/>' +
+                    '/poses <span style="font-style:italic;">&lt;' + GIRL + ' name / ' + GIRL + ' id&gt;</span> = post a wiki link and all poses of a ' + GIRL + ' in a spoiler block<br/>' +
                     '<br/>' +
                     '<span class="title">TEXT FORMATTING</span><br/>' +
                     '*italic* = <span style="font-style:italic;">italic</span><br/>' +
@@ -1660,8 +1664,8 @@
                     '<span class="title">SPOILER</span><br/>' +
                     '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images in a spoiler block<br/>' +
                     '<br/>' +
-                    '<span class="title">LINKS / IMAGES / GIRL POSES</span><br/>' +
-                    'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
+                    '<span class="title">LINKS / IMAGES / ' + GIRL.toUpperCase() + ' POSES</span><br/>' +
+                    'Links and images are clickable and open in a new tab. Post a URL to an image or a ' + GIRL + ' pose and it will be embedded in the chat.<br/>' +
                     '<br/>' +
                     '<span class="title">EMOJIS</span><br/>' +
                     'Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign<br/>' +
@@ -2221,6 +2225,8 @@
             //add Emojis/GameIcons to emojiKeyboard
             function addEmojisToCategory(map, category) {
                 let emojiList = emojiKeyboard.emojis.get(category);
+                let aliasIndex = emojiKeyboard.alias.get(category).get('toIndex');
+                let aliasLists = emojiKeyboard.alias.get(category).get('lists');
                 map.forEach((value, key) => {
                     //is it not an alias?
                     if(!value.startsWith(':'))
@@ -2231,6 +2237,11 @@
                             emoji: key,
                             unicode: key
                         });
+                    }
+                    else
+                    {
+                        aliasIndex.push({name: key, unicode: key});
+                        if (!aliasLists.get(value)?.push(key)) { aliasLists.set(value, [key]) }
                     }
                 });
             }
@@ -3224,6 +3235,10 @@
         class EmojiKeyboard {
             constructor() {
                 this.emojis = new Map(Array.from(categories, v => [v[0], []])); // we take categories names with empty lists
+                this.alias = new Map([
+                    ['Emojis', new Map([['toIndex',[]], ['lists', new Map()]])],
+                    [GAME_INFO.game, new Map([['toIndex',[]], ['lists', new Map()]])],
+                ]);
                 this.categories = Array.from(categories.keys());
                 this.init_base_emojis();
                 this.callback = (emoji, gotClosed) => { };
@@ -3268,7 +3283,15 @@
                     // elem should be a button
                     let document = elem.ownerDocument;
                     this.get_keyboard(document); // create keyboard if needed
-                    elem.addEventListener("click", () => this.toggle_window());
+                    elem.addEventListener("click", () => {
+                        this.toggle_window();
+                        // move cursor to search field or back to chat
+                        if (document.getElementById("emojikb-maindiv").classList.contains('emojikb-hidden')) {
+                            document.getElementsByClassName('club-chat-input-custom')[0].focus();
+                        } else {
+                            document.getElementById('emojikb-textinput').focus();
+                        }
+                    });
                 })
             }
 
@@ -3367,8 +3390,13 @@
                 const result = Array.from(this.fuse.search(event.target.value), e => e.item.name);
                 let hiddens = new Map(Array.from(this.categories, v => [v, 0]));
                 event.target.ownerDocument.querySelectorAll('img.emojikb-emoji').forEach(e => {
-                    e.classList.toggle('emojikb-hidden', !result.includes(e.dataset.name));
-                    if (!result.includes(e.dataset.name)) {
+                    let found = result.includes(e.dataset.name);
+                    if (!found) {
+                        // check if alias matches search instead
+                        found = !!this.alias.get(e.dataset.category)?.get('lists').get(e.dataset.name)?.filter(alias => result.includes(alias)).length;
+                    }
+                    e.classList.toggle('emojikb-hidden', !found);
+                    if (!found) {
                         hiddens.set(e.dataset.category, hiddens.get(e.dataset.category) + 1);
                     }
                 })
@@ -3383,6 +3411,9 @@
                 let flattened = [];
                 for (const list of this.emojis.values()) {
                     flattened = flattened.concat(list);
+                }
+                for (const aliasCategory of this.alias.values()) {
+                    flattened = flattened.concat(aliasCategory.get('toIndex'));
                 }
                 this.fuseIndex = Fuse.createIndex(['name', 'unicode'], flattened);
                 this.fuse = new Fuse(flattened, {

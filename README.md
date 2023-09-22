@@ -34,8 +34,9 @@ Supported games: HH, CxH, PsH, GH and the Nutaku versions of the games
 - /dice = roll a dice (D6, 1-6)
 
 **GIRL COMMANDS**
-- /girl  &lt;girl name / girl id&gt; = post a wiki link for a girl (HH++ required)
-- /poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl in a spoiler block (HH++ required)
+- /girl  &lt;girl name / girl id&gt; = post a wiki link for a girl 
+- /guy is an alias for /girl
+- /poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl in a spoiler block
 
 **TEXT FORMATTING**
 - &#42;italic&#42; = *italic*
