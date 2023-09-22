@@ -72,7 +72,7 @@ Supported games: HH, CxH, PsH, GH and the Nutaku versions of the games
 - KK Bug Fixes: "Idle/Disconnect", "Chat disabled until click a menu", "Member list outside the window", "Chat broken after login"
 
 **CREDITS**
-- Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]"
+- Script coded by -MM- and tested with club mates "Hērōēs Prāvī Forī [EN]". Code contributions from xnh0x <img src="https://camo.githubusercontent.com/48d3789fc02ec188d28a4358a835d752ce882aeff443b352fae87128ceb30352/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f656d6f6a69732f3239343933323331393032303531353334382e776562703f73697a653d3438267175616c6974793d6c6f73736c657373" width="20" height="20" />
 - Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)
 
 **SPONSORS**
