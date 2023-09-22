@@ -1124,6 +1124,9 @@
                     let cmd = null;
                     if(textLC.startsWith('!hh ') && textLC.length > 4) { textLC = '/girl ' + textLC.substr(4); text = '/girl ' + text.substr(4); alert('!hh is deprecated. Try to use the new command /girl') } //TODO remove line (remove old commands !hh & !poses)
                     else if(textLC.startsWith('!poses ') && textLC.length > 7) { textLC = '/poses ' + textLC.substr(7); text = '/poses ' + text.substr(7); alert('!poses is deprecated. Try to use the new command /poses') } //TODO remove line (remove old commands !hh & !poses)
+
+                    // command /guy as alias for /girl
+                    if(textLC.startsWith('/guy ') && textLC.length > 5) { textLC = '/girl ' + textLC.substr(5); text = '/girl ' + text.substr(5); }
                     if(textLC.startsWith('/girl ') && textLC.length > 6) cmd = '/girl ';
                     else if(textLC.startsWith('/poses ') && textLC.length > 7) cmd = '/poses '; //TODO remove !poses
                     if(cmd != null)
@@ -1628,6 +1631,7 @@
 
             function getTabContentHelp()
             {
+                const GIRL = GAME_INFO.tag == 'GH' ? 'guy' : 'girl';
                 let gifsRandom = '';
                 mapGIFs.forEach((value, key) => { if((Array.isArray(value) && value.length != 1) || (!Array.isArray(value) && mapGIFs.get(value).length != 1)) gifsRandom += key + ' '; });
                 return '<span class="title">SHARE THE SCRIPT</span><br/>' +
@@ -1644,9 +1648,9 @@
                     '<span class="title">DICE</span><br/>' +
                     '/dice = roll a dice (D6, 1-6)<br/>' +
                     '<br/>' +
-                    '<span class="title">GIRL COMMANDS</span><br/>' +
-                    '/girl <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link for a girl<br/>' +
-                    '/poses <span style="font-style:italic;">&lt;girl name / girl id&gt;</span> = post a wiki link and all poses of a girl in a spoiler block<br/>' +
+                    '<span class="title">' + GIRL.toUpperCase() + ' COMMANDS</span><br/>' +
+                    '/' + GIRL + ' <span style="font-style:italic;">&lt;' + GIRL + ' name / ' + GIRL + ' id&gt;</span> = post a wiki link for a ' + GIRL + '<br/>' +
+                    '/poses <span style="font-style:italic;">&lt;' + GIRL + ' name / ' + GIRL + ' id&gt;</span> = post a wiki link and all poses of a ' + GIRL + ' in a spoiler block<br/>' +
                     '<br/>' +
                     '<span class="title">TEXT FORMATTING</span><br/>' +
                     '*italic* = <span style="font-style:italic;">italic</span><br/>' +
@@ -1660,8 +1664,8 @@
                     '<span class="title">SPOILER</span><br/>' +
                     '/spoiler <span style="font-style:italic;">&lt;text / images&gt;</span> = hide text and images in a spoiler block<br/>' +
                     '<br/>' +
-                    '<span class="title">LINKS / IMAGES / GIRL POSES</span><br/>' +
-                    'Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.<br/>' +
+                    '<span class="title">LINKS / IMAGES / ' + GIRL.toUpperCase() + ' POSES</span><br/>' +
+                    'Links and images are clickable and open in a new tab. Post a URL to an image or a ' + GIRL + ' pose and it will be embedded in the chat.<br/>' +
                     '<br/>' +
                     '<span class="title">EMOJIS</span><br/>' +
                     'Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign<br/>' +
