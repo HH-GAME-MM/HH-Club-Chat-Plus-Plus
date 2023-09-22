@@ -3283,7 +3283,15 @@
                     // elem should be a button
                     let document = elem.ownerDocument;
                     this.get_keyboard(document); // create keyboard if needed
-                    elem.addEventListener("click", () => this.toggle_window());
+                    elem.addEventListener("click", () => {
+                        this.toggle_window();
+                        // move cursor to search field or back to chat
+                        if (document.getElementById("emojikb-maindiv").classList.contains('emojikb-hidden')) {
+                            document.getElementsByClassName('club-chat-input-custom')[0].focus();
+                        } else {
+                            document.getElementById('emojikb-textinput').focus();
+                        }
+                    });
                 })
             }
 
