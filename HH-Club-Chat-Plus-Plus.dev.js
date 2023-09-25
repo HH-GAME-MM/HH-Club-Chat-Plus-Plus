@@ -1760,7 +1760,8 @@
                     'Links and images are clickable and open in a new tab. Post a URL to an image or a ' + GIRL + ' pose and it will be embedded in the chat.<br/>' +
                     '<br/>' +
                     '<span class="title">EMOJIS</span><br/>' +
-                    'Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign<br/>' +
+                    'Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign.<br/>' +
+                    'Suggests emojis when typing after a colon. Select the suggestion either by clicking or select with Tab and hit Enter.<br/>' +
                     '<br/>' +
                     '<span class="title">GIFS</span><br/>' +
                     'Only one GIF per message allowed. GIF code can be used anywhere in the text. Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom GIFs by clicking on the + sign. The following random gifs are available: ' + gifsRandom + '<br/>' +
