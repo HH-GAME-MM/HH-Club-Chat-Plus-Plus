@@ -2,6 +2,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.69] - 2023-09-20
+
+### Added
+- Game icons based on the version of the game
+
+### Changed
+- Removed HH++ dependency
+
+### Fixed
+- Fixed /girl and /poses for games other than HH
+
 ## [0.68] - 2023-09-15
 
 ### Added
