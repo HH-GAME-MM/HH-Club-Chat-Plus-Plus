@@ -55,6 +55,7 @@ Supported games: HH, CxH, PsH, GH and the Nutaku versions of the games
 
 **EMOJIS**
 - Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign
+- Suggests emojis when typing after a colon. Select the suggestion either by clicking or select with Tab and hit Enter
 
 **GIFS**
 - Only one GIF per message allowed. GIF code can be used anywhere in the text. Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom GIFs by clicking on the + sign. The following random gifs are available: !:p !? !25 !both !clap !doubt !fail !gn !gz !gratz !congratz !congrats !liar !moar !monster !proud !rng !rule !sad !thx !ty !thanks !whale !what !why 

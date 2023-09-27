@@ -187,6 +187,11 @@
         css.sheet.insertRule('button.club-chat-send-custom {position:absolute;top:7px;right:1px;border:none;background-color:transparent;outline:0;cursor:pointer;}');
         css.sheet.insertRule('#btnEmojisGIFs {position:absolute;top:5px;right:43px;border:none;background-color:transparent;outline:0;cursor:pointer;width:28px;height:28px;background-image:url("https://cdn.discordapp.com/emojis/861385389004947526.webp?size=48&quality=lossless");background-size:28px;background-repeat:no-repeat;background-position:right;padding-right:33px;}');
 
+        css.sheet.insertRule('.emoji-autocomplete-items {position:absolute;border: 1px solid #d07e36;z-index: 99;top: 100%;left: 0;right:0;}');
+        css.sheet.insertRule('.emoji-autocomplete-items div {padding: 10px;cursor: pointer;background-color: #411923;border-bottom: none;}');
+        css.sheet.insertRule('.emoji-autocomplete-items div:hover {background-color: #4f212e;}');
+        css.sheet.insertRule('.emoji-autocomplete-active {background-color: #af375b !important;}');
+
         //css members online/offline
         let cssOnline = document.createElement('style');
         document.head.appendChild(cssOnline);
@@ -1093,7 +1098,8 @@
             input.setAttribute('class', 'club-chat-input-custom');
             input.setAttribute('maxlength', MAX_MESSAGE_SIZE - HHCLUBCHATPLUSPLUS_INDICATOR_INV_CONFIG_MAX_LENGTH - 1); //real maxlength is 500
             if(document.querySelector('input.club-chat-input').getAttribute('disabled') != null) input.setAttribute('disabled', 'disabled');
-            input.addEventListener("keyup", onInputKeyUp_HHCCPlusPLus);
+            input.addEventListener("input", searchEmojiAsYouType);
+            input.addEventListener("keydown", onInputKeyUp_HHCCPlusPLus);
             container.appendChild(input);
 
             let btnSend = document.createElement('button');
@@ -1163,11 +1169,86 @@
                 }
             }
 
+            let emojiSuggestionFocus;
+            function searchEmojiAsYouType(evt) {
+                // make sure the search of emoji keyboard is initialized
+                if (!emojiKeyboard.fuse) emojiKeyboard.init_fuse();
+                const fuse = emojiKeyboard.fuse;
+
+                emojiSuggestionCloseAllLists();
+                emojiSuggestionFocus = -1;
+
+                // search if the last word starts with a colon
+                let message = this.value.split(' ');
+                const term = message.pop();
+                if (term.length < 2 || term[0] !== ':') return;
+
+                let a = document.createElement("div");
+                a.setAttribute("id", "emoji-autocomplete-list");
+                a.setAttribute("class", "emoji-autocomplete-items");
+                this.parentNode.appendChild(a);
+
+                const matches = fuse.search(term.substring(1)).map(e=>e.item.name);
+                matches.forEach((match) => {
+                    let b = document.createElement("div");
+                    b.innerHTML = match;
+                    b.addEventListener("click", function(e) {
+                        // insert the emoji name into the chat message
+                        document.getElementsByClassName('club-chat-input-custom')[0].value =
+                            message.join(' ') + (message.length > 0 ? ' ' : '') + this.innerHTML + ' ';
+                        emojiSuggestionCloseAllLists();
+                    });
+                    a.appendChild(b);
+                })
+            }
+
+            function emojiSuggestionSimulateClick() {
+                let x = document.getElementById("emoji-autocomplete-list")?.getElementsByTagName("div");
+                if (x) x[emojiSuggestionFocus].click();
+            }
+            function emojiSuggestionAddActive() {
+                let x = document.getElementById("emoji-autocomplete-list")?.getElementsByTagName("div");
+                if (!x) return;
+                // remove "active" class on all items
+                emojiSuggestionRemoveActive();
+                // wrap around
+                emojiSuggestionFocus = (emojiSuggestionFocus + x.length) % x.length;
+                // add active class
+                x[emojiSuggestionFocus].classList.add("emoji-autocomplete-active");
+            }
+            function emojiSuggestionRemoveActive() {
+                let x = document.getElementById("emoji-autocomplete-list")?.getElementsByTagName("div");
+                if (!x) return;
+                // remove the "active" class from all autocomplete items:
+                for (let i = 0; i < x.length; i++) {
+                    x[i].classList.remove("emoji-autocomplete-active");
+                }
+            }
+            function emojiSuggestionCloseAllLists() {
+                // close all autocomplete lists in the document, except the one passed as an argument:
+                let x = document.getElementsByClassName("emoji-autocomplete-items");
+                for (var i = 0; i < x.length; i++) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+
             function onInputKeyUp_HHCCPlusPLus(evt)
             {
                 if(evt.key == 'Enter')
                 {
-                    send_msg_HHCCPlusPLus();
+                    // apply emoji suggestion if one is chosen
+                    if (emojiSuggestionFocus > -1){
+                        emojiSuggestionSimulateClick();
+                        emojiSuggestionFocus = -1;
+                    } else {
+                        send_msg_HHCCPlusPLus();
+                    }
+                }
+                else if(evt.key == 'Escape')
+                {
+                    // reset suggestions
+                    emojiSuggestionCloseAllLists();
+                    emojiSuggestionFocus = -1;
                 }
                 else if(evt.key == 'ArrowUp' || evt.key == 'ArrowDown')
                 {
@@ -1176,6 +1257,17 @@
                     ClubChat.onInputKeyUp(evt);
                     let newText = input.value;
                     if(oldText != newText) document.querySelector('input.club-chat-input-custom').value = parseMessageInfo(newText).html;
+                }
+                else if (evt.key == 'Tab') {
+                    // don't tab out of the message field
+                    evt.preventDefault();
+                    // cycle through suggestions
+                    if (evt.shiftKey) {
+                        emojiSuggestionFocus--;
+                    } else {
+                        emojiSuggestionFocus++;
+                    }
+                    emojiSuggestionAddActive();
                 }
             }
         }
@@ -1668,7 +1760,8 @@
                     'Links and images are clickable and open in a new tab. Post a URL to an image or a ' + GIRL + ' pose and it will be embedded in the chat.<br/>' +
                     '<br/>' +
                     '<span class="title">EMOJIS</span><br/>' +
-                    'Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign<br/>' +
+                    'Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign.<br/>' +
+                    'Suggests emojis when typing after a colon. Select the suggestion either by clicking or select with Tab and hit Enter.<br/>' +
                     '<br/>' +
                     '<span class="title">GIFS</span><br/>' +
                     'Only one GIF per message allowed. GIF code can be used anywhere in the text. Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom GIFs by clicking on the + sign. The following random gifs are available: ' + gifsRandom + '<br/>' +
