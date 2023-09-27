@@ -1166,6 +1166,8 @@
 
                     input.value = text + ' ' + msgInfo;
                     ClubChat.send_msg();
+
+                    emojiSuggestionCloseAllLists();
                 }
             }
 
@@ -1250,7 +1252,6 @@
                         emojiSuggestionSimulateClick();
                         emojiSuggestionFocus = -1;
                     } else {
-                        emojiSuggestionCloseAllLists();
                         send_msg_HHCCPlusPlus();
                     }
                 }
