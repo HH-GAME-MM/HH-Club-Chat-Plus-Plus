@@ -1105,7 +1105,7 @@
             let btnSend = document.createElement('button');
             btnSend.setAttribute('class', 'club-chat-send-custom');
             if(document.querySelector('button.club-chat-send').getAttribute('disabled') != null) btnSend.setAttribute('disabled', 'disabled');
-            btnSend.addEventListener("click", send_msg_HHCCPlusPLus);
+            btnSend.addEventListener("click", send_msg_HHCCPlusPlus);
             container.appendChild(btnSend);
 
             let rightArrow_mix_icn = document.createElement('span');
@@ -1116,7 +1116,7 @@
             document.querySelector('input.club-chat-input').setAttribute('style', 'display:none');
             document.querySelector('button.club-chat-send').setAttribute('style', 'display:none');
 
-            function send_msg_HHCCPlusPLus()
+            function send_msg_HHCCPlusPlus()
             {
                 let inputCustom = document.querySelector('input.club-chat-input-custom');
                 if(inputCustom.value.length != 0)
@@ -1250,7 +1250,8 @@
                         emojiSuggestionSimulateClick();
                         emojiSuggestionFocus = -1;
                     } else {
-                        send_msg_HHCCPlusPLus();
+                        emojiSuggestionCloseAllLists();
+                        send_msg_HHCCPlusPlus();
                     }
                 }
                 else if(evt.key == 'Escape')
