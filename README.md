@@ -33,11 +33,6 @@ Supported games: HH, CxH, PsH, GH and the Nutaku versions of the games
 **DICE**
 - /dice = roll a dice (D6, 1-6)
 
-**GIRL COMMANDS**
-- /girl  &lt;girl name / girl id&gt; = post a wiki link for a girl 
-- /guy is an alias for /girl
-- /poses &lt;girl name / girl id&gt; = post a wiki link and all poses of a girl in a spoiler block
-
 **TEXT FORMATTING**
 - &#42;italic&#42; = *italic*
 - &#42;&#42;bold&#42;&#42; = **bold**
@@ -50,8 +45,8 @@ Supported games: HH, CxH, PsH, GH and the Nutaku versions of the games
 **SPOILER**
 - /spoiler &lt;text / images&gt; = hide text and images in a spoiler block
 
-**LINKS / IMAGES / GIRL POSES**
-- Links and images are clickable and open in a new tab. Post a URL to an image or a girl pose and it will be embedded in the chat.
+**LINKS / IMAGES**
+- Links and images are clickable and open in a new tab. Post a URL to an image and it will be embedded in the chat.
 
 **EMOJIS**
 - Check out the Emojis / GIFs Picker "EmojiKeyboard" for the current list. You can add custom emojis by clicking on the + sign
