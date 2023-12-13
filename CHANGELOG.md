@@ -2,6 +2,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.70] - 2023-12-13
+
+### Added
+- New tenor.com url format added
+- Improved search with emoji alias
+- Move the cursor when toggling emoji keyboard
+
+### Changed
+- Updated help tab
+- Text fixes for GH
+- Sponsors updated
+
+### Removed
+- buymeacoffee.com
+
 ## [0.69] - 2023-09-20
 
 ### Added
