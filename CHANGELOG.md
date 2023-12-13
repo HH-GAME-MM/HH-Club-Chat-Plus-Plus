@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [0.70] - 2023-12-13
 
 ### Added
-- New tenor.com url format added
+- New tenor.com url format added to custom emojis
 - Improved search with emoji alias
 - Move the cursor when toggling emoji keyboard
 
