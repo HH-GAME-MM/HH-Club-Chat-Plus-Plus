@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++ (Dev Version)
-// @version      0.70
+// @version      0.71
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/*
@@ -582,6 +582,23 @@
                                 if(config.Image != '0' && ((fileExtension.endsWith('.gif') || fileExtension.endsWith('.jpg') || fileExtension == '.jpeg' || fileExtension.endsWith('.png') || fileExtension == '.webp')))
                                 {
                                     htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img ' + (config.Image == 'sr' || isPinnedMsg ? 'class="smaller" ' : (config.Image == 'sl' ? 'class="small" ' : '')) + 'src="' + word + '" onload="ClubChat.resizeNiceScrollAndUpdatePosition()"></a>' });
+                                }
+                                else if(config.EmbeddingYouTube != '0' && (word.startsWith('https://www.youtube.com/watch?v=') || word.startsWith('https://youtu.be/'))) //is it a youtube link?
+                                {
+                                    let width = 560;
+                                    let height = 315;
+                                    if(config.EmbeddingYouTube == 'sl') {
+                                        width = 426;
+                                        height = 240;
+                                    } else if(config.EmbeddingYouTube == 'sr') {
+                                        width = 300;
+                                        height = 168;
+                                    } else if(config.EmbeddingYouTube == 'st') {
+                                        width = 187;
+                                        height = 105;
+                                    }
+                                    let urlCodeStart = (word.startsWith('https://www.youtube.com/watch?v=') ? 32 : 17);
+                                    htmlNew.push({ isValid: true, value: '<iframe width="' + width + '" height="' + height + '" src="https://www.youtube.com/embed/' + word.substr(urlCodeStart) + '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' });
                                 }
                                 else //its a link
                                 {
@@ -1675,6 +1692,12 @@
                     { name: 'PosesInSpoilerBlock', label: 'Put girl poses in spoiler', options: [{ name: 'ON', value: '1' },
                                                                                                  { name: 'OFF', value: '0' }]
                     },
+                    { name: 'EmbeddingYouTube', label: 'Embedding YouTube videos', options: [{ name: 'ON', value: '1' },
+                                                                                             { name: 'SMALL', value: 'sl' },
+                                                                                             { name: 'SMALLER', value: 'sr' },
+                                                                                             { name: 'SMALLEST', value: 'st' },
+                                                                                             { name: 'OFF', value: '0' }]
+                    },
                     { name: 'NewMessageSound', label: 'Sound on new message', subtype: 'sound', options: [{ name: 'OFF', value: '0' },
                                                                                                           { name: '10%', value: '10' },
                                                                                                           { name: '20%', value: '20' },
@@ -1979,6 +2002,7 @@
             if(typeof config.Image == 'undefined') config.Image = '1'; //1 sl sr 0
             if(typeof config.SelfColor == 'undefined') config.SelfColor = '1'; //1 0
             if(typeof config.PosesInSpoilerBlock == 'undefined') config.PosesInSpoilerBlock = '1'; //1 0
+            if(typeof config.EmbeddingYouTube == 'undefined') config.EmbeddingYouTube = 'sr'; //1 sl sr st 0
             if(typeof config.EmojiKeyboard == 'undefined') config.EmojiKeyboard = 'AutoClose'; //AutoClose StayOpen
             if(typeof config.NewMessageSound == 'undefined') config.NewMessageSound = '0'; //0 - 100
             if(typeof config.NewPingSound == 'undefined') config.NewPingSound = '0'; //0 - 100
