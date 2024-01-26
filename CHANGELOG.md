@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.71] - 2024-01-26
+
+### Added
+- Embedded youtube videos with the settings ON, SMALL, SMALLER (default), SMALLEST, OFF
+
 ## [0.70] - 2023-12-13
 
 ### Added
