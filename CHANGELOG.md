@@ -2,6 +2,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.72] - 2024-03-13
+
+### Fixed
+- Scrollbar fixed after today's game update (Kinkoid removed NiceScroll)
+- Kinkoid bug fixed: Scrollbar in the member list
+- Kinkoid bug fixed: Chat content too small when chat is opened (if the chat window is "large")
+- Kinkoid bug fixed: Input field moves out of the chat window when the chat window is resized
+
 ## [0.71] - 2024-01-26
 
 ### Added
