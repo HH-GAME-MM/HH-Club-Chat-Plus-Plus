@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++ (Dev Version)
-// @version      0.72
+// @version      0.73
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/*
@@ -20,15 +20,15 @@
 
 //CHANGELOG: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md
 
-(function() {
+(function(window) {
     //definitions
     'use strict';
-    /* global ClubChat, initTabSystem, hero_page_popup, girlsDataList, $ */
+    /* global shared, club_chat, ClubChat, initTabSystem, hero_page_popup, girlsDataList, GAME_FEATURE_CLUB, $ */
 
     const isInIFrame = inIFrame();
     if((!isInIFrame && window.location.pathname === '/') || window.location.hostname === 'osapi.nutaku.com')
     {
-        console.log('HH Club Chat++ Script v' + GM_info.script.version + ' // Chat Frame');
+        console.log(GM_info.script.name + ' Script v' + GM_info.script.version + ' // Chat Frame');
 
         //remove the font from nutaku and use the font from the game
         if(window.location.hostname === 'osapi.nutaku.com')
@@ -53,12 +53,17 @@
     }
     else if(isInIFrame && window.location.pathname !== '/' && window.location.pathname !== '/index.php')
     {
-        console.log('HH Club Chat++ Script v' + GM_info.script.version + ' // Game Frame');
+        console.log(GM_info.script.name + ' Script v' + GM_info.script.version + ' // Game Frame');
         gameFrame();
     }
 
     function chatFrame()
     {
+        //shared game functions and objects
+        const ClubChat = (window.ClubChat ? window.ClubChat : club_chat.club_chat.ClubChat);
+        const getSessionId = (window.getSessionId ? window.getSessionId : () => { return new URLSearchParams(window.location.search).get("sess"); }); //Nutaku only
+        window.getClubChat = function() { return ClubChat; }
+
         //constants
         const HHCLUBCHATPLUSPLUS_URL_DOWNLOAD = 'https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js';
         const HHCLUBCHATPLUSPLUS_URL_PUSHVERSION = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/pushVersion.gif';
@@ -383,7 +388,7 @@
                     let nodeSpanMsgSender_nickname = document.createElement('span');
                     nodeSpanMsgSender_nickname.setAttribute('class', 'playername ' + (msgIdPlayerId == playerId && config.SelfColor == '1' ? 'self' : (msgIdPlayerId == clubLeaderPlayerId ? 'leader' : (clubCoLeadersPlayerId.includes(msgIdPlayerId) ? 'coleader' : 'member'))));
                     if(msgInfo.nicknameColor != null && isSponsorOrMM(msgIdPlayerId) && (msgIdPlayerId != playerId || config.SelfColor != '1')) nodeSpanMsgSender_nickname.setAttribute('style', 'color:' + msgInfo.nicknameColor);
-                    nodeSpanMsgSender_nickname.setAttribute('onClick', 'ClubChat.insertPingIntoInput(this)');
+                    nodeSpanMsgSender_nickname.setAttribute('onClick', 'getClubChat().insertPingIntoInput(this)');
                     nodeSpanMsgSender_nickname.innerHTML = nodeSpanMsgSender.innerHTML;
                     nodeSpanMsgSender.innerHTML = '';
                     nodeSpanMsgSender.appendChild(nodeSpanMsgSender_nickname);
@@ -438,7 +443,7 @@
                     }
 
                     //open the hero page when clicking on the avatar
-                    node.querySelector('div.chat-msg-avatar img').addEventListener('click', () => { ClubChat.heroPagePopup(msgIdPlayerId) });
+                    node.querySelector('div.chat-msg-avatar img').addEventListener('click', () => { getClubChat().heroPagePopup(msgIdPlayerId) });
 
                     //new html
                     let htmlNew = [];
@@ -472,7 +477,7 @@
                             if (girlName != UNKNOWN_GIRL && GAME_INFO.wikiUrl) {
                                 url = GAME_INFO.wikiUrl + girlName.replaceAll(' ', '-').replaceAll('.', '').replaceAll('’', '');
                             }
-                            htmlNew.push({ isValid: true, value: '<div class="girl"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : (girlName != UNKNOWN_GIRL ? girlName : 'Girl ID ' + girlId)) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about ' + HER + '!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="'+GAME_INFO.contentUrl+girlId+'/ico0-300x.webp?v=5" onload="ClubChat.updateScrollPosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
+                            htmlNew.push({ isValid: true, value: '<div class="girl"><div class="left">' + (url != null ? '<a href="' + url + '" target="_blank">' + girlName + '</a>' : (girlName != UNKNOWN_GIRL ? girlName : 'Girl ID ' + girlId)) + '<br/><br/>' + (url != null ? 'All' : 'No') + ' infos about ' + HER + '!</div><div class="right">' + (url != null ? '<a href="' + url + '" target="_blank">' : '') + '<img title="' + girlName + '" src="'+GAME_INFO.contentUrl+girlId+'/ico0-300x.webp?v=5" onload="getClubChat().updateScrollPosition()">' + (url != null ? '</a>' : '') + '</div><div class="clear"></div></div>' + (url != null ? '<br/><a href="' + url + '" target="_blank">' + url + '</a>' : '') });
                         }
                     }
                     else if(htmlLC.startsWith('/poses ') && htmlLC.length > 7 && !isPinnedMsg)
@@ -515,7 +520,7 @@
                             if(girlGrade == -1) girlGrade = 6; //use 6 girl poses if we have the girl but no girl grade
                             for(let k = 0; k <= girlGrade; k++)
                             {
-                                htmlPoses += '<a href="' + GAME_INFO.contentUrl + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="' + GAME_INFO.contentUrl + girlId + '/ava' + k + '-300x.webp?v=5" onload="ClubChat.updateScrollPosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
+                                htmlPoses += '<a href="' + GAME_INFO.contentUrl + girlId + '/ava' + k + '-1200x.webp?v=5" target="_blank"><img title="Pose ' + k + '" src="' + GAME_INFO.contentUrl + girlId + '/ava' + k + '-300x.webp?v=5" onload="getClubChat().updateScrollPosition()" onerror="this.parentNode.style.display=\'none\'"></a>';
                             }
                             htmlPoses += (config.PosesInSpoilerBlock == '1' ? '</span>' : '');
 
@@ -581,7 +586,7 @@
                                 let fileExtension = wordLC.substr(pos - 5, 5);
                                 if(config.Image != '0' && ((fileExtension.endsWith('.gif') || fileExtension.endsWith('.jpg') || fileExtension == '.jpeg' || fileExtension.endsWith('.png') || fileExtension == '.webp')))
                                 {
-                                    htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img ' + (config.Image == 'sr' || isPinnedMsg ? 'class="smaller" ' : (config.Image == 'sl' ? 'class="small" ' : '')) + 'src="' + word + '" onload="ClubChat.updateScrollPosition()"></a>' });
+                                    htmlNew.push({ isValid: true, value: '<a href="' + word + '" target="_blank"><img ' + (config.Image == 'sr' || isPinnedMsg ? 'class="smaller" ' : (config.Image == 'sl' ? 'class="small" ' : '')) + 'src="' + word + '" onload="getClubChat().updateScrollPosition()"></a>' });
                                 }
                                 else if(config.EmbeddingYouTube != '0' && (word.startsWith('https://www.youtube.com/watch?v=') || word.startsWith('https://youtu.be/'))) //is it a youtube link?
                                 {
@@ -825,14 +830,14 @@
                                     let emojiId = mapEmojis.has(wordLC) ? mapEmojis.get(wordLC) : mapGameIcons.get(wordLC);
                                     if(emojiId.startsWith(':')) emojiId = mapEmojis.has(emojiId) ? mapEmojis.get(emojiId) : mapGameIcons.get(emojiId); //emoji alias
                                     let url = emojiId.startsWith('res:') ? HHCLUBCHATPLUSPLUS_URL_RES + 'emojis/' + emojiId.substr(4) : 'https://cdn.discordapp.com/emojis/' + emojiId + '.webp?size=48&quality=lossless';
-                                    htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title="' + wordLC + '" onload="ClubChat.updateScrollPosition()">';
+                                    htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title="' + wordLC + '" onload="getClubChat().updateScrollPosition()">';
                                     htmlNew[wordIndex].isEmoji = true;
                                 }
                                 //custom emojis
                                 else if(isCustomEmojiCode(word))
                                 {
                                     let url = convertCustomEmojiCodeToUrl(word);
-                                    htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title=":CustomEmoji:" onload="ClubChat.updateScrollPosition()">';
+                                    htmlNew[wordIndex].value = '<img class="emoji" src="' + url + '" title=":CustomEmoji:" onload="getClubChat().updateScrollPosition()">';
                                     htmlNew[wordIndex].isEmoji = true;
                                 }
                                 else if(config.Gif != '0' && !hasGif && wordLC.startsWith('!') && (mapGIFs.has(wordLC) || isCustomGifCode(word) || (wordLC.includes('_') && mapGIFs.has(wordLC.substr(0, wordLC.indexOf('_')))))) //gifs (only one gif per message allowed)
@@ -870,7 +875,7 @@
                                         imgSrc = imgSrcArray[gifNr % imgSrcArray.length];
                                     }
 
-                                    let htmlGif = '<a href="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" target="_blank"><img ' + (config.Gif == 'sr' || isPinnedMsg ? 'class="smaller" ' : (config.Gif == 'sl' ? 'class="small" ' : '')) + 'src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" title="' + gifTitle + '" onload="ClubChat.updateScrollPosition()"></a>';
+                                    let htmlGif = '<a href="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" target="_blank"><img ' + (config.Gif == 'sr' || isPinnedMsg ? 'class="smaller" ' : (config.Gif == 'sl' ? 'class="small" ' : '')) + 'src="' + (imgSrc.startsWith('https://') ? imgSrc : 'https://media.tenor.com/' + imgSrc) + '" title="' + gifTitle + '" onload="getClubChat().updateScrollPosition()"></a>';
 
                                     //are we at the beginning of the message?
                                     if(k == 0)
@@ -1319,7 +1324,7 @@
                     if(e.target.tagName.toLowerCase() == 'p' && e.target.className == 'name-member')
                     {
                         //switch to chat and insert ping into input
-                        document.getElementById('club_members_tab').click();
+                        document.getElementById('club_members_tab_custom').click();
                         ClubChat.insertPingIntoInput(e.target);
                     }
                 }
@@ -1391,9 +1396,11 @@
         function fixClubChat(attempts = 0)
         {
             //KK bug fixed: GAME_FEATURE_CLUB
+            let waitTime10Attempts = 60000;
             if(GAME_FEATURE_CLUB === false)
             {
                 GAME_FEATURE_CLUB = true;
+                waitTime10Attempts = 10000;
                 console.warn('KK Bug detected. GAME_FEATURE_CLUB is set to false. It\'s fixed now :)');
             }
 
@@ -1446,9 +1453,7 @@
                 else
                 {
                     //fix didnt work 10 times. wait 60 seconds
-                    //setTimeout(fixClubChat, 60000);
-                    //temporarily changed due to KK bug GAME_FEATURE_CLUB
-                    setTimeout(fixClubChat, 10000);
+                    setTimeout(fixClubChat, waitTime10Attempts);
                 }
             }
         }
@@ -1458,35 +1463,20 @@
             //replace the default buttons as they can move the window
             if(document.getElementById('club_members_tab') !== null && document.getElementById('upgrades_tab') !== null)
             {
-                //replace KK slideTab function
-                slideTab = function slideTab(tabs_id, tab) {
-                    if(typeof tab === 'undefined') return; //MM: code line added
-                    var $slider = $("#" + tabs_id + ">.slider");
-                    if (!$slider.length) {
-                        return
-                    }
-                    var $tab = $("#" + tabs_id + '>button[data-tab="' + tab + '"]'); //MM: '>div[data-tab="' changed to '>button[data-tab="'
-                    var tab_width = $tab.css("width");
-                    var left = 0;
-                    left = $tab[0].offsetLeft;
-                    $slider.css({
-                        width: tab_width,
-                        left: left + "px"
-                    })
-                }
-
-                //remove the buttons
-                document.getElementById('club_members_tab').remove();
-                document.getElementById('upgrades_tab').remove();
+                //hide the default tab buttons. the buttons are not removed because the original tab system needs them
+                document.getElementById('club_members_tab').setAttribute('style', 'display:none');
+                document.getElementById('upgrades_tab').setAttribute('style', 'display:none');
 
                 //create new buttons
-                css.sheet.insertRule('.chat-tabs button#club_members_tab {margin-left:0}');
-                addNewTabButton('club_members_tab', 'chat_messages_list', 'background-image:url(https://hh2.hh-content.com/clubs-chat/ic_ChatBTN.png);background-size:23px;width:25px;height:25px');
-                addNewTabButton('upgrades_tab', 'chat_members_list', '');
+                css.sheet.insertRule('.chat-tabs button#club_members_tab_custom {margin-left:0}');
+                addNewTabButton('club_members_tab_custom', 'chat_messages_list', 'background-image:url(https://hh2.hh-content.com/clubs-chat/ic_ChatBTN.png);background-size:23px;width:25px;height:25px');
+                addNewTabButton('upgrades_tab_custom', 'chat_members_list', '');
             }
 
             //css
-            css.sheet.insertRule('.chat-tabs button.switch-tab.tab-switcher-fade-in {-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;}'); //active button
+            css.sheet.insertRule('.chat-tabs button.switch-tab-custom.tab-switcher-fade-in {-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;}'); //active button
+            css.sheet.insertRule('.chat-tabs .tabs-switcher .switch-tab-custom { position: relative; line-height: 1.5rem; margin-left: .3rem; cursor: pointer; }'); //copy of ".chat-tabs .tabs-switcher .switch-tab"
+            css.sheet.insertRule('.chat-tabs .tabs-switcher .switch-tab-custom.underline-tab { pointer-events: none; }'); //copy of ".chat-tabs .tabs-switcher .switch-tab.underline-tab"
 
             //KK callback for chat tab buttons
             const chatCbChat = function() {
@@ -1513,22 +1503,13 @@
             };
             ClubChat.tabs.length = 2;
 
-            //to use our own tabs, we inject some code before the initTabSystem function
-            const initTabSystem_KK = initTabSystem;
-            initTabSystem = function(tabs_id, tabs) {
-                if(tabs_id === 'club-chat') {
-                    arguments[1] = ClubChat.tabs; //replace tabs
-                }
-                initTabSystem_KK.apply(null, arguments); //forward all arguments
-            }
-
             //custom chat tabs
             addNewTab(chatCb, 'chat_hhclubchatplusplus_settings', 'chat-hhclubchatplusplus-settings', 'background-image:url(https://hh2.hh-content.com/design/menu/panel.svg);background-size:26px', getTagContentSettings('chat-hhclubchatplusplus-settings'));
             addNewTab(chatCb, 'chat_hhclubchatplusplus_help', 'chat-hhclubchatplusplus-help', 'background-image:url(' + HHCLUBCHATPLUSPLUS_URL_RES + 'tabs/help.png);background-size:24px', getTabContentHelp());
             addNewTab(chatCb, 'chat_hhclubchatplusplus_info', 'chat-hhclubchatplusplus-info', 'background-image:url(https://hh2.hh-content.com/design/ic_info.svg);background-size:contain', getTabContentInfo());
 
-            //init tab system
-            initTabSystem('club-chat', ClubChat.tabs);
+            //use our own tab system
+            ClubChat_initTabSystem(ClubChat.tabs);
 
             //resize custom tabs
             resizeCustomTabs();
@@ -1548,6 +1529,160 @@
                 fixTabs();
             }, 1);
 
+            function ClubChat_initTabSystem(tabs)
+            {
+                const SITE_ROOT = location.origin + '/';
+                const hh_nutaku = GAME_INFO.hostname.includes('nutaku');
+
+                initTabSystem('club-chat', tabs);
+
+                //Modified TabSystem from chat.js v71042656 2024-03-19
+                function initTabSystem(tabs_id, tabs) {
+                    var settings = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+                    let tab_system_instances = { };
+                    tab_system_instances[tabs_id + "-tabs"] = {
+                        tabs: tabs,
+                        settings: settings
+                    };
+                    var executed_callbacks = [];
+                    $(".switch-tab-custom").click(function(event) { //".switch-tab" changed to ".switch-tab-custom" and everywhere else
+                        var $clicked_tab = $(event.currentTarget);
+                        if ($clicked_tab.hasClass("locked")) {
+                            return
+                        }
+                        var tab_content = $clicked_tab.attr("data-tab");
+                        var tabs_id = $clicked_tab.parent().attr("id");
+                        var current_tab_system_instance = tab_system_instances[tabs_id];
+                        toggleTabsVisibility(tab_content, $clicked_tab);
+                        slideTab(tabs_id, tab_content);
+                        if (current_tab_system_instance.settings && current_tab_system_instance.settings.urlNavigation) {
+                            if (current_tab_system_instance.settings.urlTabNameOverride) {
+                                modifyUrl(tab_content, current_tab_system_instance.settings.urlTabNameOverride)
+                            } else {
+                                modifyUrl(tab_content)
+                            }
+                        }
+                        if (current_tab_system_instance.tabs[tab_content].callback) {
+                            handleCallback(current_tab_system_instance.tabs, tab_content, executed_callbacks)
+                        }
+                        if (current_tab_system_instance.tabs[tab_content].url) {
+                            handleRedirect(current_tab_system_instance.tabs, tab_content)
+                        }
+                    });
+                    initTab(tabs_id + "-tabs", settings)
+                }
+
+                function initTab(tabs_id, settings) {
+                    var tab_value = null;
+                    if (settings && settings.urlNavigation) {
+                        var url = new URL(getDocumentHref());
+                        var tab_name = settings.urlTabNameOverride ? settings.urlTabNameOverride : "tab";
+                        tab_value = url.searchParams.get(tab_name)
+                    }
+                    if (tab_value) {
+                        $("#" + tabs_id + '>.switch-tab-custom[data-tab="' + tab_value + '"').trigger("click")
+                    } else {
+                        slideTab(tabs_id, $("#" + tabs_id + ">.underline-tab").attr("data-tab"));
+                        $("#" + tabs_id + ">.underline-tab").trigger("click")
+                    }
+                    $("#" + $("#" + tabs_id + ">.underline-tab").attr("data-tab")).show()
+                }
+
+                function toggleTabsVisibility(tab_content, $clicked_tab) {
+                    var $tabs_root = $clicked_tab.parent();
+                    var tab_root_id = $tabs_root.attr("id");
+                    var all_tabs = [];
+                    $tabs_root.find(".switch-tab-custom").each(function() {
+                        all_tabs.push($(this).attr("data-tab"))
+                    });
+                    var sibling_class_to_remove = tab_root_id == "shop-payment-tabs" ? "active" : "underline-tab tab-switcher-fade-in";
+                    var sibling_class_to_add = tab_root_id == "shop-payment-tabs" ? "" : "tab-switcher-fade-out";
+                    var tab_class_to_remove = tab_root_id == "shop-payment-tabs" ? "" : "tab-switcher-fade-out";
+                    var tab_class_to_add = tab_root_id == "shop-payment-tabs" ? "active" : "underline-tab tab-switcher-fade-in";
+                    $clicked_tab.siblings(".switch-tab-custom").removeClass(sibling_class_to_remove).addClass(sibling_class_to_add);
+                    $clicked_tab.addClass(tab_class_to_add).removeClass(tab_class_to_remove);
+                    all_tabs.forEach(function(tab) {
+                        $("#" + tab).hide()
+                    });
+                    $("#" + tab_content).show()
+                }
+
+                function slideTab(tabs_id, tab) {
+                    if(typeof tab === 'undefined') return; //code line added
+                    var $slider = $("#" + tabs_id + ">.slider");
+                    if (!$slider.length) {
+                        return
+                    }
+                    var $tab = $("#" + tabs_id + '>button[data-tab="' + tab + '"]'); //'>div[data-tab="' changed to '>button[data-tab="'
+                    var tab_width = $tab.css("width");
+                    var left = 0;
+                    left = $tab[0].offsetLeft;
+                    $slider.css({
+                        width: tab_width,
+                        left: left + "px"
+                    })
+                }
+
+                function modifyUrl(tab) {
+                    var urlTabName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "tab";
+                    var url = new URL(getDocumentHref());
+                    url.searchParams.set(urlTabName, tab);
+                    history.pushState({
+                        urlTabName: tab
+                    }, tab, url)
+                }
+
+                function handleCallback(tabs, tab_content, executed_callbacks) {
+                    if (tabs[tab_content].hasOwnProperty("callbackOptions")) {
+                        if (tabs[tab_content].callbackOptions.hasOwnProperty("loadOnce")) {
+                            executeLoadOnceCallback(tabs, tab_content, executed_callbacks)
+                        }
+                    } else {
+                        tabs[tab_content].callback(tab_content)
+                    }
+                }
+
+                function handleRedirect(tabs, tab_content) {
+                    location.href = getDocumentHref(tabs[tab_content].url)
+                }
+
+                function executeLoadOnceCallback(tabs, tab_content, executed_callbacks) {
+                    if (!executed_callbacks.includes(tabs[tab_content].callback)) {
+                        tabs[tab_content].callback(tab_content);
+                        executed_callbacks.push(tabs[tab_content].callback)
+                    }
+                }
+
+                function getDocumentHref() {
+                    var link = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.location.href;
+                    return hh_nutaku ? getURLForNutaku(link) : link
+                }
+
+                function getURLForNutaku(url) {
+                    var sess = getSessionId();
+                    if (typeof sess === "undefined") {
+                        return url
+                    }
+                    var is_root_url = url.includes(SITE_ROOT) || !url.includes("http");
+                    var has_back_url_with_session = false;
+                    if (url.includes("back_url")) {
+                        var back_url = getSubstringFromString('back_url="', '"', url);
+                        has_back_url_with_session = back_url.includes("sess=")
+                    }
+                    var should_add_session = has_back_url_with_session || !url.includes("sess=");
+                    if (is_root_url && should_add_session) {
+                        return url.includes("?") ? url + "&sess=" + sess : url + "?sess=" + sess
+                    }
+                    return url
+                }
+
+                function getSubstringFromString(start_str, end_str, source_string) {
+                    var start_position = source_string.indexOf(start_str) + start_str.length;
+                    var end_position = source_string.indexOf(end_str, start_position);
+                    return source_string.substring(start_position, end_position)
+                }
+            }
+
             function fixChatMembersList()
             {
                 //scrollbar css
@@ -1561,7 +1696,7 @@
             {
                 //add the button of a new tab
                 let btnTab = document.createElement('button');
-                btnTab.setAttribute('class', 'square_blue_btn switch-tab tab-switcher-fade-out');
+                btnTab.setAttribute('class', 'square_blue_btn switch-tab-custom tab-switcher-fade-out');
                 btnTab.setAttribute('id', id);
                 btnTab.setAttribute('data-tab', name);
                 btnTab.innerHTML = '<span class="clubMember_flat_icn" style="'+iconStyle+'"></span>';
@@ -1766,7 +1901,7 @@
                 let html = '';
                 for(let i = 0; i < settings.length; i++)
                 {
-                    html += '<div><label>' + settings[i].label + '</label><select name="' + settings[i].name + '" onchange="ClubChat.changeConfig' + (settings[i].sponsorsOnly ? 'Sponsors' : '') + '(this)">';
+                    html += '<div><label>' + settings[i].label + '</label><select name="' + settings[i].name + '" onchange="getClubChat().changeConfig' + (settings[i].sponsorsOnly ? 'Sponsors' : '') + '(this)">';
                     for(let j = 0; j < settings[i].options.length; j++)
                     {
                         html += '<option value="' + settings[i].options[j].value + '"' + (config[settings[i].name] == settings[i].options[j].value ? ' selected="selected"' : '') + '>' + settings[i].options[j].name + '</option>';
@@ -1776,11 +1911,11 @@
                     if(settings[i].subtype == 'coloris')
                     {
                         let name2 = settings[i].name + '2';
-                        html += '<input style="margin-left:10px;" name="' + name2 + '" type="text" class="coloris" value="' + config[name2] + '" onchange="ClubChat.changeConfig(this)" />';
+                        html += '<input style="margin-left:10px;" name="' + name2 + '" type="text" class="coloris" value="' + config[name2] + '" onchange="getClubChat().changeConfig(this)" />';
                     }
                     else if(settings[i].subtype == 'sound')
                     {
-                        html += '<button style="margin-left:10px;" name="' + settings[i].name + '" class="blue_button_L" onclick="ClubChat.testSound(this)">Test</button>';
+                        html += '<button style="margin-left:10px;" name="' + settings[i].name + '" class="blue_button_L" onclick="getClubChat().testSound(this)">Test</button>';
                     }
                     html += '</div>';
                 }
@@ -1883,7 +2018,7 @@
                     if(sponsorsList[i].key.includes(GAME_INFO.hostname)){
                         // popup for profiles of current game
                         sponsorsText += '<li style="height:25px"><a style="text-decoration:none;" href="#" onclick="' +
-                            'ClubChat.heroPagePopup(' + sponsorsList[i].key.split('/').pop() + ')' +
+                            'getClubChat().heroPagePopup(' + sponsorsList[i].key.split('/').pop() + ')' +
                             '">' + sponsorsList[i].value.name + '</a>';
                     } else {
                         // new tab for profiles of other games
@@ -1905,10 +2040,10 @@
                 }
 
                 return '<span class="title">SCRIPT INFORMATION</span><br/>' +
-                    'HH Club Chat++ Script v' + GM_info.script.version + '<br/>' +
+                    GM_info.script.name + ' Script v' + GM_info.script.version + '<br/>' +
                     'Web: <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus" target="_blank">HOMEPAGE</a> || <a href="https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md" target="_blank">CHANGELOG</a><br/>' +
                     '<br/>' +
-                    'Script coded by <a style="text-decoration:none;" href="#" onclick="' + (GAME_INFO.hostname === 'www.hentaiheroes.com' ? 'ClubChat.heroPagePopup(4266159)' : 'window.open(\'https://www.hentaiheroes.com/hero/4266159/profile.html\', \'_blank\');') + '">-MM-</a> and tested with club mates <a style="text-decoration:none;" href="https://www.hentaiheroes.com/clubs.html?view_club=1898" target="_blank">"Hērōēs Prāvī Forī [EN]"</a>. Code contributions from <a style="text-decoration:none;" href="#" onclick="' + (GAME_INFO.hostname === 'nutaku.haremheroes.com' ? 'ClubChat.heroPagePopup(4443024)' : 'window.open(\'https://nutaku.haremheroes.com/hero/4443024/profile.html\', \'_blank\');') + '">xnh0x</a> <img width="20" height="20" title="Thank you" alt="Thank you" src="https://cdn.discordapp.com/emojis/294932319020515348.webp?size=48&quality=lossless"><br/>' +
+                    'Script coded by <a style="text-decoration:none;" href="#" onclick="' + (GAME_INFO.hostname === 'www.hentaiheroes.com' ? 'getClubChat().heroPagePopup(4266159)' : 'window.open(\'https://www.hentaiheroes.com/hero/4266159/profile.html\', \'_blank\');') + '">-MM-</a> and tested with club mates <a style="text-decoration:none;" href="https://www.hentaiheroes.com/clubs.html?view_club=1898" target="_blank">"Hērōēs Prāvī Forī [EN]"</a>. Code contributions from <a style="text-decoration:none;" href="#" onclick="' + (GAME_INFO.hostname === 'nutaku.haremheroes.com' ? 'getClubChat().heroPagePopup(4443024)' : 'window.open(\'https://nutaku.haremheroes.com/hero/4443024/profile.html\', \'_blank\');') + '">xnh0x</a> <img width="20" height="20" title="Thank you" alt="Thank you" src="https://cdn.discordapp.com/emojis/294932319020515348.webp?size=48&quality=lossless"><br/>' +
                     'Compatible with Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android)<br/>' +
                     '<br/>' +
                     '<span class="title">SPONSORS</span><br/>' +
@@ -1918,7 +2053,8 @@
                     'If you would like to support me, you can do so here:<br/><li><a href="https://www.patreon.com/HHMM" target="_blank">https://www.patreon.com/HHMM</a></li>' +
                     '<br/>' +
                     '<span class="title">OTHER SCRIPTS</span><br/>' +
-                    '<li><a href="https://github.com/HH-GAME-MM/HH-Leagues-Plus-Plus" target="_blank">HH Leagues++</a></li>'+
+                    '<li><a href="https://github.com/HH-GAME-MM/HH-Leagues-Plus-Plus" target="_blank">HH Leagues++</a></li>' +
+                    '<li><a href="https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus" target="_blank">HH Labyrinth++</a></li>' +
                     '<li><a href="https://github.com/HH-GAME-MM/HH-Harem" target="_blank">HH Harem</a></li>' +
                     '<li><a href="https://github.com/HH-GAME-MM/HH-Simulate-Headband-in-Pantheon" target="_blank">HH Simulate Headband in Pantheon</a></li>';
             }
@@ -1944,17 +2080,17 @@
             //bug fix for different browsers: The members list is outside the window at the first visit + the same behavior with the custom tabs
 
             //get active tab button (default tab is the chat)
-            let activeTabBtn = document.querySelector('button.switch-tab.tab-switcher-fade-in');
-            if(activeTabBtn === null) activeTabBtn = document.getElementById('club_members_tab');
+            let activeTabBtn = document.querySelector('button.switch-tab-custom.tab-switcher-fade-in');
+            if(activeTabBtn === null) activeTabBtn = document.getElementById('club_members_tab_custom');
 
             //click through all tabs
-            let tabBtns = document.querySelectorAll('button.switch-tab');
+            let tabBtns = document.querySelectorAll('button.switch-tab-custom');
             for(let i = 0; i < tabBtns.length; i++) {
                 tabBtns[i].click();
             }
 
             //click last active tab button
-            activeTabBtn.click();
+            activeTabBtn?.click();
         }
 
         function fixScrolling()
@@ -3821,6 +3957,9 @@
 
     function gameFrame()
     {
+        //shared game functions and objects
+        const hero_page_popup = (window.hero_page_popup ? window.hero_page_popup : shared.general.hero_page_popup);
+
         //css
         addCss();
 
@@ -3970,4 +4109,4 @@
     {
         return $(window).width() <= 1025; //ClubChat.isMobileSize();
     }
-})();
+})(window.unsafeWindow);
