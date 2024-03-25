@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.73] - 2024-03-25
+
+### Changed
+- Compatibility update for the code with the new bundler, which is expected to be released on Wednesday
+
 ## [0.72] - 2024-03-13
 
 ### Fixed
