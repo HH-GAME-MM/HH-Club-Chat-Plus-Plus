@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.74] - 2024-03-27
+
+### Fixed
+- Popup of the hero page fixed
+
 ## [0.73] - 2024-03-25
 
 ### Changed
