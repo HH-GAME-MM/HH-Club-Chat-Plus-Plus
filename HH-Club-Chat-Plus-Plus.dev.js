@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++ (Dev Version)
-// @version      0.73
+// @version      0.74
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/*
@@ -23,7 +23,7 @@
 (function(window) {
     //definitions
     'use strict';
-    /* global shared, club_chat, ClubChat, initTabSystem, hero_page_popup, girlsDataList, GAME_FEATURE_CLUB, $ */
+    /* global shared, club_chat, girlsDataList, GAME_FEATURE_CLUB, $ */
 
     const isInIFrame = inIFrame();
     if((!isInIFrame && window.location.pathname === '/') || window.location.hostname === 'osapi.nutaku.com')
@@ -4057,7 +4057,11 @@
         }
 
         function receivedHeroPagePopup(e) {
-            hero_page_popup({id:e.data.playerId});
+            hero_page_popup({
+                id: e.data.playerId,
+                preview: false,
+                page: 'profile'
+            });
         }
 
         function receivedDisconnected(e) {
