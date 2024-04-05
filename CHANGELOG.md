@@ -5,8 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [0.75] - 2024-04-05
 
 ### Added
-- Compatibility with Safari extension "Stay" https://apps.apple.com/us/app/stay-for-safari/id1591620171
 - Club Chat enabled on Nutaku Mobile and the message "Sorry, the chat is not working on your device" removed
+- Compatibility with Safari extension "Stay" https://apps.apple.com/us/app/stay-for-safari/id1591620171
 
 ## [0.74] - 2024-03-27
 
