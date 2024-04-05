@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++ (Dev Version)
-// @version      0.74
+// @version      0.75
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/*
@@ -16,6 +16,7 @@
 // @namespace    https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=hentaiheroes.com
 // @grant        GM_info
+// @grant        unsafeWindow
 // ==/UserScript==
 
 //CHANGELOG: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/blob/main/CHANGELOG.md
@@ -23,10 +24,13 @@
 (function(window) {
     //definitions
     'use strict';
-    /* global shared, club_chat, girlsDataList, GAME_FEATURE_CLUB, $ */
+    /* global shared, club_chat, girlsDataList, GAME_FEATURE_CLUB, hh_nutaku, is_mobile, GT, $ */
 
     const isInIFrame = inIFrame();
-    if((!isInIFrame && window.location.pathname === '/') || window.location.hostname === 'osapi.nutaku.com')
+    if((!isInIFrame && window.location.pathname === '/') || //HH, CxH, PsH, GH, ...
+       window.location.hostname === 'osapi.nutaku.com' || //Nutaku Desktop
+       (isInIFrame && window.location.hostname.startsWith('nutaku.') && window.location.pathname === '/integrations/') //Nutaku Mobile
+      )
     {
         console.log(GM_info.script.name + ' Script v' + GM_info.script.version + ' // Chat Frame');
 
@@ -3959,6 +3963,7 @@
     {
         //shared game functions and objects
         const hero_page_popup = (window.hero_page_popup ? window.hero_page_popup : shared.general.hero_page_popup);
+        const HHPopupManager = (window.HHPopupManager ? window.HHPopupManager : shared.popups_manager.HHPopupManager);
 
         //css
         addCss();
@@ -4086,6 +4091,9 @@
             }
         }
 
+        window.addEventListener('message', receiveMessage);
+
+        //harem girlsDataList
         if (window.location.pathname === '/harem.html')
         {
             // scrape harem data and send to chat frame
@@ -4097,7 +4105,39 @@
             window.parent.postMessage({ HHCCPlusPlus: true, type: 'girlsUpdate', girls: girlDict }, '*');
         }
 
-        window.addEventListener('message', receiveMessage);
+        //Enable Club Chat on Nutaku Mobile
+        if(hh_nutaku && is_mobile())
+        {
+            console.log('Enable Club Chat on Nutaku Mobile');
+
+            //remove event listener for chat button
+            let chatBtn = $("a#chat_btn")[0];
+            chatBtn.parentNode.replaceChild(chatBtn.cloneNode(true), chatBtn);
+
+            //add new click event
+            //Modified Code from default.js v71042655 2024-03-19
+            $("a#chat_btn").on("click", function() {
+                /*if (hh_app || hh_nutaku && is_mobile()) {
+                    popup_message(GT.design.chat_unavailable);
+                    return
+                }*/
+                window.parent.postMessage({
+                    msgtype: "toggleWindow"
+                }, '*');
+                $("img.new_notif.chat_btn_notif").hide();
+                if (window.self == window.top) {
+                    var option = {
+                        confirm: {
+                            title: GT.design.chatfix_message_title,
+                            body: GT.design.chatfix_message
+                        }
+                    };
+                    HHPopupManager.show("confirmation_popup", option, function() {
+                        window.location.pathname = "/"
+                    })
+                }
+            });
+        }
     }
 
     function inIFrame()
@@ -4113,4 +4153,4 @@
     {
         return $(window).width() <= 1025; //ClubChat.isMobileSize();
     }
-})(window.unsafeWindow);
+})(unsafeWindow);
