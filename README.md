@@ -3,8 +3,10 @@ Upgrade Club Chat with various features and bug fixes. Scroll down for screensho
 
 Supported games: HH, CxH, PsH, GH and the Nutaku versions of the games
 
+Compatible Browsers: Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android), Safari (with Safari extension ["Stay"](https://apps.apple.com/us/app/stay-for-safari/id1591620171))
+
 ## Windows / Mac OS - Installation instructions:
-1. Install [TamperMonkey](https://www.tampermonkey.net) browser extension (or your userscript extension of choice e.g. Greasemonkey)
+1. Install [TamperMonkey](https://www.tampermonkey.net) browser extension (or Greasemonkey, or "Stay")
 2. Click the URL: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/raw/main/HH-Club-Chat-Plus-Plus.user.js
 3. TamperMonkey should automatically prompt you to install/update the script. If it doesn't, open up the TamperMonkey Dashboard, go to the Utilities tab, scroll down to "Install from URL" and paste the URL in there
 4. Refresh the main page or log in to the game again for the script to take effect
