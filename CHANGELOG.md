@@ -2,6 +2,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.76] - 2024-04-10
+
+### Fixed
+- Kinkoid bug fixed: Unnecessary scrollbar removed
+
 ## [0.75] - 2024-04-05
 
 ### Added
