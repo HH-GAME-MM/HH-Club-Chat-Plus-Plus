@@ -200,7 +200,7 @@
         css.sheet.insertRule('.emoji-autocomplete-items div:hover {background-color: #4f212e;}');
         css.sheet.insertRule('.emoji-autocomplete-active {background-color: #af375b !important;}');
         css.sheet.insertRule('.emoji-autocomplete-items div img {width:32px;height:32px;margin-right:5px;}');
-        css.sheet.insertRule('.chat-wrapper .chat-container {overflow-y: unset}'); //fix KK bug: useless scrollbar
+        css.sheet.insertRule('.chat-wrapper .chat-container {overflow-y: unset}'); //Fix KK bug: Remove unnecessary scrollbar
 
         //css members online/offline
         let cssOnline = document.createElement('style');
