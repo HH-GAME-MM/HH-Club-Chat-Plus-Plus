@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Club Chat++ (Dev Version)
-// @version      0.75
+// @version      0.76
 // @description  Upgrade Club Chat with various features and bug fixes
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/*
@@ -200,6 +200,7 @@
         css.sheet.insertRule('.emoji-autocomplete-items div:hover {background-color: #4f212e;}');
         css.sheet.insertRule('.emoji-autocomplete-active {background-color: #af375b !important;}');
         css.sheet.insertRule('.emoji-autocomplete-items div img {width:32px;height:32px;margin-right:5px;}');
+        css.sheet.insertRule('.chat-wrapper .chat-container {overflow-y: unset}'); //fix KK bug: useless scrollbar
 
         //css members online/offline
         let cssOnline = document.createElement('style');
