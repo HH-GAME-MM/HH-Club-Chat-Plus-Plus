@@ -2,6 +2,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.77] - 2024-06-06
+
+### Fixed
+- Kinkoid bug fixed: Moved "Club Chat" back to the top of the window
+- Kinkoid bug fixed: New unnecessary scrollbars removed
+
 ## [0.76] - 2024-04-10
 
 ### Fixed
