@@ -2668,6 +2668,10 @@
     align-self: center;
 }
 
+#emojikb-searchdiv img.close_cross {
+    width: 37px;
+}
+
 #emojikb-searchdiv input {
     flex-grow: 1;
     line-height: 32px;
@@ -3794,6 +3798,11 @@
                 s_area.addEventListener('input', (e) => this.on_typing(e))
                 search_div.appendChild(s_area);
                 search_div.appendChild(parse_svg(SVG_HTML.search));
+                let close = document.createElement("img");
+                close.classList.add("close_cross");
+                close.src = "https://hh.hh-content.com/clubs/ic_xCross.png";
+                close.addEventListener("click", this.toggle_window);
+                search_div.appendChild(close);
                 // under the search div
                 let div2 = document.createElement("div");
                 div2.id = "emojikb-div2";

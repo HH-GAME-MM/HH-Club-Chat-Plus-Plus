@@ -2,6 +2,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+### Added
+- close cross on emoji keyboard
+
 ## [0.77] - 2024-06-06
 
 ### Fixed
